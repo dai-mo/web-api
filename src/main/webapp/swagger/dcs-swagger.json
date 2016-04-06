@@ -1,0 +1,141 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "DCS API",
+        "description": "DCS API",
+        "version": "0.0.1"
+    },
+    "host": "localhost:8080",
+    "schemes": [
+        "http"
+    ],
+    "basePath": "/dcs/api/v0",
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/modules": {
+            "get": {
+                "summary": "Modules",
+                "description": "The Products endpoint returns the list of modules\n",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Type of module.",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "mobilise",
+                                "analyse",
+                                "visualise",
+                                "all"
+                            ]
+                        },
+                        "collectionFormat": "csv"
+                    }
+                ],
+                "tags": [
+                    "Modules"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of products",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Module"
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/data": {
+            "post": {
+                "summary": "Upload data files",
+                "description": "The data endpoint uploads files into the dcs workspace\n",
+                "parameters": [
+                    {
+                        "name": "file",
+                        "in": "formData",
+                        "description": "Format of data file",
+                        "required": false,
+                        "type": "file"
+                    }
+                ],
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "tags": [
+                    "Data"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of products",
+                        "schema": {
+                            "$ref": "#/definitions/DataLoader"
+                        }
+                    },
+                    "default": {
+                        "description": "Unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "DataLoader": {
+            "type": "object",
+            "properties": {
+                "data_source_id": {
+                    "type": "string",
+                    "description": "unique identifier for uploaded data file."
+                }
+            }
+        },
+        "Module": {
+            "type": "object",
+            "properties": {
+                "product_id": {
+                    "type": "string",
+                    "description": "Unique identifier representing a specific module."
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Description of module."
+                },
+                "display_name": {
+                    "type": "string",
+                    "description": "Display name of module."
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "fields": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
