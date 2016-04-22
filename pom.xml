@@ -27,10 +27,6 @@
 
 	<repositories>
 		<repository>
-			<id>nanonet</id>
-			<url>https://jenkins.nanonet/plugin/repository/everything/</url>
-		</repository>
-		<repository>
 			<id>vaadin-addons</id>
 			<url>http://maven.vaadin.com/vaadin-addons</url>
 		</repository>
@@ -44,18 +40,7 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<repository>
-			<id>artifactory-snapshots</id>
-			<url>${artifactory.base.url}/artifactory/libs-snapshot-local/</url>
-		</repository>
 	</repositories>
-
-	<pluginRepositories>
-        <pluginRepository>
-			<id>jcenter</id>
-			<url>http://jcenter.bintray.com</url>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<dependencyManagement>
 		<dependencies>
