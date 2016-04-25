@@ -27,10 +27,6 @@
 
 	<repositories>
 		<repository>
-			<id>nanonet</id>
-			<url>https://jenkins.nanonet/plugin/repository/everything/</url>
-		</repository>
-		<repository>
 			<id>vaadin-addons</id>
 			<url>http://maven.vaadin.com/vaadin-addons</url>
 		</repository>
@@ -44,18 +40,7 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
-		<repository>
-			<id>artifactory-snapshots</id>
-			<url>${artifactory.base.url}/artifactory/libs-snapshot-local/</url>
-		</repository>
 	</repositories>
-
-	<pluginRepositories>
-        <pluginRepository>
-			<id>jcenter</id>
-			<url>http://jcenter.bintray.com</url>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<dependencyManagement>
 		<dependencies>
@@ -88,17 +73,17 @@
 			<artifactId>vaadin-client</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- Needed when using the widgetset optimizer (custom ConnectorBundleLoaderFactory). 
-			For widgetset compilation, vaadin-client-compiler is automatically added 
-			on the compilation classpath by vaadin-maven-plugin so normally there is 
+		<!-- Needed when using the widgetset optimizer (custom ConnectorBundleLoaderFactory).
+			For widgetset compilation, vaadin-client-compiler is automatically added
+			on the compilation classpath by vaadin-maven-plugin so normally there is
 			no need for an explicit dependency. -->
-		<!-- <dependency> <groupId>com.vaadin</groupId> <artifactId>vaadin-client-compiler</artifactId> 
+		<!-- <dependency> <groupId>com.vaadin</groupId> <artifactId>vaadin-client-compiler</artifactId>
 			<scope>provided</scope> </dependency> -->
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-themes</artifactId>
 		</dependency>
-		<!-- Override older asm dependency in swagger-jersey-jaxrs for vaadin widgetset 
+		<!-- Override older asm dependency in swagger-jersey-jaxrs for vaadin widgetset
 			compilation -->
 		<dependency>
 			<groupId>org.ow2.asm</groupId>
@@ -106,293 +91,6 @@
 			<version>5.0.3</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- OSGi Dependencies Start -->
-		<!-- <dependency> -->
-		<!-- <groupId>javax.websocket</groupId> -->
-		<!-- <artifactId>javax.websocket-api</artifactId> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.felix</groupId> -->
-		<!-- <artifactId>org.apache.felix.framework</artifactId> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.felix</groupId> -->
-		<!-- <artifactId>org.apache.felix.http.proxy</artifactId> -->
-		<!-- <version>3.0.0</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.felix</groupId> -->
-		<!-- <artifactId>org.apache.felix.http.bridge</artifactId> -->
-		<!-- <version>3.0.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.felix</groupId> -->
-		<!-- <artifactId>org.apache.felix.webconsole</artifactId> -->
-		<!-- <version>4.2.14</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.osgi</groupId> -->
-		<!-- <artifactId>osgi.cmpn</artifactId> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.felix</groupId> -->
-		<!-- <artifactId>org.apache.felix.scr</artifactId> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.felix</groupId> -->
-		<!-- <artifactId>org.apache.felix.configadmin</artifactId> -->
-		<!-- <version>1.8.8</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.felix</groupId> -->
-		<!-- <artifactId>org.apache.felix.bundlerepository</artifactId> -->
-		<!-- <version>2.0.6</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.felix</groupId> -->
-		<!-- <artifactId>org.apache.felix.fileinstall</artifactId> -->
-		<!-- <version>3.5.2</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.felix</groupId> -->
-		<!-- <artifactId>org.apache.felix.log</artifactId> -->
-		<!-- <version>1.0.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf.dosgi</groupId> -->
-		<!-- <artifactId>cxf-dosgi-ri-singlebundle-distribution</artifactId> -->
-		<!-- <version>1.4.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf.dosgi</groupId> -->
-		<!-- <artifactId>cxf-dosgi-ri-discovery-distributed</artifactId> -->
-		<!-- <version>1.7.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf.dosgi</groupId> -->
-		<!-- <artifactId>cxf-dosgi-ri-discovery-local</artifactId> -->
-		<!-- <version>1.7.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf.dosgi</groupId> -->
-		<!-- <artifactId>cxf-dosgi-ri-topology-manager</artifactId> -->
-		<!-- <version>1.7.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-core</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-rt-databinding-aegis</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-rt-bindings-soap</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-rt-wsdl</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-rt-frontend-jaxws</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-rt-frontend-jaxrs</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-rt-frontend-simple</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-rt-rs-client</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-rt-rs-extension-providers</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-rt-transports-http</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-rt-bindings-xml</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf</groupId> -->
-		<!-- <artifactId>cxf-rt-databinding-jaxb</artifactId> -->
-		<!-- <version>3.1.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.servicemix.bundles</groupId> -->
-		<!-- <artifactId>org.apache.servicemix.bundles.wsdl4j</artifactId> -->
-		<!-- <version>1.6.3_1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.servicemix.specs</groupId> -->
-		<!-- <artifactId>org.apache.servicemix.specs.jaxb-api-2.2</artifactId> -->
-		<!-- <version>2.4.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.servicemix.bundles</groupId> -->
-		<!-- <artifactId>org.apache.servicemix.bundles.jaxb-xjc</artifactId> -->
-		<!-- <version>2.2.11_1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.servicemix.specs</groupId> -->
-		<!-- <artifactId>org.apache.servicemix.specs.activation-api-1.1</artifactId> -->
-		<!-- <version>2.4.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.servicemix.specs</groupId> -->
-		<!-- <artifactId>org.apache.servicemix.specs.activation-api-1.1</artifactId> -->
-		<!-- <version>2.2.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.servicemix.specs</groupId> -->
-		<!-- <artifactId>org.apache.servicemix.specs.jaxws-api-2.2</artifactId> -->
-		<!-- <version>2.4.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.servicemix.specs</groupId> -->
-		<!-- <artifactId>org.apache.servicemix.specs.stax-api-1.0</artifactId> -->
-		<!-- <version>2.4.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.servicemix.specs</groupId> -->
-		<!-- <artifactId>org.apache.servicemix.specs.saaj-api-1.3</artifactId> -->
-		<!-- <version>2.4.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.servicemix.bundles</groupId> -->
-		<!-- <artifactId>org.apache.servicemix.bundles.jaxb-impl</artifactId> -->
-		<!-- <version>2.2.11_1</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.ws.xmlschema</groupId> -->
-		<!-- <artifactId>xmlschema-core</artifactId> -->
-		<!-- <version>2.2.1</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.codehaus.woodstox</groupId> -->
-		<!-- <artifactId>stax2-api</artifactId> -->
-		<!-- <version>3.1.4</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf.dosgi</groupId> -->
-		<!-- <artifactId>cxf-dosgi-ri-osgi-api</artifactId> -->
-		<!-- <version>1.7.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.cxf.dosgi</groupId> -->
-		<!-- <artifactId>cxf-dosgi-ri-dsw-cxf</artifactId> -->
-		<!-- <version>1.7.0</version> -->
-		<!-- <scope>provided</scope> -->
-		<!-- </dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.osgi</groupId> -->
-		<!-- <artifactId>org.osgi.service.remoteserviceadmin</artifactId> -->
-		<!-- <version>1.1.0</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>com.sun.xml.bind</groupId> -->
-		<!-- <artifactId>jaxb-impl</artifactId> -->
-		<!-- <version>2.2.11</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.codehaus.woodstox</groupId> -->
-		<!-- <artifactId>woodstox-core-asl</artifactId> -->
-		<!-- <version>4.4.1</version> -->
-		<!-- </dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.zookeeper</groupId> -->
-		<!-- <artifactId>zookeeper</artifactId> -->
-		<!-- <version>3.4.7</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.osgi</groupId> -->
-		<!-- <artifactId>org.osgi.service.log</artifactId> -->
-		<!-- <version>1.3.0</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>commons-fileupload</groupId> -->
-		<!-- <artifactId>commons-fileupload</artifactId> -->
-		<!-- <version>1.3.1</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>commons-io</groupId> -->
-		<!-- <artifactId>commons-io</artifactId> -->
-		<!-- <version>2.4</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.json</groupId> -->
-		<!-- <artifactId>json</artifactId> -->
-		<!-- <version>20151123</version> -->
-		<!-- </dependency> -->
-		<!-- OSGi Dependencies Start -->
-
-
 
 		<!-- Swagger JAX-RS Jersey Dependencies Start -->
 		<dependency>
@@ -572,7 +270,7 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
-			<!-- The Jetty plugin allows us to easily test the development build by 
+			<!-- The Jetty plugin allows us to easily test the development build by
 				running jetty:run on the command line. -->
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
@@ -630,34 +328,11 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-	            <groupId>org.jfrog.buildinfo</groupId>
-	            <artifactId>artifactory-maven-plugin</artifactId>
-	            <version>2.4.1</version>
-	            <inherited>false</inherited>
-	            <executions>
-	                <execution>
-	                    <id>build-info</id>
-	                    <goals>
-	                        <goal>publish</goal>
-	                    </goals>
-	                    <configuration>
-	                        <publisher>
-	                            <contextUrl>${artifactory.base.url}/artifactory</contextUrl>
-	                            <username>${artifactory.user}</username>
-	                            <password>${artifactory.password}</password>
-	                            <repoKey>libs-release-local</repoKey>
-	                            <snapshotRepoKey>libs-snapshot-local</snapshotRepoKey>
-	                        </publisher>
-	                    </configuration>
-	                </execution>
-	            </executions>
-	        </plugin>		
 		</plugins>
 
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<!-- TODO Remove when http://dev.vaadin.com/ticket/14924 is resolved -->
 				<plugin>
