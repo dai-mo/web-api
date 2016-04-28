@@ -23,6 +23,7 @@
 		<project.encoding>UTF-8</project.encoding>
 		<junit-version>4.8.1</junit-version>
 		<test.http.port>9090</test.http.port>
+		<dcs.config>${project.build.testOutputDirectory}/config.yaml</dcs.config>
 	</properties>
 
 	<repositories>
@@ -282,7 +283,7 @@
 					<systemProperties>
 						<systemProperty>
 							<name>config</name>
-							<value>${project.build.testOutputDirectory}/config.yaml</value>
+							<value>${dcs.config}</value>
 						</systemProperty>
 						<systemProperty>
 							<name>testHttpPort</name>
