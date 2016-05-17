@@ -3,11 +3,35 @@
  */
 'use strict';
 
+
+
+function Config(data) {
+    this.data = data;
+}
+
 // Declare app level module which depends on views, and components
 var dcs = angular.module('dcs', [
 	'dcs.version'
 ])
 
+dcs.provider("config", [function () {
+    var data = null;
+
+    this.setData = function (dataString) {
+        data = dataString;
+    };
+
+    this.$get = function () {
+        return new Config(data);
+    };
+}]);
+
+dcs.config(["configProvider", function (configProvider) {
+	var configData = {
+	        nifiUrl: 'http://google.com'
+	    }
+  configProvider.setData(configData);
+}])
 
 dcs.directive('containerResize', function(){
 	// Runs during compile
@@ -54,8 +78,6 @@ dcs.directive('containerResize', function(){
 
 			var initProperties = function() {
 
-
-
 				prevElmStyle = window.getComputedStyle(prevElm, null);
 				prevElmWidth = parseInt(prevElmStyle.getPropertyValue('width'));
 				prevElmHeight = parseInt(prevElmStyle.getPropertyValue('height'));
@@ -65,8 +87,6 @@ dcs.directive('containerResize', function(){
 				nextElmWidth = parseInt(nextElmStyle.getPropertyValue('width'));
 				nextElmHeight = parseInt(nextElmStyle.getPropertyValue('height'));
 				nextElmStartFlexBasis = parseInt(nextElmStyle.getPropertyValue('flexBasis'));
-
-
 			};
 
 			initProperties();
@@ -230,12 +250,13 @@ dcs.directive('initVaadinUi', function(){
 	};
 });
 
-dcs.controller('WsViewController', ['$scope', function($scope){
+dcs.controller('WsViewController', ['$scope', 'config', function($scope, config){
+	$scope.nifiUrl = config.data.nifiUrl;
 
 	$scope.getTemplateUrl = function() {
 		if($scope.viewType === 'vaadin') {
 			return 'workspace-vaadin-view.htm';
-		} else {
+		} else  {
 			return $scope.viewName + '/' + $scope.viewType + '-view.htm';
 		}
 	}
