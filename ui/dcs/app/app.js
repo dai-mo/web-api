@@ -3,10 +3,12 @@
  */
 'use strict';
 
-
-
-function Config(data) {
-    this.data = data;
+function getPort($location) {
+  var port = $location.port()
+  if(port === '') {
+    port = '80';
+  }
+  return port;
 }
 
 
@@ -15,19 +17,22 @@ var dcs = angular.module('dcs', [
 	'dcs.version'
 ])
 
-dcs.factory("config", function ($http, $location) {
-
-    return {
-        get: function() {
-          var baseUrl = $location.protocol() +
-          '://' +
-          $location.host() +
-          ':' +
-          $location.port();
-          return $http.get(baseUrl + '/dcs/api/v0/ui-config');
-      }
-    }
-});
+// dcs.factory("config", function ($http, $location) {
+//
+//
+//
+//   return {
+//       get: function() {
+//         var nifiUrl = $location.protocol() +
+//         '://' +
+//         $location.host() +
+//         ':' +
+//         getPort() +
+//         '/nifi';
+//         return $http.get(baseUrl + '/dcs/api/v0/ui-config');
+//     }
+//   }
+// });
 
 
 dcs.directive('containerResize', function(){
@@ -247,11 +252,14 @@ dcs.directive('initVaadinUi', function(){
 	};
 });
 
-dcs.controller('WsViewController', ['$scope', 'config', function($scope, config){
+dcs.controller('WsViewController', ['$scope', '$location', function($scope, $location){
 
-config.get().then(function(response) {  
-  $scope.config = response.data;
-});
+  $scope.nifiUrl = $location.protocol() +
+    '://' +
+    $location.host() +
+    ':' +
+    getPort($location) +
+    '/nifi';
 
 	$scope.getTemplateUrl = function() {
 		if($scope.viewType === 'vaadin') {
