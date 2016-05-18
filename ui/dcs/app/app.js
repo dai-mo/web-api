@@ -3,10 +3,36 @@
  */
 'use strict';
 
+function getPort($location) {
+  var port = $location.port()
+  if(port === '') {
+    port = '80';
+  }
+  return port;
+}
+
+
 // Declare app level module which depends on views, and components
 var dcs = angular.module('dcs', [
 	'dcs.version'
 ])
+
+// dcs.factory("config", function ($http, $location) {
+//
+//
+//
+//   return {
+//       get: function() {
+//         var nifiUrl = $location.protocol() +
+//         '://' +
+//         $location.host() +
+//         ':' +
+//         getPort() +
+//         '/nifi';
+//         return $http.get(baseUrl + '/dcs/api/v0/ui-config');
+//     }
+//   }
+// });
 
 
 dcs.directive('containerResize', function(){
@@ -54,8 +80,6 @@ dcs.directive('containerResize', function(){
 
 			var initProperties = function() {
 
-
-
 				prevElmStyle = window.getComputedStyle(prevElm, null);
 				prevElmWidth = parseInt(prevElmStyle.getPropertyValue('width'));
 				prevElmHeight = parseInt(prevElmStyle.getPropertyValue('height'));
@@ -65,8 +89,6 @@ dcs.directive('containerResize', function(){
 				nextElmWidth = parseInt(nextElmStyle.getPropertyValue('width'));
 				nextElmHeight = parseInt(nextElmStyle.getPropertyValue('height'));
 				nextElmStartFlexBasis = parseInt(nextElmStyle.getPropertyValue('flexBasis'));
-
-
 			};
 
 			initProperties();
@@ -230,12 +252,19 @@ dcs.directive('initVaadinUi', function(){
 	};
 });
 
-dcs.controller('WsViewController', ['$scope', function($scope){
+dcs.controller('WsViewController', ['$scope', '$location', function($scope, $location){
+
+  $scope.nifiUrl = $location.protocol() +
+    '://' +
+    $location.host() +
+    ':' +
+    getPort($location) +
+    '/nifi';
 
 	$scope.getTemplateUrl = function() {
 		if($scope.viewType === 'vaadin') {
 			return 'workspace-vaadin-view.htm';
-		} else {
+		} else  {
 			return $scope.viewName + '/' + $scope.viewType + '-view.htm';
 		}
 	}
