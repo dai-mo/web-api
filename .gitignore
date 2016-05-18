@@ -174,7 +174,8 @@ tramp
 
 # Created by .ignore support plugin (hsz.mobi)
 
-# Misc.
+# Misc
+*.cache
 .cache-main
 .cache-tests
 .tern-project
