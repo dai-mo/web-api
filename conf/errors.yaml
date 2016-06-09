@@ -1,0 +1,64 @@
+errors:
+# 0-99 represents general errors
+  DCS001:
+    code: DCS001
+    message: Unexpected Error
+    httpStatusCode: 500
+
+# 100-199 represents errors related to data
+  DCS101:
+    code: DCS101
+    message: Datasource with given name already exists
+    httpStatusCode: 406
+  DCS102:
+    code: DCS102
+    message: Error loading data
+    httpStatusCode: 500
+  DCS103:
+    code: DCS103
+    message: Error initializing data store
+    httpStatusCode: 500
+  DCS104:
+    code: DCS104
+    message: Error reading data
+    httpStatusCode: 500
+  DCS105:
+    code: DCS105
+    message: Error writing data
+    httpStatusCode: 500
+  DCS106:
+    code: DCS106
+    message: Error initialising data admin
+    httpStatusCode: 500
+  DCS107:
+    code: DCS107
+    message: Error loading / retrieving data source info
+    httpStatusCode: 500
+
+# 200-299 represents service errors
+  DCS201:
+    code: DCS201
+    message: Service currently unavailable
+    httpStatusCode: 500
+
+# 300-399 represents errors related to flow
+  DCS301:
+    code: DCS301
+    message: Requested entity is not available
+    httpStatusCode: 400
+  DCS302:
+    code: DCS302
+    message: Access to flow entity is unauthorized
+    httpStatusCode: 401
+  DCS303:
+    code: DCS303
+    message: Access to flow entity is forbidden
+    httpStatusCode: 403
+  DCS304:
+    code: DCS304
+    message: Flow entity could not be found
+    httpStatusCode: 404
+  DCS305:
+    code: DCS305
+    message: Inavlid request to process flow entity
+    httpStatusCode: 409
