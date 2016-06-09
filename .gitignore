@@ -174,9 +174,14 @@ tramp
 
 # Created by .ignore support plugin (hsz.mobi)
 
+# Angular
+node_modules
+bower_components
+
 # Misc
 *.cache
 .cache-main
 .cache-tests
 .tern-project
 *.log
+
