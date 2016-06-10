@@ -37,4 +37,8 @@ val publishDistSettings = Seq[Setting[_]] (
 Seq(publishDistSettings: _*)
 
 
-lazy val web = (project in file(".")).enablePlugins(PlayScala)
+lazy val web = (project in file(".")).enablePlugins(PlayScala).settings(
+  // Disable NPM node modules
+  JsEngineKeys.npmNodeModules in Assets := Nil,
+  JsEngineKeys.npmNodeModules in TestAssets := Nil
+)
