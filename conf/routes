@@ -3,21 +3,24 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /dcs/app                    controllers.HomeController.index
-# An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
+GET     /                       controllers.HomeController.index
+
 # An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
+GET     /message                controllers.AsyncController.message
+
+# Documentation endpoints
+GET     /api/doc                controllers.HomeController.doc
 
 # Test Api
-GET     /test/hello         controllers.TestApi.testHelloGet(name: Option[String])
+GET     /api/test/hello         controllers.TestApi.testHelloGet(name: Option[String])
+GET     /api/test/error         controllers.TestApi.testErrorGet(code:String, message: String, httpStatusCode: Int)
 
 # Flow Api
-GET     /flow/templates     controllers.FlowApi.flowTemplatesGet(clientId: String)
-POST    /flow/instantiate   controllers.FlowApi.flowInstantiatePost(flowTemplateId:String, clientId: String)
-GET     /flow/instance      controllers.FlowApi.flowInstanceGet(flowInstanceId: String, clientId: String)
-DELETE  /flow/remove        controllers.FlowApi.flowRemoveDelete(flowInstanceId: String, clientId: String)
+GET     /api/flow/templates     controllers.FlowApi.flowTemplatesGet(clientId: String)
+POST    /api/flow/instantiate   controllers.FlowApi.flowInstantiatePost(flowTemplateId:String, clientId: String)
+GET     /api/flow/instance      controllers.FlowApi.flowInstanceGet(flowInstanceId: String, clientId: String)
+DELETE  /api/flow/remove        controllers.FlowApi.flowRemoveDelete(flowInstanceId: String, clientId: String)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file       controllers.Assets.versioned(path="/public", file: Asset)
-GET     /app                controllers.Assets.at(path="/public/html", file = "app.html")
+GET     /assets/*file           controllers.Assets.versioned(path="/public", file: Asset)
+GET     /app                    controllers.Assets.at(path="/public/html", file = "app.html")
