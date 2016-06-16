@@ -11,7 +11,7 @@ import play.api.routing.Router
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(router: Provider[Router]) extends Controller {
+class HomeController @Inject()(webJarAssets: WebJarAssets, router: Provider[Router]) extends Controller {
 
   /**
    * Create an Action to render an HTML page with a welcome message.
@@ -20,7 +20,19 @@ class HomeController @Inject()(router: Provider[Router]) extends Controller {
    * a path of `/`.
    */
   def index() = Action {
-    Ok(views.html.index("Welcome to the DCS App"))
+    Ok(views.html.index(webJarAssets))
+  }
+
+  def rootPartials(partial: String) = modulePartials("", partial)
+
+  def modulePartials(module:String, partial: String) = Action {
+    (module, partial) match  {
+      case ("", "ws-view.htm") => Ok(views.html.partials.wsview())
+      case ("analyse", "jsview.htm") => Ok(views.html.partials.analyse.jsview())
+      case ("mobilise", "jsview.htm") => Ok(views.html.partials.mobilise.jsview())
+      case ("visualise", "jsview.htm") => Ok(views.html.partials.visualise.jsview())
+      case _ => NotFound
+    }
   }
 
   def doc() = Action {

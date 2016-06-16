@@ -14,7 +14,7 @@ class ErrorHandler extends HttpErrorHandler {
 
   def onClientError(request: RequestHeader, statusCode: Int, message: String) = {
     Future.successful(
-      Status(statusCode)(Json.toJson(ErrorResponse("400", "Web client error", statusCode, message)))
+      Status(statusCode)(Json.toJson(ErrorResponse("DCS400", "Web client error", statusCode, message)))
     )
   }
 

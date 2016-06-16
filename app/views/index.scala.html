@@ -1,20 +1,36 @@
-@*
- * This template takes a single argument, a String containing a
- * message to display.
- *@
-@(message: String)
+@(webJarAssets: WebJarAssets)
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en" ng-app="dcs" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" ng-app="dcs" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" ng-app="dcs" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html lang="en" ng-app="dcs" class="no-js"> <!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>DCS Workspace</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(webJarAssets.locate("css/bootstrap.min.css"))" />
+    <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(webJarAssets.locate("css/font-awesome.min.css"))" />
+    <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(webJarAssets.locate("dist/css/normalize.css"))" />
+    <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(webJarAssets.locate("dist/css/main.css"))" />
+    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/app.css")"/>
 
-@*
- * Call the `main` template with two arguments. The first
- * argument is a `String` with the title of the page, the second
- * argument is an `Html` object containing the body of the page.
- *@
-@main("Welcome to Play") {
 
-    @*
-     * Get an `Html` object by calling the built-in Play welcome
-     * template and passing a `String` message.
-     *@
-    @play20.welcome(message, style = "Scala")
-
-}
+</head>
+<body>
+    <div class="flex-box container-row">
+        <div class="flex-item flex-box container-column">
+            <div class="flex-item panel panel-default" ws-view view-name="visualise" view-type="js"></div>
+            <div container-resize cr-type="column">
+                <div class="grabber column"></div>
+            </div>
+            <div class="flex-item panel panel-default" ws-view view-name="mobilise" view-type="js"></div>
+        </div>
+        <div container-resize cr-type="row">
+            <div class="grabber row"></div>
+        </div>
+        <div class="flex-item panel panel-default" ws-view view-name="analyse" view-type="js"></div>
+    </div>
+    <script data-main="@routes.Assets.versioned("javascripts/main.js")" src="@routes.WebJarAssets.at(webJarAssets.locate("require.min.js"))"></script>
+</body>

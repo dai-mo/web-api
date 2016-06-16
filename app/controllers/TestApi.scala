@@ -22,8 +22,10 @@ class TestApi @Inject() extends Controller {
     Ok(Json.toJson(testResponse))
   }
 
-  def testErrorGet(code:String, message: String, httpStatusCode: Int) = Action {
-    throw new RESTException(ErrorResponse(code, message, httpStatusCode))
-    Ok("Unreachable code")
+  def testErrorGet(code: Option[String], message: Option[String], httpStatusCode: Option[Int]) = Action {
+    if (code != None && message != None && httpStatusCode != None)
+      throw new RESTException(ErrorResponse(code.get, message.get, httpStatusCode.get))
+    else
+      Ok("Missing parameter")
   }
 }
