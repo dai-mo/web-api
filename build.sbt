@@ -1,8 +1,14 @@
+import sbt._
+
 name := """org.dcs.web"""
 
 version := "1.0.0-SNAPSHOT"
 
 scalaVersion := "2.11.7"
+
+crossPaths := false
+
+Common.commonSettings
 
 libraryDependencies ++= Seq(
   jdbc,
@@ -13,6 +19,18 @@ libraryDependencies ++= Seq(
   "org.dcs" % "org.dcs.flow" % "0.0.1-SNAPSHOT",
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test
 )
+
+libraryDependencies ++= Seq(
+  "org.webjars" %% "webjars-play" % "2.5.0",
+  "org.webjars" % "angularjs" % "1.2.19",
+  "org.webjars.bower" % "html5-boilerplate" % "5.2.0",
+  "org.webjars" % "font-awesome" % "4.6.3",
+  "org.webjars" % "bootstrap" % "3.2.0" exclude("org.webjars", "jquery"),
+  "org.webjars" % "requirejs" % "2.1.14-1" exclude("org.webjars", "jquery"),
+  "org.webjars" % "requirejs-domready" % "2.0.1-2"
+)
+
+pipelineStages := Seq(rjs, digest, gzip)
 
 crossPaths := false
 
@@ -42,3 +60,19 @@ lazy val web = (project in file(".")).enablePlugins(PlayScala).settings(
   JsEngineKeys.npmNodeModules in Assets := Nil,
   JsEngineKeys.npmNodeModules in TestAssets := Nil
 )
+
+scalacOptions in ThisBuild ++= Seq(
+  "-target:jvm-1.8",
+  "-encoding", "UTF-8",
+  "-deprecation", // warning and location for usages of deprecated APIs
+  "-feature", // warning and location for usages of features that should be imported explicitly
+  "-unchecked", // additional warnings where generated code depends on assumptions
+  "-Xlint", // recommended additional warnings
+  "-Ywarn-adapted-args", // Warn if an argument list is modified to match the receiver
+  "-Ywarn-value-discard", // Warn when non-Unit expression results are unused
+  "-Ywarn-inaccessible",
+  "-Ywarn-dead-code",
+  "-language:reflectiveCalls"
+)
+
+fork in run := true
