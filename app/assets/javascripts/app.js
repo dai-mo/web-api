@@ -2,7 +2,7 @@
  * Created by cmathew on 31/12/15.
  */
 //'use strict';
-define(['angular'], function(angular) {
+define(['angular', 'bootstrap', 'visjs'], function(angular, bootstrap, visjs) {
   'use strict';
 
   function getPort($location) {
@@ -17,43 +17,13 @@ define(['angular'], function(angular) {
   // Declare app level module which depends on views, and components
   var app = angular.module('app', []);
 
-
-
-  // dcs.factory("config", function ($http, $location) {
-  //
-  //
-  //
-  //   return {
-  //       get: function() {
-  //         var nifiUrl = $location.protocol() +
-  //         '://' +
-  //         $location.host() +
-  //         ':' +
-  //         getPort() +
-  //         '/nifi';
-  //         return $http.get(baseUrl + '/dcs/api/v0/ui-config');
-  //     }
-  //   }
-  // });
-
-
   app.directive('containerResize', function(){
     // Runs during compile
     return {
-      // name: '',
-      // priority: 1,
-      // terminal: true,
       scope: {
         crType: '@'
       },
-      // controller: function($scope, $element, $attrs, $transclude) {},
-      // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
-      restrict: 'AE', // E = Element, A = Attribute, C = Class, M = Comment
-      //template: 'Test'
-      // templateUrl: '',
-      //replace: true,
-      // transclude: true,
-      // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
+      restrict: 'AE',
       link: function(scope, iElm, iAttrs, controller) {
 
         var type = scope.crType;
@@ -233,7 +203,54 @@ define(['angular'], function(angular) {
     };
   });
 
+  app.directive('tabs', function() {
+    return {
+      restrict: 'E',
+      transclude: true,
+      scope: {},
+      controller: [ "$scope", function($scope) {
+        var panes = $scope.panes = [];
 
+        $scope.select = function(pane) {
+          angular.forEach(panes, function(pane) {
+            pane.selected = false;
+          });
+          pane.selected = true;
+        };
+
+        this.addPane = function(pane) {
+          if (panes.length === 0) $scope.select(pane);
+          panes.push(pane);
+        };
+      }],
+      template:
+        '<div class="tabbable">' +
+          '<ul class="nav nav-tabs">' +
+            '<li ng-repeat="pane in panes" ng-class="{active:pane.selected}">'+
+              '<a href="" ng-click="select(pane)">{{pane.title}}</a>' +
+            '</li>' +
+          '</ul>' +
+          '<div class="tab-content" ng-transclude></div>' +
+        '</div>',
+      replace: true
+    };
+  });
+
+  app.directive('pane', function() {
+    return {
+      require: '^tabs',
+      restrict: 'E',
+      transclude: true,
+      scope: { title: '@' },
+      link: function(scope, element, attrs, tabsCtrl) {
+        tabsCtrl.addPane(scope);
+      },
+      template:
+        '<div class="tab-pane" ng-class="{active: selected}" ng-transclude>' +
+        '</div>',
+      replace: true
+    };
+  });
 
   app.controller('WsViewController', ['$scope', '$location', function($scope, $location){
 
@@ -249,6 +266,40 @@ define(['angular'], function(angular) {
     };
   }]);
 
+  app.directive('flowVis', [function() {
+      return {
+          restrict: 'AE',
+          scope: {
+              data: '=data',
+              options: '=options'
+          },
+          link: function(scope, element, attrs) {
+              // create an array with nodes
+              var nodes = new visjs.DataSet([
+                {id: 1, label: 'Node 1'},
+                {id: 2, label: 'Node 2'},
+                {id: 3, label: 'Node 3'},
+                {id: 4, label: 'Node 4'},
+                {id: 5, label: 'Node 5'}
+              ]);
+
+              // create an array with edges
+              var edges = new visjs.DataSet([
+                {from: 1, to: 3},
+                {from: 1, to: 2},
+                {from: 2, to: 4},
+                {from: 2, to: 5}
+              ]);
+
+              var data = {
+                nodes: nodes,
+                edges: edges
+              };
+              var options = {};
+              var network = new visjs.Network(element[0], data, options);
+          }
+      };
+  }]);
 
   function getUrlValue(varSearch){
     var searchString = window.location.search.substring(1);

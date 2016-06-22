@@ -6,7 +6,9 @@
 requirejs.config({
     paths: {
         'angular': '../lib/angularjs/angular',
-        'domReady': '../lib/requirejs-domready/domReady'
+        'domReady': '../lib/requirejs-domready/domReady',
+        'bootstrap': '../lib/bootstrap/js/bootstrap',
+        'visjs': '../lib/visjs/vis'
     },
     shim: {
         angular: {
