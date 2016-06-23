@@ -6,6 +6,8 @@
 requirejs.config({
     paths: {
         'angular': '../lib/angularjs/angular',
+        'angular_resource': '../lib/angularjs/angular-resource',
+        'angular_ui_bootstrap': '../lib/angular-ui-bootstrap/ui-bootstrap',
         'domReady': '../lib/requirejs-domready/domReady',
         'bootstrap': '../lib/bootstrap/js/bootstrap',
         'visjs': '../lib/visjs/vis'
@@ -13,6 +15,12 @@ requirejs.config({
     shim: {
         angular: {
            exports : 'angular'
+        },
+        angular_resource: {
+           deps : ['angular']
+        },
+        angular_ui_bootstrap: {
+           deps : ['angular', 'bootstrap']
         }
     }
 });

@@ -2,7 +2,18 @@
  * Created by cmathew on 31/12/15.
  */
 //'use strict';
-define(['angular', 'bootstrap', 'visjs'], function(angular, bootstrap, visjs) {
+define(['angular',
+    'angular_resource',
+    'angular_ui_bootstrap',
+    'bootstrap',
+    'visjs'],
+
+    function(angular,
+        angular_resource,
+        angular_ui_bootstrap,
+        bootstrap,
+        visjs) {
+
   'use strict';
 
   function getPort($location) {
@@ -13,9 +24,20 @@ define(['angular', 'bootstrap', 'visjs'], function(angular, bootstrap, visjs) {
     return port;
   }
 
+  function generateUUID() {
+    var d = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'.replace(/[x]/g, function(c) {
+        var r = (d + Math.random()*16)%16 | 0;
+        d = Math.floor(d/16);
+        return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+  }
+
+  var flowClientId = generateUUID();
 
   // Declare app level module which depends on views, and components
-  var app = angular.module('app', []);
+  var app = angular.module('app', ['ngResource', 'ui.bootstrap']);
 
   app.directive('containerResize', function(){
     // Runs during compile
@@ -266,13 +288,14 @@ define(['angular', 'bootstrap', 'visjs'], function(angular, bootstrap, visjs) {
     };
   }]);
 
-  app.directive('flowVis', [function() {
+  app.factory('flowTemplates', ['$resource', function($resource) {
+      return $resource("/api/flow/templates");
+  }]);
+
+
+  app.directive('flowVis', ['flowTemplates', function(flowTemplates) {
       return {
           restrict: 'AE',
-          scope: {
-              data: '=data',
-              options: '=options'
-          },
           link: function(scope, element, attrs) {
               // create an array with nodes
               var nodes = new visjs.DataSet([
@@ -291,15 +314,42 @@ define(['angular', 'bootstrap', 'visjs'], function(angular, bootstrap, visjs) {
                 {from: 2, to: 5}
               ]);
 
-              var data = {
+              var flow = {
                 nodes: nodes,
                 edges: edges
               };
               var options = {};
-              var network = new visjs.Network(element[0], data, options);
+              var network = new visjs.Network(element[0], flow, options);
           }
       };
   }]);
+
+  app.controller('FlowTemplatesController',
+    ['$scope', '$log', 'flowTemplates', function ($scope, $log, flowTemplates) {
+       var templates = flowTemplates.query({clientId:flowClientId}, function() {
+          $scope.templates = [];
+          angular.forEach(templates, function(value, key) {
+            this.push(value.id);
+          }, $scope.templates);
+
+          $scope.status = {
+            isopen: false
+          };
+
+          $scope.toggled = function(open) {
+            $log.log('Dropdown is now: ', open);
+          };
+
+          $scope.toggleDropdown = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.status.isopen = !$scope.status.isopen;
+          };
+
+          $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
+       });
+
+     }]);
 
   function getUrlValue(varSearch){
     var searchString = window.location.search.substring(1);
