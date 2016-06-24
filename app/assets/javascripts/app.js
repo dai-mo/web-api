@@ -288,7 +288,7 @@ define(['angular',
     };
   }]);
 
-  app.factory('flowTemplates', ['$resource', function($resource) {
+  app.service('flowTemplates', ['$resource', function($resource) {
       return $resource("/api/flow/templates");
   }]);
 
