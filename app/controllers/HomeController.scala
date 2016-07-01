@@ -23,8 +23,6 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, router: Provider[Rout
     Ok(views.html.index(webJarAssets))
   }
 
-  def rootPartials(partial: String) = modulePartials("", partial)
-
   def modulePartials(module:String, partial: String) = Action {
     (module, partial) match  {
       case ("", "ws-view.htm") => Ok(views.html.partials.wsview())

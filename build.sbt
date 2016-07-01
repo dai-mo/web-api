@@ -22,10 +22,12 @@ libraryDependencies ++= Seq(
 
 libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.5.0",
-  "org.webjars" % "angularjs" % "1.2.19",
+  "org.webjars" % "angularjs" % "1.5.3",
+  "org.webjars" % "angular-ui-bootstrap" % "1.3.3",
   "org.webjars.bower" % "html5-boilerplate" % "5.2.0",
   "org.webjars" % "font-awesome" % "4.6.3",
-  "org.webjars" % "bootstrap" % "3.2.0" exclude("org.webjars", "jquery"),
+  "org.webjars" % "visjs" % "4.8.2",
+  "org.webjars" % "bootstrap" % "3.3.6" exclude("org.webjars", "jquery"),
   "org.webjars" % "requirejs" % "2.1.14-1" exclude("org.webjars", "jquery"),
   "org.webjars" % "requirejs-domready" % "2.0.1-2"
 )
