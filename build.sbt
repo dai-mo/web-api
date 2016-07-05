@@ -1,14 +1,24 @@
 import sbt._
 
-name := """org.dcs.web"""
 
-version := "1.0.0-SNAPSHOT"
+import sbtrelease._
+import sbtrelease.ReleaseStateTransformations.{setReleaseVersion=>_,_}
 
+name := "org.dcs.web"
+
+lazy val web = (project in file(".")).enablePlugins(PlayScala, BuildInfoPlugin, GitVersioning, GitBranchPrompt).
+  settings(
+  // Disable NPM node modules
+  JsEngineKeys.npmNodeModules in Assets := Nil,
+  JsEngineKeys.npmNodeModules in TestAssets := Nil
+)
 scalaVersion := "2.11.7"
 
 crossPaths := false
 
 Common.commonSettings
+
+resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
 libraryDependencies ++= Seq(
   jdbc,
@@ -36,7 +46,6 @@ pipelineStages := Seq(rjs, digest, gzip)
 
 crossPaths := false
 
-resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
 publish <<= (publish) dependsOn  dist
 
@@ -57,11 +66,7 @@ val publishDistSettings = Seq[Setting[_]] (
 Seq(publishDistSettings: _*)
 
 
-lazy val web = (project in file(".")).enablePlugins(PlayScala).settings(
-  // Disable NPM node modules
-  JsEngineKeys.npmNodeModules in Assets := Nil,
-  JsEngineKeys.npmNodeModules in TestAssets := Nil
-)
+
 
 scalacOptions in ThisBuild ++= Seq(
   "-target:jvm-1.8",
@@ -78,3 +83,65 @@ scalacOptions in ThisBuild ++= Seq(
 )
 
 fork in run := true
+
+// ------- Versioning , Release Section --------
+
+
+// Build Info
+buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion)
+buildInfoPackage := "org.dcs.web"
+
+// Git
+showCurrentGitBranch
+
+git.useGitDescribe := true
+
+git.baseVersion := "0.0.0"
+
+val VersionRegex = "v([0-9]+.[0-9]+.[0-9]+)-?(.*)?".r
+
+git.gitTagToVersionNumber := {
+  case VersionRegex(v,"SNAPSHOT") => Some(s"$v-SNAPSHOT")
+  case VersionRegex(v,"") => Some(v)
+  case VersionRegex(v,s) => Some(s"$v-$s-SNAPSHOT")
+  case v => None
+}
+
+
+// sbt release
+def setVersionOnly(selectVersion: Versions => String): ReleaseStep =  { st: State =>
+  val vs = st.get(ReleaseKeys.versions).getOrElse(sys.error("No versions are set! Was this release part executed before inquireVersions?"))
+  val selected = selectVersion(vs)
+
+  st.log.info("Setting version to '%s'." format selected)
+  val useGlobal =Project.extract(st).get(releaseUseGlobalVersion)
+  val versionStr = (if (useGlobal) globalVersionString else versionString) format selected
+
+  reapply(Seq(
+    if (useGlobal) version in ThisBuild := selected
+    else version := selected
+  ), st)
+}
+
+lazy val setReleaseVersion: ReleaseStep = setVersionOnly(_._1)
+
+releaseVersion <<= (releaseVersionBump)( bumper=>{
+  ver => Version(ver)
+    .map(_.withoutQualifier.string).getOrElse(versionFormatError)
+})
+
+val showReleaseVersion = settingKey[String]("The future version once releaseVersion has been applied to it")
+val showNextVersion = settingKey[String]("The future version once releaseNextVersion has been applied to it")
+
+showReleaseVersion <<= (version, releaseVersion)((v,f)=>f(v))
+showNextVersion <<= (version, releaseNextVersion)((v,f)=>f(v))
+
+releaseProcess := Seq(
+  checkSnapshotDependencies,
+  inquireVersions,
+  setReleaseVersion,
+  runTest,
+  tagRelease,
+  ReleaseStep(releaseStepTask(publish in Universal)),
+  pushChanges
+)
