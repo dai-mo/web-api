@@ -4,7 +4,8 @@ import sbt._
 import sbtrelease._
 import sbtrelease.ReleaseStateTransformations.{setReleaseVersion=>_,_}
 
-name := "org.dcs.web"
+val projectName = "org.dcs.web"
+name := projectName
 
 lazy val web = (project in file(".")).enablePlugins(PlayScala, BuildInfoPlugin, GitVersioning, GitBranchPrompt).
   settings(
@@ -24,9 +25,9 @@ libraryDependencies ++= Seq(
   jdbc,
   cache,
   ws,
-  "org.dcs" % "org.dcs.api" % "1.0.0-SNAPSHOT",
-  "org.dcs" % "org.dcs.remote" % "1.0.0-SNAPSHOT",
-  "org.dcs" % "org.dcs.flow" % "0.0.1-SNAPSHOT",
+  "org.dcs" % "org.dcs.api" % "0.1.0",
+  "org.dcs" % "org.dcs.remote" % "0.1.0",
+  "org.dcs" % "org.dcs.flow" % "0.1.0",
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test
 )
 
@@ -86,10 +87,9 @@ fork in run := true
 
 // ------- Versioning , Release Section --------
 
-
 // Build Info
 buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion)
-buildInfoPackage := "org.dcs.web"
+buildInfoPackage := projectName
 
 // Git
 showCurrentGitBranch
@@ -107,41 +107,24 @@ git.gitTagToVersionNumber := {
   case v => None
 }
 
+lazy val bumpVersion = settingKey[String]("Version to bump - should be one of \"None\", \"Major\", \"Patch\"")
+bumpVersion := "None"
 
-// sbt release
-def setVersionOnly(selectVersion: Versions => String): ReleaseStep =  { st: State =>
-  val vs = st.get(ReleaseKeys.versions).getOrElse(sys.error("No versions are set! Was this release part executed before inquireVersions?"))
-  val selected = selectVersion(vs)
-
-  st.log.info("Setting version to '%s'." format selected)
-  val useGlobal =Project.extract(st).get(releaseUseGlobalVersion)
-  val versionStr = (if (useGlobal) globalVersionString else versionString) format selected
-
-  reapply(Seq(
-    if (useGlobal) version in ThisBuild := selected
-    else version := selected
-  ), st)
+releaseVersion := {
+  ver => bumpVersion.value.toLowerCase match {
+    case "none" => Version(ver).
+      map(_.withoutQualifier.string).
+      getOrElse(versionFormatError)
+    case "major" => Version(ver).
+      map(_.withoutQualifier).
+      map(_.bump(sbtrelease.Version.Bump.Major).string).
+      getOrElse(versionFormatError)
+    case "patch" => Version(ver).
+      map(_.withoutQualifier).
+      map(_.bump(sbtrelease.Version.Bump.Bugfix).string).
+      getOrElse(versionFormatError)
+    case _ => sys.error("Unknown bump version - should be one of \"None\", \"Major\", \"Patch\"")
+  }
 }
 
-lazy val setReleaseVersion: ReleaseStep = setVersionOnly(_._1)
-
-releaseVersion <<= (releaseVersionBump)( bumper=>{
-  ver => Version(ver)
-    .map(_.withoutQualifier.string).getOrElse(versionFormatError)
-})
-
-val showReleaseVersion = settingKey[String]("The future version once releaseVersion has been applied to it")
-val showNextVersion = settingKey[String]("The future version once releaseNextVersion has been applied to it")
-
-showReleaseVersion <<= (version, releaseVersion)((v,f)=>f(v))
-showNextVersion <<= (version, releaseNextVersion)((v,f)=>f(v))
-
-releaseProcess := Seq(
-  checkSnapshotDependencies,
-  inquireVersions,
-  setReleaseVersion,
-  runTest,
-  tagRelease,
-  ReleaseStep(releaseStepTask(publish in Universal)),
-  pushChanges
-)
+releaseVersionBump := sbtrelease.Version.Bump.Minor
