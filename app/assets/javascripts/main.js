@@ -7,6 +7,7 @@ requirejs.config({
     paths: {
         'angular': '../lib/angularjs/angular',
         'angular_resource': '../lib/angularjs/angular-resource',
+        'angular_cookies': '../lib/angularjs/angular-cookies',
         'angular_ui_bootstrap': '../lib/angular-ui-bootstrap/ui-bootstrap',
         'domReady': '../lib/requirejs-domready/domReady',
         'bootstrap': '../lib/bootstrap/js/bootstrap',
@@ -17,6 +18,9 @@ requirejs.config({
            exports : 'angular'
         },
         angular_resource: {
+           deps : ['angular']
+        },
+        angular_cookies: {
            deps : ['angular']
         },
         angular_ui_bootstrap: {

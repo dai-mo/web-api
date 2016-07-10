@@ -2,30 +2,46 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import controllers.ModelImplicits._
-import org.dcs.api.error.{ErrorResponse, RESTException}
-import org.dcs.api.service.TestApiService
+import controllers.routing.ResourceRouter
+import controllers.util.{CSRFCheckAction, CSRFTokenAction}
+import org.dcs.api.error.{ErrorConstants, RESTException}
+import org.dcs.api.service.{TestApiService, TestResponse}
+import org.dcs.commons.JsonSerializerImplicits._
 import org.dcs.remote.ZkRemoteService
-import play.api.libs.json.Json
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{Action, EssentialAction}
+import play.filters.csrf.CSRF
 
 /**
   * Created by cmathew on 03/06/16.
   */
 
 @Singleton
-class TestApi @Inject() extends Controller {
+class TestApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAction: CSRFTokenAction)
+  extends ResourceRouter[String] {
 
-  def testHelloGet(name: Option[String]) = Action {
-    val testResponse = ZkRemoteService.loadService[TestApiService].
-      hello(name.getOrElse("World"))
-    Ok(Json.toJson(testResponse))
+  override def list: EssentialAction = csrfCheckAction {
+    NotImplemented
   }
 
-  def testErrorGet(code: Option[String], message: Option[String], httpStatusCode: Option[Int]) = Action {
-    if (code != None && message != None && httpStatusCode != None)
-      throw new RESTException(ErrorResponse(code.get, message.get, httpStatusCode.get))
-    else
-      Ok("Missing parameter")
+  override def update(id: String): EssentialAction = csrfCheckAction {
+    NotImplemented
+  }
+  override def destroy(id: String): EssentialAction = csrfCheckAction {
+    NotImplemented
+  }
+
+  override def find(id: String): EssentialAction = csrfCheckAction {
+    id match {
+      case "local" => Ok(TestResponse("Hello World. This is DCS!").toJson).as(JSON)
+      case "remote" => {
+        val testResponse = ZkRemoteService.loadService[TestApiService].hello("World")
+        Ok(testResponse.toJson).as(JSON)
+      }
+      case "error" => throw new RESTException(ErrorConstants.DCS001)
+    }
+  }
+
+  override def create: EssentialAction = csrfCheckAction {
+    NotImplemented
   }
 }

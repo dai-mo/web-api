@@ -25,9 +25,10 @@ libraryDependencies ++= Seq(
   jdbc,
   cache,
   ws,
-  "org.dcs" % "org.dcs.api" % "0.1.0",
-  "org.dcs" % "org.dcs.remote" % "0.1.0",
-  "org.dcs" % "org.dcs.flow" % "0.1.0",
+  filters,
+  "org.dcs" % "org.dcs.api" % "0.2.0-SNAPSHOT",
+  "org.dcs" % "org.dcs.remote" % "0.2.0-SNAPSHOT",
+  "org.dcs" % "org.dcs.flow" % "0.2.0-SNAPSHOT",
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test
 )
 

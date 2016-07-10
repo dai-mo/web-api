@@ -4,12 +4,14 @@
 //'use strict';
 define(['angular',
     'angular_resource',
+    'angular_cookies',
     'angular_ui_bootstrap',
     'bootstrap',
     'visjs'],
 
     function(angular,
         angular_resource,
+        angular_cookies,
         angular_ui_bootstrap,
         bootstrap,
         visjs) {
@@ -37,7 +39,8 @@ define(['angular',
   var flowClientId = generateUUID();
 
   // Declare app level module which depends on views, and components
-  var app = angular.module('app', ['ngResource', 'ui.bootstrap']);
+  var app = angular.module('app', ['ngResource', 'ngCookies', 'ui.bootstrap']);
+
 
   app.directive('containerResize', function(){
     // Runs during compile
@@ -289,7 +292,7 @@ define(['angular',
   }]);
 
   app.service('flowTemplates', ['$resource', function($resource) {
-      return $resource("/api/flow/templates");
+      return $resource("/api/flow/templates/");
   }]);
 
 
@@ -326,7 +329,7 @@ define(['angular',
 
   app.controller('FlowTemplatesController',
     ['$scope', '$log', 'flowTemplates', function ($scope, $log, flowTemplates) {
-       var templates = flowTemplates.query({clientId:flowClientId}, function() {
+       var templates = flowTemplates.query(function() {
           $scope.templates = [];
           angular.forEach(templates, function(value, key) {
             this.push(value.id);

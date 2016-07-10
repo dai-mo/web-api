@@ -1,34 +1,42 @@
 package controllers
 
+import java.util.UUID
 import javax.inject.{Inject, Singleton}
 
+import controllers.routing.ResourceRouter
 import org.dcs.commons.JsonSerializerImplicits._
 import org.dcs.flow.nifi.{NifiApiConfig, NifiFlowClient}
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{Action, Controller, EssentialAction}
+import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
 
 /**
   * Created by cmathew on 08/06/16.
   */
 
 @Singleton
-class FlowTemplateApi @Inject() extends Controller {
+class FlowTemplateApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAction: CSRFTokenAction)
+  extends ResourceRouter[Long] {
 
   object NifiFlowApi extends NifiFlowClient with NifiApiConfig
 
-  def flowTemplatesGet(clientId: String) = Action {
-    Ok(NifiFlowApi.templates(clientId).toJson).as(JSON)
+  override def list: EssentialAction = csrfCheckAction { implicit request =>
+    Ok(NifiFlowApi.templates(Req.tokenOrError(Req.AuthTokenKey)).toJson)
   }
 
-  def flowInstantiatePost(flowTemplateId:String, clientId: String) = Action {
-    Ok(NifiFlowApi.instantiate(flowTemplateId, clientId).toJson).as(JSON)
+  override def update(id: Long): EssentialAction = csrfCheckAction {
+    NotImplemented
   }
 
-  def flowInstanceGet(flowInstanceId: String, clientId: String) = Action {
-    Ok(NifiFlowApi.instance(flowInstanceId, clientId).toJson).as(JSON)
+  override def destroy(id: Long): EssentialAction = csrfCheckAction {
+    NotImplemented
   }
 
-  def flowRemoveDelete(flowInstanceId: String, clientId: String) = Action {
-    Ok(NifiFlowApi.remove(flowInstanceId, clientId).toJson).as(JSON)
+  override def find(id: Long): EssentialAction = csrfCheckAction {
+    NotImplemented
+  }
+
+  override def create: EssentialAction = csrfCheckAction {
+    NotImplemented
   }
 }
 

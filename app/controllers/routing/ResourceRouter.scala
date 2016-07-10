@@ -20,6 +20,9 @@ abstract class ResourceRouter[T](name: Option[String] = None)(implicit idBindabl
   private val MaybeSlash = "/?".r
   private val Id = "/([^/]+)".r
 
+  val IdKey = "id"
+  val TokenKey = "token"
+
   override def withPrefix(prefix: String): Router = {
     path = prefix
     this
@@ -34,7 +37,7 @@ abstract class ResourceRouter[T](name: Option[String] = None)(implicit idBindabl
   override def routes = new AbstractPartialFunction[RequestHeader, Handler] {
 
     def withId(id: String, action: T => EssentialAction) = {
-      idBindable.bind("id", id).fold(badRequestAction, action)
+      idBindable.bind(IdKey, id).fold(badRequestAction, action)
 
     }
 
@@ -51,6 +54,7 @@ abstract class ResourceRouter[T](name: Option[String] = None)(implicit idBindabl
 //    }
 
     override def applyOrElse[A <: RequestHeader, B >: Handler](rh: A, default: A => B) = {
+
       if (rh.path.startsWith(path)) {
         (rh.method, rh.path.drop(path.length)) match {
           case ("GET", MaybeSlash()) => list
