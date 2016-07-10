@@ -1,7 +1,11 @@
 package controllers
 
+import java.util.UUID
 import javax.inject._
 
+import controllers.util.CSRFCheckAction
+import controllers.util.CSRFTokenAction
+import controllers.util.Req
 import play.api._
 import play.api.mvc._
 import play.api.routing.Router
@@ -11,7 +15,10 @@ import play.api.routing.Router
  * application's home page.
  */
 @Singleton
-class HomeController @Inject()(webJarAssets: WebJarAssets, router: Provider[Router]) extends Controller {
+class HomeController @Inject()(webJarAssets: WebJarAssets,
+                               router: Provider[Router],
+                               csrfCheckAction: CSRFCheckAction,
+                               csrfTokenAction: CSRFTokenAction) extends Controller {
 
   /**
    * Create an Action to render an HTML page with a welcome message.
@@ -19,8 +26,12 @@ class HomeController @Inject()(webJarAssets: WebJarAssets, router: Provider[Rout
    * will be called when the application receives a `GET` request with
    * a path of `/`.
    */
-  def index() = Action {
-    Ok(views.html.index(webJarAssets))
+  def index() = csrfTokenAction { implicit request =>
+    val result = Ok(views.html.index(webJarAssets))
+    if(request.cookies.get(Req.AuthTokenKey) == None) {
+      result.withCookies(Cookie(Req.AuthTokenKey, UUID.randomUUID.toString))
+    }
+    result
   }
 
   def modulePartials(module:String, partial: String) = Action {
