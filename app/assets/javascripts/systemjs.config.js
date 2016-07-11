@@ -6,7 +6,9 @@
 
     var map = {
         'app': '/assets/javascripts',
-        '@angular':'assets/lib/@angular'
+        '@angular':'assets/lib/@angular',
+        'rxjs':'assets/lib/rxjs',
+        'symbol-observable': 'assets/lib/symbol-observable'
     };
 
     var packages = {
@@ -50,6 +52,6 @@
         map : map,
         packages: packages,
     });
-
+    
   System.config(config);
 })(this);
