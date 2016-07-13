@@ -36,10 +36,11 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
 
   def modulePartials(module:String, partial: String) = Action {
     (module, partial) match  {
-      case ("", "ws-view.htm") => Ok(views.html.partials.wsview())
-      case ("analyse", "jsview.htm") => Ok(views.html.partials.analyse.jsview())
-      case ("mobilise", "jsview.htm") => Ok(views.html.partials.mobilise.jsview())
-      case ("visualise", "jsview.htm") => Ok(views.html.partials.visualise.jsview())
+      case ("", "wsview.html") => Ok(views.html.partials.wsview())
+      case ("", "layout.html") => Ok(views.html.partials.layout())
+      case ("analyse", "jsview.html") => Ok(views.html.partials.analyse.jsview())
+      case ("mobilise", "jsview.html") => Ok(views.html.partials.mobilise.jsview())
+      case ("visualise", "jsview.html") => Ok(views.html.partials.visualise.jsview())
       case _ => NotFound
     }
   }

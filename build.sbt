@@ -21,6 +21,8 @@ Common.commonSettings
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 
+JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
+
 libraryDependencies ++= Seq(
   jdbc,
   cache,
