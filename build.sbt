@@ -40,6 +40,7 @@ libraryDependencies ++= Seq(
   "org.webjars.bower" % "html5-boilerplate" % "5.2.0",
   "org.webjars" % "font-awesome" % "4.6.3",
   "org.webjars" % "visjs" % "4.8.2",
+  "org.webjars.npm" % "d3" % "3.5.17",
   "org.webjars" % "bootstrap" % "3.3.6" exclude("org.webjars", "jquery"),
 
   //angular2 dependencies
@@ -49,7 +50,7 @@ libraryDependencies ++= Seq(
   "org.webjars.npm" % "angular__forms" % "0.2.0",
   "org.webjars.npm" % "angular__http" % ngVersion,
   "org.webjars.npm" % "angular__router" % "3.0.0-beta.2",
-  "org.webjars.npm" % "angular__router-deprecated" % "2.0.0-rc.2",
+  //"org.webjars.npm" % "angular__router-deprecated" % "2.0.0-rc.2",
   "org.webjars.npm" % "angular__upgrade" % "2.0.0-rc.4",
   "org.webjars.npm" % "angular__platform-browser-dynamic" % ngVersion,
   "org.webjars.npm" % "angular__platform-browser" % ngVersion,
@@ -66,6 +67,7 @@ libraryDependencies ++= Seq(
   "org.webjars.npm" % "core-js" % "2.4.0",
   "org.webjars.npm" % "symbol-observable" % "1.0.1",
   "org.webjars.npm" % "angular2-in-memory-web-api" % "0.0.14",
+  "org.webjars.npm" % "ng-bootstrap" % "1.0.0-beta.2",
 
   "org.webjars.npm" % "typescript" % "2.0.0-dev.20160707",
 

@@ -8,14 +8,17 @@
         'app': '/assets/javascripts',
         '@angular':'assets/lib/@angular',
         'rxjs':'assets/lib/rxjs',
-        'symbol-observable': 'assets/lib/symbol-observable'
+        'symbol-observable': 'assets/lib/symbol-observable',
+        'visjs': 'assets/lib/visjs',
+        'd3': 'assets/lib/d3/d3.min.js'
     };
 
     var packages = {
         'app': {main: 'main.js', defaultExtension: 'js'},
         'rxjs': {defaultExtension: 'js'},
         'assets/lib': {defaultExtension: 'js'},
-        'symbol-observable': {defaultExtension: 'js', main: 'index.js'}
+        'symbol-observable': {defaultExtension: 'js', main: 'index.js'},
+        'd3': {defaultExtension: 'js'}
     };
 
     var ngPackageNames = [
@@ -29,28 +32,28 @@
     ];
 
     function packIndex(pkgName) {
-      packages['@angular/'+pkgName] = { main: 'index.js', defaultExtension: 'js' };
+        packages['@angular/'+pkgName] = { main: 'index.js', defaultExtension: 'js' };
     }
     function packUmd(pkgName) {
-      packages['@angular/'+pkgName] = { main: '/bundles/' + pkgName + '.umd.js', defaultExtension: 'js' };
+        packages['@angular/'+pkgName] = { main: '/bundles/' + pkgName + '.umd.js', defaultExtension: 'js' };
     }
-      // Most environments should use UMD; some (Karma) need the individual index files
+    // Most environments should use UMD; some (Karma) need the individual index files
     function addAngularModulesToMap(pkgName) {
-      map['@angular/'+pkgName] = 'assets/lib/angular__' + pkgName;
+        map['@angular/'+pkgName] = 'assets/lib/angular__' + pkgName;
     }
 
-      // Add package entries for angular packages
+    // Add package entries for angular packages
     var setPackageConfig = System.packageWithIndex ? packIndex : packUmd;
     ngPackageNames.forEach(setPackageConfig);
 
-      // Add map entries for angular packages
+    // Add map entries for angular packages
     ngPackageNames.forEach(function(pkgName){
-       addAngularModulesToMap(pkgName);
+        addAngularModulesToMap(pkgName);
     });
 
     System.config({
         map : map,
         packages: packages,
     });
-    
+
 })(this);

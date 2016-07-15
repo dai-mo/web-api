@@ -21,6 +21,9 @@
     "outDir": "./target/ts",
     "lib": ["es6", "dom"]
   },
+  "files": [
+    "typings/d3.d.ts"
+  ],
   "exclude": [
     "node_modules",
     "project/target",
