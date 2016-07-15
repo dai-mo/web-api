@@ -6,17 +6,20 @@ import {Location} from "@angular/common"
 import {FlowService} from "../flow.service"
 import {ErrorService} from "../error.service"
 import {FlowGraphDirective} from "./flow-graph.directive"
+import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
 
 @Component({
     selector: "analyse",
-    directives: [FlowGraphDirective],
+    directives: [FlowGraphDirective, DROPDOWN_DIRECTIVES],
     providers: [FlowService, ErrorService],
     templateUrl: "partials/analyse/view.html"
 })
 export class AnalyseComponent implements OnInit {
-    nifiUrl: string
-    templates: Array<any>
-    status: boolean
+    public disabled:boolean = false
+    public status: {isopen:boolean} = {isopen: false}
+
+    public nifiUrl: string
+    public templates: Array<any>
 
     constructor(window: Window,
                 private flowService: FlowService,
@@ -40,5 +43,11 @@ export class AnalyseComponent implements OnInit {
     ngOnInit() {
         this.getTemplates()
     }
+    public toggleDropdown(event:MouseEvent):void {
+        event.preventDefault()
+        event.stopPropagation()
+        this.status.isopen = !this.status.isopen
+    }
+
 
 }

@@ -42,7 +42,7 @@ html, body {
   flex: 1 ;   
 }
 
-.panel-body {
+.card-block {
   margin: 0;
   padding: 1px;
   max-height: 10px;
@@ -52,11 +52,11 @@ html, body {
   flex: 1 ;
 }
 
-.panel-default {
+.card {
   border:1px solid grey;
 }
 
-.panel-heading {    
+.card-header {
   height:35px;
   font-size: 20px;
   padding:2px;

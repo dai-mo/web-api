@@ -9,8 +9,10 @@
         '@angular':'assets/lib/@angular',
         'rxjs':'assets/lib/rxjs',
         'symbol-observable': 'assets/lib/symbol-observable',
-        'visjs': 'assets/lib/visjs',
-        'd3': 'assets/lib/d3/d3.min.js'
+        'd3':'assets/lib/d3',
+        'moment': 'assets/lib/moment',
+        'ng2-bootstrap': 'assets/lib/ng2-bootstrap'
+
     };
 
     var packages = {
@@ -18,7 +20,10 @@
         'rxjs': {defaultExtension: 'js'},
         'assets/lib': {defaultExtension: 'js'},
         'symbol-observable': {defaultExtension: 'js', main: 'index.js'},
-        'd3': {defaultExtension: 'js'}
+        'd3': {defaultExtension: 'js', main: 'd3.js'},
+        'moment': {defaultExtension: 'js', main: 'moment.js'},
+        'ng2-bootstrap': {defaultExtension: 'js', main: 'ng2-bootstrap.js'}
+
     };
 
     var ngPackageNames = [
@@ -28,7 +33,8 @@
         'http',
         'platform-browser',
         'platform-browser-dynamic',
-        'router'
+        'router',
+        'forms'
     ];
 
     function packIndex(pkgName) {

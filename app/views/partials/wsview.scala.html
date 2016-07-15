@@ -1,5 +1,5 @@
 @()
-<div class="panel-heading"
+<div class="card-header"
 unselectable="yes" 
 onselectstart="return false" 
 onmousedown="return false">
@@ -11,10 +11,9 @@ onmousedown="return false">
         <button type="button" class="btn" ><span class="fa fa-expand"></span></button>
     </div>
 </div>
-<div class="panel-body" ws-panel>
+<div class="card-block" ws-panel>
 	@*<div ng-controller="WsViewController" ng-include="getTemplateUrl()" style="min-height:100%;height:100%;"></div>*@
     <visualise *ngIf="name === 'visualise'"></visualise>
     <mobilise *ngIf="name === 'mobilise'"></mobilise>
     <analyse *ngIf="name === 'analyse'"></analyse>
-
 </div>

@@ -1,28 +1,14 @@
 @()
 <div class="flex-box container-row">
     <div class="flex-item flex-box container-column">
-        <ws-view name="visualise" class="flex-item panel panel-default"></ws-view>
+        <ws-view name="visualise" class="flex-item card"></ws-view>
         <div resize [type]="'column'">
             <div class="grabber column" ></div>
         </div>
-        <ws-view name="mobilise" class="flex-item panel panel-default"></ws-view>
+        <ws-view name="mobilise" class="flex-item card"></ws-view>
     </div>
     <div resize [type]="'row'">
         <div class="grabber row"></div>
     </div>
-    <ws-view name="analyse" class="flex-item panel panel-default"></ws-view>
+    <ws-view name="analyse" class="flex-item card"></ws-view>
 </div>
-
-@*<div class="flex-box container-row">*@
-    @*<div class="flex-item flex-box container-column">*@
-        @*<ws-view class="flex-item panel panel-default"></ws-view>*@
-        @*<div resize-type="column">*@
-            @*<div class="grabber column"></div>*@
-        @*</div>*@
-        @*<ws-view name="mobilise" class="flex-item panel panel-default"></ws-view>*@
-    @*</div>*@
-    @*<div resize-type="row">*@
-        @*<div class="grabber row"></div>*@
-    @*</div>*@
-    @*<ws-view class="flex-item panel panel-default"></ws-view>*@
-@*</div>*@

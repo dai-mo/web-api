@@ -31,6 +31,7 @@ libraryDependencies ++= Seq(
   "org.dcs" % "org.dcs.api" % "0.2.0-SNAPSHOT",
   "org.dcs" % "org.dcs.remote" % "0.2.0-SNAPSHOT",
   "org.dcs" % "org.dcs.flow" % "0.2.0-SNAPSHOT",
+  "org.webjars" %% "webjars-play" % "2.5.0",
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test
 )
 val ngVersion="2.0.0-rc.4"
@@ -41,8 +42,7 @@ libraryDependencies ++= Seq(
   "org.webjars" % "font-awesome" % "4.6.3",
   "org.webjars" % "visjs" % "4.8.2",
   "org.webjars.npm" % "d3" % "3.5.17",
-  "org.webjars" % "bootstrap" % "3.3.6" exclude("org.webjars", "jquery"),
-
+  "org.webjars.npm" % "bootstrap" % "4.0.0-alpha.2" exclude("org.webjars", "jquery"),
   //angular2 dependencies
   "org.webjars.npm" % "angular__common" % ngVersion,
   "org.webjars.npm" % "angular__compiler" % ngVersion,
@@ -67,7 +67,8 @@ libraryDependencies ++= Seq(
   "org.webjars.npm" % "core-js" % "2.4.0",
   "org.webjars.npm" % "symbol-observable" % "1.0.1",
   "org.webjars.npm" % "angular2-in-memory-web-api" % "0.0.14",
-  "org.webjars.npm" % "ng-bootstrap" % "1.0.0-beta.2",
+  "org.webjars.npm" % "ng2-bootstrap" % "1.0.20",
+  "org.webjars.npm" % "moment" % "2.14.1",
 
   "org.webjars.npm" % "typescript" % "2.0.0-dev.20160707",
 
