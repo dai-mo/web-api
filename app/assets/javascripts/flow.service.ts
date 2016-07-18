@@ -1,15 +1,9 @@
-/**
- * Created by cmathew on 14/07/16.
- */
-import { Injectable } from "@angular/core"
-import { Http } from "@angular/http"
-import { FlowTemplate } from "./flow/flow.template"
 
-import { ErrorService } from "./error.service"
-
+import {Injectable} from "@angular/core"
+import {Http} from "@angular/http"
+import {ErrorService} from "./error.service"
 import "rxjs/add/operator/toPromise"
 import "rxjs/add/operator/map"
-
 
 
 @Injectable()

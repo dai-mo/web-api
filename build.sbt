@@ -93,10 +93,9 @@ resolveFromWebjarsNodeModulesDir := true
   //  ng2LintRulesDir.value
 ))
 
-pipelineStages := Seq(rjs, digest, gzip)
+pipelineStages := Seq(uglify, digest, gzip)
 
 crossPaths := false
-
 
 publish <<= (publish) dependsOn  dist
 
