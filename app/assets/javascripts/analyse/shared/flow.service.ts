@@ -1,7 +1,7 @@
 
 import {Injectable} from "@angular/core"
 import {Http} from "@angular/http"
-import {ErrorService} from "./error.service"
+import {ErrorService} from "../../shared/util/error.service"
 import "rxjs/add/operator/toPromise"
 import "rxjs/add/operator/map"
 

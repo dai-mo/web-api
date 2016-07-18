@@ -3,10 +3,11 @@
  */
 import {Component, OnInit} from "@angular/core"
 import {Location} from "@angular/common"
-import {FlowService} from "../flow.service"
-import {ErrorService} from "../error.service"
-import {FlowGraphDirective} from "./flow-graph.directive"
 import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
+
+import {FlowService} from "./shared/flow.service"
+import {ErrorService} from "../shared/util/error.service"
+import {FlowGraphDirective} from "./flow-graph.directive"
 
 @Component({
     selector: "analyse",
@@ -16,9 +17,8 @@ import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
 })
 export class AnalyseComponent implements OnInit {
     public disabled:boolean = false
-    public status: {isopen:boolean} = {isopen: false}
-
     public nifiUrl: string
+    public status: {isopen:boolean} = {isopen: false}
     public templates: Array<any>
 
     constructor(window: Window,

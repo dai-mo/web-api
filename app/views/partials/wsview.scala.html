@@ -13,7 +13,7 @@ onmousedown="return false">
 </div>
 <div class="card-block" ws-panel>
 	@*<div ng-controller="WsViewController" ng-include="getTemplateUrl()" style="min-height:100%;height:100%;"></div>*@
-    <visualise *ngIf="name === 'visualise'"></visualise>
-    <mobilise *ngIf="name === 'mobilise'"></mobilise>
-    <analyse *ngIf="name === 'analyse'"></analyse>
+    <visualise class="wsview" *ngIf="name === 'visualise'"></visualise>
+    <mobilise class="wsview" *ngIf="name === 'mobilise'"></mobilise>
+    <analyse class="wsview" *ngIf="name === 'analyse'"></analyse>
 </div>

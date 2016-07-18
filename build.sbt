@@ -89,8 +89,8 @@ resolveFromWebjarsNodeModulesDir := true
 
 // use the combined tslint and eslint rules plus ng2 lint rules
 (rulesDirectories in tslint) := Some(List(
-  tslintEslintRulesDir.value  //,    disable codelyzer until it supports ts 2.0
-  //  ng2LintRulesDir.value
+  tslintEslintRulesDir.value  //,
+  //  ng2LintRulesDir.value //  disable codelyzer until it supports ts 2.0
 ))
 
 pipelineStages := Seq(uglify, digest, gzip)

@@ -15,13 +15,14 @@ export class FlowGraphDirective {
     constructor(el:ElementRef) {
         this.el = el.nativeElement
 
-        let width = 400, height = 500
+        let width = 300, height = 500
 
         let select = d3.select(el.nativeElement)
 
         let svg = select.append("svg")
             .attr("width", width)
             .attr("height", height)
+            .attr("viewBox", "0 0 600 1000")
 
         d3.json("assets/javascripts/analyse/graph.json", function(error, graph) {
 
@@ -50,8 +51,9 @@ export class FlowGraphDirective {
                 .attr("r", 10)
                 .attr("cx", function(d: any) { return d.x })
                 .attr("cy", function(d: any) { return d.y })
-                .attr("stroke", "green")
-                .attr("fill", "blue")
+                .attr("stroke", "white")
+                .attr("stroke-width", 2)
+                .attr("fill", "#3366ff")
                 .call(d3.behavior.drag()
                     .origin(function(d: any) { return d })
                     .on("drag", function(d: any) {

@@ -159,6 +159,23 @@ html, body {
     background-color: #e6ffee;
 }
 
+.flow-graph {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.wsview {
+  min-height:100%;
+  height:100%;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 
 
 

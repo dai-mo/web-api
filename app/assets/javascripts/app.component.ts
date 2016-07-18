@@ -6,8 +6,8 @@
  */
 
 import {Component} from "@angular/core"
-import {WsViewComponent} from "./wsview.component"
-import {ResizeDirective} from "./resize.directive"
+import {WsViewComponent} from "./shared/layout/ws-view.component"
+import {ResizeDirective} from "./shared/layout/resize.directive"
 
 @Component({
     selector    : "app",
