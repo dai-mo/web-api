@@ -16,21 +16,16 @@
     <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(webJarAssets.locate("dist/css/main.css"))" />
     <link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(webJarAssets.locate("visjs", "vis.css"))" />
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/app.css")"/>
-
+    <script src="@routes.WebJarAssets.at(webJarAssets.locate("shim.min.js"))"></script>
+    <script src="@routes.WebJarAssets.at(webJarAssets.locate("dist/zone.js"))"></script>
+    <script src="@routes.WebJarAssets.at(webJarAssets.fullPath("reflect-metadata", "Reflect.js"))"></script>
+    <script src="@routes.WebJarAssets.at(webJarAssets.locate("system.src.js"))"></script>
+    <!-- 2. Configure SystemJS -->
+    <script src="@routes.Assets.versioned("javascripts/systemjs.config.js")"></script>
+    <script>
+      System.import('app').catch(function(err){ console.error(err); });
+    </script>
 </head>
 <body>
-    <div class="flex-box container-row">
-        <div class="flex-item flex-box container-column">
-            <div class="flex-item panel panel-default" ws-view view-name="visualise" view-type="js"></div>
-            <div container-resize cr-type="column">
-                <div class="grabber column"></div>
-            </div>
-            <div class="flex-item panel panel-default" ws-view view-name="mobilise" view-type="js"></div>
-        </div>
-        <div container-resize cr-type="row">
-            <div class="grabber row"></div>
-        </div>
-        <div class="flex-item panel panel-default" ws-view view-name="analyse" view-type="js"></div>
-    </div>
-    <script data-main="@routes.Assets.versioned("javascripts/main.js")" src="@routes.WebJarAssets.at(webJarAssets.locate("require.min.js"))"></script>
+    <app>Loading ... </app>
 </body>

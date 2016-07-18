@@ -1,0 +1,7 @@
+{
+  "globalDependencies": {
+    "jasmine": "registry:dt/jasmine#2.2.0+20160621224255",
+    "node": "registry:dt/node#6.0.0+20160621231320",
+    "d3": "github:DefinitelyTyped/DefinitelyTyped/d3/d3.d.ts#0d501b1ff9d97a12c8b371affb64c921b6fe9832"
+  }
+}
