@@ -1,7 +1,7 @@
 /**
  * Created by cmathew on 13/07/16.
  */
-import {Directive, ElementRef, Input} from "@angular/core"
+import {Directive, ElementRef, Renderer, Input} from "@angular/core"
 
 @Directive({
     selector: "[resize]"
@@ -33,8 +33,8 @@ export class ResizeDirective {
     private nextElmPanelBody: HTMLElement
     private nextElmStartFlexBasis: number
 
-    constructor(el:ElementRef) {
-        this.el = el.nativeElement
+    constructor(elementRef: ElementRef, private renderer: Renderer) {
+        this.el = elementRef.nativeElement
     }
 
     private init() {
@@ -81,10 +81,10 @@ export class ResizeDirective {
     }
 
     private updatePanelProperties(prevHeight: number, nextHeight: number) {
-        this.prevElmPanelBody.style.height = prevHeight + "px"
-        this.prevElmPanelBody.style.minHeight = prevHeight + "px"
-        this.nextElmPanelBody.style.height = nextHeight + "px"
-        this.nextElmPanelBody.style.minHeight = nextHeight + "px"
+        this.renderer.invokeElementMethod(this.prevElmPanelBody.style.height, prevHeight + "px")
+        this.renderer.invokeElementMethod(this.prevElmPanelBody.style.minHeight, prevHeight + "px")
+        this.renderer.invokeElementMethod(this.nextElmPanelBody.style.height, nextHeight + "px")
+        this.renderer.invokeElementMethod(this.nextElmPanelBody.style.minHeight, nextHeight + "px")
     }
 
     private endDrag() {
@@ -110,8 +110,8 @@ export class ResizeDirective {
                 break
         }
 
-        this.prevElm.style.flexBasis = prevFlexBasis + "px"
-        this.nextElm.style.flexBasis = nextFlexBasis + "px"
+        this.renderer.invokeElementMethod(this.prevElm.style.flexBasis, prevFlexBasis + "px")
+        this.renderer.invokeElementMethod(this.nextElm.style.flexBasis, nextFlexBasis + "px")
 
         if (this.resizeType === "column" &&
             this.nextElmPanelHeadingHeight < nextFlexBasis &&
