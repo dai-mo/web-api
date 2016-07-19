@@ -20,9 +20,8 @@ export class FlowGraphDirective {
         let select = d3.select(el.nativeElement)
 
         let svg = select.append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("viewBox", "0 0 600 1000")
+            .attr("width", "100%")
+            .attr("height", "100%")
 
         d3.json("assets/javascripts/analyse/graph.json", function(error, graph) {
 

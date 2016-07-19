@@ -10,6 +10,9 @@ export class ResizeDirective {
 
     private el:HTMLElement
 
+    private dragFunction: Function
+    private endDragFunction: Function
+
     private resizeType:string
     private dragging: boolean
 
@@ -81,16 +84,18 @@ export class ResizeDirective {
     }
 
     private updatePanelProperties(prevHeight: number, nextHeight: number) {
-        this.renderer.invokeElementMethod(this.prevElmPanelBody.style.height, prevHeight + "px")
-        this.renderer.invokeElementMethod(this.prevElmPanelBody.style.minHeight, prevHeight + "px")
-        this.renderer.invokeElementMethod(this.nextElmPanelBody.style.height, nextHeight + "px")
-        this.renderer.invokeElementMethod(this.nextElmPanelBody.style.minHeight, nextHeight + "px")
+        this.renderer.setElementStyle(this.prevElmPanelBody, "height", prevHeight + "px")
+        this.renderer.setElementStyle(this.prevElmPanelBody, "min-height", prevHeight + "px")
+
+        this.renderer.setElementStyle(this.nextElmPanelBody, "height", nextHeight + "px")
+        this.renderer.setElementStyle(this.nextElmPanelBody, "min-height", nextHeight + "px")
     }
 
     private endDrag() {
         this.dragging = false
-        document.body.removeEventListener("mouseup", this.endDrag, false)
-        document.body.removeEventListener("mousemove", this.drag, false)
+
+        this.dragFunction
+        this.endDragFunction
     }
 
     private drag(event: MouseEvent) {
@@ -110,14 +115,14 @@ export class ResizeDirective {
                 break
         }
 
-        this.renderer.invokeElementMethod(this.prevElm.style.flexBasis, prevFlexBasis + "px")
-        this.renderer.invokeElementMethod(this.nextElm.style.flexBasis, nextFlexBasis + "px")
+        this.renderer.setElementStyle(this.prevElm, "flex-basis", prevFlexBasis + "px")
+        this.renderer.setElementStyle(this.nextElm, "flex-basis", nextFlexBasis + "px")
 
         if (this.resizeType === "column" &&
             this.nextElmPanelHeadingHeight < nextFlexBasis &&
             this.prevElmPanelHeadingHeight < prevFlexBasis) {
-            this.updatePanelProperties(prevFlexBasis - this.prevElmPanelHeadingHeight,
-                nextFlexBasis - this.nextElmPanelHeadingHeight)
+                this.updatePanelProperties(prevFlexBasis - this.prevElmPanelHeadingHeight,
+                    nextFlexBasis - this.nextElmPanelHeadingHeight)
         }
     }
 
@@ -138,8 +143,14 @@ export class ResizeDirective {
         this.initPanelProperties()
         this.dragging = true
 
-        document.body.addEventListener("mouseup", this.endDrag.bind(this), false)
-        document.body.addEventListener("mousemove", this.drag.bind(this), false)
+        let self = this
+        this.dragFunction = this.renderer.listenGlobal("document", "mousemove", (event: MouseEvent) => {
+            self.drag(event)
+        })
+
+        this.endDragFunction = this.renderer.listenGlobal("document", "mouseup", (event: MouseEvent) => {
+            self.endDrag(event)
+        })
     }
 
 
