@@ -6,7 +6,9 @@ import javax.inject._
 import controllers.util.CSRFCheckAction
 import controllers.util.CSRFTokenAction
 import controllers.util.Req
+import org.dcs.web.BuildInfo
 import play.api._
+import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.routing.Router
 
@@ -46,6 +48,12 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
     }
   }
 
+  def health = Action { request =>
+    val health = Json.obj(
+      "version" -> BuildInfo.version
+    )
+    Ok(health)
+  }
   def doc() = Action {
     Ok(router.get().documentation.map(_.toString).mkString("\n"))
   }
