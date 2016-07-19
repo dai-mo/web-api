@@ -149,7 +149,7 @@ export class ResizeDirective {
         })
 
         this.endDragFunction = this.renderer.listenGlobal("document", "mouseup", (event: MouseEvent) => {
-            self.endDrag(event)
+            self.endDrag()
         })
     }
 
