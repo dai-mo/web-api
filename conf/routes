@@ -5,6 +5,9 @@
 # App endpoints
 GET     /app                            controllers.HomeController.index
 
+# Utility endpoints
+GET     /app/health                     controllers.HomeController.health
+
 # Partial endpoints
 GET     /partials/:partial              controllers.HomeController.modulePartials(module = "", partial)
 GET     /partials/:module/:partial      controllers.HomeController.modulePartials(module, partial)
