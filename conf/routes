@@ -3,7 +3,7 @@
 # ~~~~
 
 # App endpoints
-GET     /app                            controllers.HomeController.index
+GET     /                            controllers.HomeController.index
 
 # Partial endpoints
 GET     /partials/:partial              controllers.HomeController.modulePartials(module = "", partial)

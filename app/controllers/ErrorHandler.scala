@@ -13,8 +13,19 @@ class ErrorHandler extends HttpErrorHandler {
 
 
   def onClientError(request: RequestHeader, statusCode: Int, message: String) = {
+    var result = Status(statusCode)(Json.toJson(ErrorResponse("DCS400", "Web client error", statusCode, message)))
+    if(statusCode == play.api.http.Status.NOT_FOUND) {
+      // handle trailing slashes
+      if (request.path.endsWith("/")) {
+        val uri = request.path.take(request.path.length - 1) + {
+          if (request.path == request.uri) "" // no query string
+          else request.uri.substring(request.path.length)
+        }
+        result = MovedPermanently(uri)
+      }
+    }
     Future.successful(
-      Status(statusCode)(Json.toJson(ErrorResponse("DCS400", "Web client error", statusCode, message)))
+      result
     )
   }
 
