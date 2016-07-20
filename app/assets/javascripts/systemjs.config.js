@@ -5,7 +5,7 @@
         'app': '/assets/javascripts',
         '@angular':'assets/lib/@angular',
         'rxjs':'assets/lib/rxjs',
-        'symbol-observable': 'assets/lib/symbol-observable',
+        'symbol-observable': 'assets/lib/rxjs/node_modules/symbol-observable',
         'd3':'assets/lib/d3',
         'moment': 'assets/lib/moment',
         'ng2-bootstrap': 'assets/lib/ng2-bootstrap'
@@ -50,9 +50,9 @@
     ngPackageNames.forEach(setPackageConfig);
 
     // Add map entries for angular packages
-    ngPackageNames.forEach(function(pkgName){
-        addAngularModulesToMap(pkgName);
-    });
+    // ngPackageNames.forEach(function(pkgName){
+    //     addAngularModulesToMap(pkgName);
+    // });
 
     System.config({
         map : map,
