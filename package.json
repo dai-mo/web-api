@@ -31,7 +31,6 @@
     "zone.js": "0.6.12",
     "core-js": "2.4.0",
     "angular2-in-memory-web-api": "0.0.14",
-    "moment": "2.14.1",
     "typescript": "2.0.0-dev.20160707",
     "tslint-eslint-rules": "1.2.0",
     "codelyzer": "0.0.19"
