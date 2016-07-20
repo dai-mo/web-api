@@ -19,6 +19,7 @@
     "@angular/router": "3.0.0-beta.1",
     "@angular/upgrade": "2.0.0-rc.4",
     "ng2-bootstrap": "1.0.20",
+    "moment": "2.13.0",
     "bootstrap": "4.0.0-alpha.2",
     "font-awesome": "4.6.3",
     "html5-boilerplate": "5.2.0",
@@ -31,13 +32,13 @@
     "zone.js": "0.6.12",
     "core-js": "2.4.0",
     "angular2-in-memory-web-api": "0.0.14",
-    "typescript": "2.0.0-dev.20160707",
     "tslint-eslint-rules": "1.2.0",
     "codelyzer": "0.0.19"
   },
   "devDependencies": {
     "jasmine-core": "2.4.1",
     "types__jasmine": "2.2.26-alpha",
+    "typescript": "2.0.0-dev.20160707",
     "typings": "^1.0.4"
   }
 }

@@ -22,7 +22,7 @@
     "lib": ["es6", "dom"]
   },
   "files": [
-    "typings/d3.d.ts"
+    "typings/globals/d3/index.d.ts"
   ],
   "exclude": [
     "node_modules",
