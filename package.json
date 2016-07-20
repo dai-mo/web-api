@@ -1,11 +1,14 @@
 {
   "scripts": {
-    "start": "tsc && concurrently \"npm run tsc:w\" \"npm run lite\" ",
+    "start": "tsc -p ./test && concurrently \"npm run tsc:w -- -p ./test\" \"npm run lite\" ",
     "lite": "lite-server",
     "postinstall": "typings install",
-    "tsc": "tsc",
+    "tsc": "tsc -p ./test",
     "tsc:w": "tsc -w",
-    "typings": "typings"
+    "typings": "typings",
+    "lite-server-test": "lite-server --config=./test/liteserver-test-config.json",
+    "test": "concurrently \"npm run tsc:w -- -p ./test\" \"npm run lite-server-test\" ",
+    "report": "lite-server -c bs-config.report.json"
   },
   "license": "ISC",
   "dependencies": {
@@ -36,9 +39,18 @@
     "codelyzer": "0.0.19"
   },
   "devDependencies": {
+    "concurrently": "^2.0.0",
     "jasmine-core": "2.4.1",
+    "lite-server": "^2.2.0",
     "types__jasmine": "2.2.26-alpha",
     "typescript": "2.0.0-dev.20160707",
-    "typings": "^1.0.4"
+    "typings": "^1.0.4",
+    "karma": "0.13.19",
+    "karma-chrome-launcher": "0.2.2",
+    "karma-coverage": "0.5.3",
+    "karma-jasmine": "0.3.6",
+    "karma-cli": "^0.0.4",
+    "karma-htmlfile-reporter": "^0.2.2",
+    "http-server": "0.8.5"
   }
 }

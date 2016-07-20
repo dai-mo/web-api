@@ -26,6 +26,8 @@ addSbtPlugin("name.de-vries" % "sbt-typescript"  % "0.3.0-beta.1")
 
 addSbtPlugin("name.de-vries" % "sbt-tslint" % "0.9.7")
 
+addSbtPlugin("com.joescii" % "sbt-js-test" % "0.2.0")
+
 // Release / Versioning PLugins
 
 addSbtPlugin("com.eed3si9n" % "sbt-buildinfo" % "0.6.1")
