@@ -11,28 +11,13 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/bootstrap/dist/css/bootstrap.min.css")" />
-    @*<link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(webJarAssets.locate("bootstrap", "css/bootstrap.min.css"))" />*@
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("lib/font-awesome/css/font-awesome.min.css")" />
-    @*<link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(webJarAssets.locate("css/font-awesome.min.css"))" />*@
-
-    @*<link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(webJarAssets.locate("dist/css/normalize.css"))" />*@
-    @*<link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(webJarAssets.locate("dist/css/main.css"))" />*@
-    @*<link rel="stylesheet" media="screen" href="@routes.WebJarAssets.at(webJarAssets.locate("visjs", "vis.css"))" />*@
-
     <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/app.css")"/>
-
-    @*<script src="@routes.WebJarAssets.at(webJarAssets.locate("shim.min.js"))"></script>*@
     <script src="@routes.Assets.versioned("lib/core-js/client/shim.min.js")"></script>
-
-    @*<script src="@routes.WebJarAssets.at(webJarAssets.locate("dist/zone.js"))"></script>*@
     <script src="@routes.Assets.versioned("lib/zone.js/dist/zone.js")"></script>
-
-    @*<script src="@routes.WebJarAssets.at(webJarAssets.fullPath("reflect-metadata", "Reflect.js"))"></script>*@
     <script src="@routes.Assets.versioned("lib/reflect-metadata/Reflect.js")"></script>
-
-    @*<script src="@routes.WebJarAssets.at(webJarAssets.locate("system.src.js"))"></script>*@
     <script src="@routes.Assets.versioned("lib/systemjs/dist/system.src.js")"></script>
-    <!-- 2. Configure SystemJS -->
+
     <script src="@routes.Assets.versioned("javascripts/systemjs.config.js")"></script>
     <script>
       System.import('app').catch(function(err){ console.error(err); });
