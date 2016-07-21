@@ -60,12 +60,18 @@ module.exports = function(config) {
             'karma-coverage',
             'karma-chrome-launcher',
             'karma-phantomjs-launcher',
-            'karma-mocha-reporter'
+            'karma-mocha-reporter',
+            'karma-junit-reporter'
         ],
 
         // Coverage reporter generates the coverage
-        reporters: ['mocha', 'coverage'],
+        reporters: ['mocha', 'dots', 'junit', 'coverage'],
 
+        junitReporter: {
+            outputDir: 'test/dist',
+            outputFile: 'test-results.xml',
+            useBrowserName: false
+        },
         // Source files that you wanna generate coverage for.
         // Do not include tests or libraries (these files will be instrumented by Istanbul)
         preprocessors: {

@@ -51,6 +51,7 @@
     "phantomjs-prebuilt": "2.1.7",
     "karma-phantomjs-launcher": "1.0.1",
     "karma-mocha-reporter": "2.0.4",
+    "karma-junit-reporter": "1.1.0",
     "http-server": "0.8.5",
     "remap-istanbul": "0.6.4"
   }
