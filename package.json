@@ -3,13 +3,13 @@
     "start": "tsc -p ./test && concurrently \"npm run tsc:w -- -p ./test\" \"npm run lite\" ",
     "lite": "lite-server",
     "pretest": "rm -rf ./test/dist && npm run tsc -- -p ./test",
-    "postinstall": "typings install",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "typings": "typings",
     "lite-server-test": "lite-server --config=./test/liteserver-test-config.json",
-    "test": "concurrently \"npm run tsc:w  -- -p ./test\" \"npm run lite-server-test\" ",
-    "report": "lite-server -c bs-config.report.json"
+    "test": "karma start karma.conf.js",
+    "posttest": "node_modules/.bin/remap-istanbul -i test/coverage/coverage-final.json -o test/coverage -t html",
+    "coverage": "http-server -c-1 -o -p 9875 ./test/coverage"
   },
   "license": "ISC",
   "dependencies": {
@@ -26,7 +26,6 @@
     "moment": "2.13.0",
     "bootstrap": "4.0.0-alpha.2",
     "font-awesome": "4.6.3",
-    "html5-boilerplate": "5.2.0",
     "d3": "3.5.17",
     "reflect-metadata": "0.1.3",
     "systemjs": "0.19.31",
@@ -43,15 +42,16 @@
     "concurrently": "^2.0.0",
     "jasmine-core": "2.4.1",
     "lite-server": "^2.2.0",
-    "types__jasmine": "2.2.26-alpha",
     "typescript": "2.0.0-dev.20160707",
     "typings": "^1.0.4",
     "karma": "0.13.19",
     "karma-chrome-launcher": "0.2.2",
     "karma-coverage": "0.5.3",
     "karma-jasmine": "0.3.6",
-    "karma-cli": "^0.0.4",
-    "karma-htmlfile-reporter": "^0.2.2",
-    "http-server": "0.8.5"
+    "phantomjs-prebuilt": "2.1.7",
+    "karma-phantomjs-launcher": "1.0.1",
+    "karma-mocha-reporter": "2.0.4",
+    "http-server": "0.8.5",
+    "remap-istanbul": "0.6.4"
   }
 }

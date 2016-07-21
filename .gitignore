@@ -185,3 +185,4 @@ bower_components
 .tern-project
 *.log
 dist
+test/coverage
