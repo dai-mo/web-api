@@ -2,12 +2,13 @@
   "scripts": {
     "start": "tsc -p ./test && concurrently \"npm run tsc:w -- -p ./test\" \"npm run lite\" ",
     "lite": "lite-server",
+    "pretest": "rm -rf ./test/dist && npm run tsc -- -p ./test",
     "postinstall": "typings install",
-    "tsc": "tsc -p ./test",
+    "tsc": "tsc",
     "tsc:w": "tsc -w",
     "typings": "typings",
     "lite-server-test": "lite-server --config=./test/liteserver-test-config.json",
-    "test": "concurrently \"npm run tsc:w -- -p ./test\" \"npm run lite-server-test\" ",
+    "test": "concurrently \"npm run tsc:w  -- -p ./test\" \"npm run lite-server-test\" ",
     "report": "lite-server -c bs-config.report.json"
   },
   "license": "ISC",
