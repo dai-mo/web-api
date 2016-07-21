@@ -184,4 +184,5 @@ bower_components
 .cache-tests
 .tern-project
 *.log
-
+dist
+test/coverage

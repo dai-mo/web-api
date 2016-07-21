@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "system",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "removeComments": true,
+    "declaration": true,
+    "target": "ES5",
+    "outDir": "./dist",
+    "rootDirs": ["../app/assets","./assets"]
+  }
+}

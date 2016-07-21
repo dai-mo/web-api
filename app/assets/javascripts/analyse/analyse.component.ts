@@ -2,9 +2,7 @@
  * Created by cmathew on 14/07/16.
  */
 import {Component, OnInit} from "@angular/core"
-import {Location} from "@angular/common"
 import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
-
 import {FlowService} from "./shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {FlowGraphDirective} from "./flow-graph.directive"
