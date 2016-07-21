@@ -1,5 +1,5 @@
 import sbt._
-
+import NativePackagerHelper._
 
 import sbtrelease._
 import sbtrelease.ReleaseStateTransformations.{setReleaseVersion=>_,_}
@@ -53,7 +53,7 @@ lazy val copyNodeModules = taskKey[Unit]("Copies the contents of the root node_m
 
 copyNodeModules := {
   val node_modules = new File("node_modules")
-  val target = new File("target/web/public/main/lib/")
+  val target = new File("target/web/web-modules/main/webjars/lib")
   IO.copyDirectory(node_modules,target,true, true)
 }
 
@@ -62,6 +62,7 @@ addCommandAlias("resolveNpm", ";web-assets:jseNpmNodeModules;copyNodeModules")
 pipelineStages := Seq(uglify, digest, gzip)
 
 crossPaths := false
+
 
 publish <<= (publish) dependsOn  dist
 
