@@ -3,7 +3,7 @@
 # ~~~~
 
 # App endpoints
-GET     /                            controllers.HomeController.index
+->      /                               controllers.HomeController
 
 # Partial endpoints
 GET     /partials/:partial              controllers.HomeController.modulePartials(module = "", partial)
@@ -16,18 +16,18 @@ GET     /api/health                     controllers.HomeController.health
 GET     /api/doc                        controllers.HomeController.doc
 
 # Test Api
-->     /api/tests                       controllers.TestApi
+->      /api/tests                       controllers.TestApi
 
 # User Api
-->     /api/users                       controllers.UserApi
-GET    /api/users/:id/auth              controllers.UserApi.auth(id: Long)
+->      /api/users                       controllers.UserApi
+GET     /api/users/:id/auth              controllers.UserApi.auth(id: Long)
 
 # Flow Api
 # - Templates Api
-->     /api/flow/templates              controllers.FlowTemplateApi
+->      /api/flow/templates              controllers.FlowTemplateApi
 # - Instance Api
-->     /api/flow/instances              controllers.FlowInstanceApi
-GET    /api/flow/instances/create/:tid  controllers.FlowInstanceApi.create(tid: String)
+->      /api/flow/instances              controllers.FlowInstanceApi
+GET     /api/flow/instances/create/:tid  controllers.FlowInstanceApi.create(tid: String)
 
 
 # Map static resources from the /public folder to the /assets URL path
@@ -35,7 +35,3 @@ GET     /assets/*file                   controllers.Assets.versioned(path="/publ
 GET     /webjars/*file                  controllers.WebJarAssets.at(file)
 GET     /vassets/*file                  controllers.Assets.versioned(path="/public", file: Asset)
 
-# ----- Experimental ------
-
-# An example controller showing how to write asynchronous code
-GET     /message                        controllers.AsyncController.message

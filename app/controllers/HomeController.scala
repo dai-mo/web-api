@@ -3,12 +3,9 @@ package controllers
 import java.util.UUID
 import javax.inject._
 
-import controllers.util.CSRFCheckAction
-import controllers.util.CSRFTokenAction
-import controllers.util.Req
+import controllers.routing.ResourceRouter
+import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
 import org.dcs.web.BuildInfo
-import play.api._
-import play.api.libs.json.Json
 import play.api.mvc._
 import play.api.routing.Router
 
@@ -20,7 +17,7 @@ import play.api.routing.Router
 class HomeController @Inject()(webJarAssets: WebJarAssets,
                                router: Provider[Router],
                                csrfCheckAction: CSRFCheckAction,
-                               csrfTokenAction: CSRFTokenAction) extends Controller {
+                               csrfTokenAction: CSRFTokenAction) extends ResourceRouter[String] {
 
   /**
     * Create an Action to render an HTML page with a welcome message.
@@ -48,14 +45,31 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
     }
   }
 
-  def health = Action { request =>
-    val health = Json.obj(
-      "version" -> BuildInfo.version
-    )
-    Ok(health)
+  def health = Action { implicit request =>
+    serialize(Health(BuildInfo.version))
   }
+
   def doc() = Action {
     Ok(router.get().documentation.map(_.toString).mkString("\n"))
   }
 
+  override def list: EssentialAction = index
+
+  override def update(id: String): EssentialAction = Action {
+    NotImplemented
+  }
+
+  override def destroy(id: String): EssentialAction = Action {
+    NotImplemented
+  }
+
+  override def find(id: String): EssentialAction = id match {
+    case "health" => health
+    case "doc" => doc
+    case _ =>  Action {NotFound}
+  }
+
+  override def create: EssentialAction = Action {
+    NotImplemented
+  }
 }
