@@ -41,17 +41,6 @@ abstract class ResourceRouter[T](name: Option[String] = None)(implicit idBindabl
 
     }
 
-//    def withToken(token: String, action: T => EssentialAction) = {
-//      idBindable.bind("token", token).fold(badRequestAction, action)
-//    }
-//
-//    def withIdAndToken(id: String, token: String, action: (T,T) => EssentialAction) = {
-//      val idBind = idBindable.bind("id", id)
-//      if(idBind.isLeft) BadRequest
-//      else {
-//        val tokenBind = idBindable.bind("token", token)
-//      }
-//    }
 
     override def applyOrElse[A <: RequestHeader, B >: Handler](rh: A, default: A => B) = {
 

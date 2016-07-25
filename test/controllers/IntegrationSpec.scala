@@ -1,3 +1,5 @@
+package controllers
+
 import org.scalatest.Ignore
 import org.scalatestplus.play._
 
