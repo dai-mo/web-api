@@ -6,7 +6,13 @@ import { FlowTemplate } from "./flow.template"
 
 describe("FlowTemplate", () => {
     it("has id", () => {
-        let ft: FlowTemplate = {id: "12"}
+        let ft: FlowTemplate = {
+            id: "12",
+            name: "name",
+            description: "description",
+            uri: "uri",
+            date: "timestamp"
+        }
         expect(ft.id).toEqual("12")
     })
 })
