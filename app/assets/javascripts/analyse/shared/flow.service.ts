@@ -18,4 +18,6 @@ export class FlowService {
     getTemplates() {
         return this.http.get(this.templatesUrl).map(response => response.json())
     }
+
+
 }

@@ -20,7 +20,7 @@ class FlowTemplateApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
   object NifiFlowApi extends NifiFlowClient with NifiApiConfig
 
   override def list: EssentialAction = csrfCheckAction { implicit request =>
-    Ok(NifiFlowApi.templates(Req.tokenOrError(Req.AuthTokenKey)).toJson)
+    serialize(NifiFlowApi.templates(Req.tokenOrError(Req.AuthTokenKey)))
   }
 
   override def update(id: Long): EssentialAction = csrfCheckAction {

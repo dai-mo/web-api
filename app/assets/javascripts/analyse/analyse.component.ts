@@ -16,7 +16,11 @@ import {FlowGraphDirective} from "./flow-graph.directive"
 export class AnalyseComponent implements OnInit {
     public disabled:boolean = false
     public nifiUrl: string
-    public status: {isopen:boolean} = {isopen: false}
+    public status: {
+        isopen:boolean
+    } = {
+        isopen: false
+    }
     public templates: Array<any>
 
     constructor(window: Window,
