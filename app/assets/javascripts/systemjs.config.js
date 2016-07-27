@@ -7,6 +7,7 @@
         'rxjs':'assets/lib/rxjs',
         'symbol-observable': 'assets/lib/rxjs/node_modules/symbol-observable',
         'd3':'assets/lib/d3',
+        'webcola':'assets/lib/webcola/WebCola',
         'moment': 'assets/lib/moment',
         'ng2-bootstrap': 'assets/lib/ng2-bootstrap'
 
@@ -18,6 +19,7 @@
         'assets/lib': {defaultExtension: 'js'},
         'symbol-observable': {defaultExtension: 'js', main: 'index.js'},
         'd3': {defaultExtension: 'js', main: 'd3.js'},
+        'webcola': {defaultExtension: 'js', main: 'index.js'},
         'moment': {defaultExtension: 'js', main: 'moment.js'},
         'ng2-bootstrap': {defaultExtension: 'js', main: 'ng2-bootstrap.js'}
 

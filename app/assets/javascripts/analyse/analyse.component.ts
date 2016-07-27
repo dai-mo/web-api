@@ -6,10 +6,11 @@ import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
 import {FlowService} from "./shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {FlowGraphDirective} from "./flow-graph.directive"
+import {PowerFlowGraphDirective} from "./power-flow-graph.directive"
 
 @Component({
     selector: "analyse",
-    directives: [FlowGraphDirective, DROPDOWN_DIRECTIVES],
+    directives: [FlowGraphDirective, PowerFlowGraphDirective, DROPDOWN_DIRECTIVES],
     providers: [FlowService, ErrorService],
     templateUrl: "partials/analyse/view.html"
 })
@@ -22,6 +23,7 @@ export class AnalyseComponent implements OnInit {
         isopen: false
     }
     public templates: Array<any>
+    public selectedTemplate: any
 
     constructor(window: Window,
                 private flowService: FlowService,
@@ -45,10 +47,19 @@ export class AnalyseComponent implements OnInit {
     ngOnInit() {
         this.getTemplates()
     }
+
+
     public toggleDropdown(event:MouseEvent):void {
         event.preventDefault()
         event.stopPropagation()
         this.status.isopen = !this.status.isopen
+    }
+
+    public selectTemplate(template: any): void {
+        event.preventDefault()
+        event.stopPropagation()
+        this.status.isopen = !this.status.isopen
+        this.selectedTemplate = template
     }
 
 

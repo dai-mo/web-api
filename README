@@ -1,26 +1,15 @@
 
-This is your new Play application
-=================================
+Javascript Dependency Management
+================================
 
-This file will be packaged with your application when using `activator dist`.
+Dependency management of javascript libraries is currently managed by ```npm```
 
-There are several demonstration files available in this template.
+To add a new javascript dependency
+    * add the dependency to 'package.json'
+    * run the command ```npm install``` (this will install the dependency in the 'node_modules directory')
+    * run the command ```sbt resolveNpm``` (this will copy the dependency to the relevant play assets directory)
 
-Controllers
-===========
+To add new typings for a non-modularised javascript library,
+ * Add the dt reference for the relevant project in the 'typings.json' file
+ * run 'npm run typings install' (this will add the typings file in the corresponding directory under 'typings/globals' and add a reference to the 'globals/index.d.ts' file)
 
-
-NPM Support
-===========
-
-NPM support currently exists only for install typings.
-
- * Add the dt reference for the relevant project in the typings.json file
- * run 'npm install'
- * run 'npm run typings install'
- * delete the node_modules directory
-
-The step of deleting the node_modules directory is very important because,
- * By default, the sbt play plugins will copy over the libs in the node_modules directory at the root of the project (if it exists)
- * Currently, there does not seem to be a mechanism in sbt to ignore the node_modules dir or to configure the node_modules
-   dir when executing 'npm install' (https://github.com/npm/npm/issues/2734)

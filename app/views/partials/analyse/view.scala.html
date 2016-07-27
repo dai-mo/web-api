@@ -6,9 +6,9 @@
         </li>
         <li class="nav-item active">
             <span dropdown>
-                <a href id="simple-dropdown" dropdownToggle>flow</a>
+                <a href id="simple-dropdown" dropdownToggle >flow</a>
                 <ul class="dropdown-menu" dropdownMenu aria-labelledby="simple-dropdown">
-                    <li *ngFor="let choice of templates">
+                    <li *ngFor="let choice of templates" (click)= selectTemplate(choice)>
                         <a class="dropdown-item" href="#">{{choice.name}}</a>
                     </li>
                 </ul>
@@ -16,4 +16,8 @@
         </li>
     </ul>
 </nav>
-<div class="flow-graph" flow-graph ></div>
+<div class="flow-graph" *ngIf="selectedTemplate">
+    <span class="label label-default">{{selectedTemplate.name}}</span>
+    <div  class="flow-graph" power-flow-graph ></div>
+</div>
+<div  class="flow-graph" power-flow-graph ></div>

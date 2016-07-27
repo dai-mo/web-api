@@ -45,7 +45,7 @@ html, body {
 .card-block {
   margin: 0;
   padding: 1px;
-  height: 90%;
+  height: 95%;
   -webkit-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
@@ -108,7 +108,7 @@ html, body {
 .navbar-nav > li > a, .navbar-brand {
     padding-top:4px !important;
     padding-bottom:0 !important;
-    height: 28px;
+    height: 15px;
 
 }
 .navbar {
@@ -178,5 +178,24 @@ html, body {
 }
 
 
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+  cursor: move;
+}
+
+.link {
+  stroke: #999;
+  stroke-width: 3px;
+  stroke-opacity: 1;
+}
+
+.label {
+  fill: white;
+  font-family: Verdana;
+  font-size: 25px;
+  text-anchor: middle;
+  cursor: move;
+}
 
 
