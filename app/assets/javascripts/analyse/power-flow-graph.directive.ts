@@ -1,9 +1,6 @@
-/**
- * Created by cmathew on 14/07/16.
- */
 import {ElementRef, Directive} from "@angular/core"
 
-import webcola from "webcola"
+import cola from "webcola"
 
 @Directive({
     selector: "[power-flow-graph]",
@@ -49,10 +46,10 @@ export class PowerFlowGraphDirective {
                     .attr("transform", "translate(" + zoom.translate() + ") scale(" + zoom.scale() + ")")
             }
             vis.zoomToFit = function () {
-                let b = webcola.vpsc.Rectangle.empty()
+                let b = cola.vpsc.Rectangle.empty()
                 vis.selectAll("rect").each(function (d) {
                     let bb = this.getBBox()
-                    b = b.union(new webcola.vpsc.Rectangle(bb.x, bb.x + bb.width, bb.y, bb.y + bb.height))
+                    b = b.union(new cola.vpsc.Rectangle(bb.x, bb.x + bb.width, bb.y, bb.y + bb.height))
                 })
                 let w = b.width(), h = b.height()
                 let cw = Number(outer.attr("width")), ch = Number(outer.attr("height"))
@@ -89,7 +86,7 @@ export class PowerFlowGraphDirective {
             return labels
         }
         function flatGraph() {
-            let d3cola = webcola.d3adaptor()
+            let d3cola = cola.d3adaptor()
                 .linkDistance(80)
                 .avoidOverlaps(true)
                 .size([width, height])
@@ -114,7 +111,7 @@ export class PowerFlowGraphDirective {
                 d3cola.on("tick", function () {
                     node.each(function (d) { return d.innerBounds = d.bounds.inflate(-margin) })
                     link.each(function (d) {
-                        d.route = webcola.vpsc.makeEdgeBetween(d.source.innerBounds, d.target.innerBounds, 5)
+                        d.route = cola.vpsc.makeEdgeBetween(d.source.innerBounds, d.target.innerBounds, 5)
                         if (isIE())
                             this.parentNode.insertBefore(this, this)
                     })
@@ -153,7 +150,7 @@ export class PowerFlowGraphDirective {
             return (typeof v.index === "number" ? v.index : v.id + n) + 1
         }
         function powerGraph() {
-            let d3cola = webcola.d3adaptor()
+            let d3cola = cola.d3adaptor()
                 .convergenceThreshold(0.01)
                 .linkDistance(80)
                 .handleDisconnected(false)
@@ -202,7 +199,7 @@ export class PowerFlowGraphDirective {
                         })
                         group.each(function (d) { return d.innerBounds = d.bounds.inflate(-margin) })
                         link.each(function (d) {
-                            d.route = webcola.vpsc.makeEdgeBetween(d.source.innerBounds, d.target.innerBounds, 5)
+                            d.route = cola.vpsc.makeEdgeBetween(d.source.innerBounds, d.target.innerBounds, 5)
                             if (isIE())
                                 this.parentNode.insertBefore(this, this)
                         })
@@ -272,7 +269,7 @@ export class PowerFlowGraphDirective {
             flatGraph()
         })
         function powerGraph2() {
-            let d3cola = webcola.d3adaptor()
+            let d3cola = cola.d3adaptor()
                 .jaccardLinkLengths(10, 0.5)
                 .avoidOverlaps(true)
                 .size([width, height])
@@ -316,7 +313,7 @@ export class PowerFlowGraphDirective {
                     node.each(function (d) { d.innerBounds = d.bounds.inflate(-margin) })
                     group.each(function (d) { d.innerBounds = d.bounds.inflate(-margin) })
                     link.each(function (d) {
-                        d.route = webcola.vpsc.makeEdgeBetween(d.source.innerBounds, d.target.innerBounds, 5)
+                        d.route = cola.vpsc.makeEdgeBetween(d.source.innerBounds, d.target.innerBounds, 5)
                         if (isIE())
                             this.parentNode.insertBefore(this, this)
                     })

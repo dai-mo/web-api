@@ -38,7 +38,7 @@ libraryDependencies ++= Seq(
   ws,
   filters,
   "org.dcs" % "org.dcs.api" % "0.2.0-SNAPSHOT",
-  "org.dcs" % "org.dcs.remote" % "0.2.0-SNAPSHOT" exclude("org.apache.cxf", "cxf-rt-frontend-jaxrs"),
+  "org.dcs" % "org.dcs.remote" % "0.2.0-SNAPSHOT",
   "org.dcs" % "org.dcs.flow" % "0.2.0-SNAPSHOT",
   "org.webjars" %% "webjars-play" % "2.5.0",
   "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test

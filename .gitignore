@@ -186,3 +186,4 @@ bower_components
 *.log
 dist
 test/coverage
+typings

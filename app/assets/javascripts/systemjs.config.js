@@ -6,8 +6,8 @@
         '@angular':'assets/lib/@angular',
         'rxjs':'assets/lib/rxjs',
         'symbol-observable': 'assets/lib/rxjs/node_modules/symbol-observable',
-        'd3':'assets/lib/d3',
         'webcola':'assets/lib/webcola/WebCola',
+        'd3':'assets/lib/d3',
         'moment': 'assets/lib/moment',
         'ng2-bootstrap': 'assets/lib/ng2-bootstrap'
 

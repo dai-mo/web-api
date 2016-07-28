@@ -1,8 +1,0 @@
-{
-  "resolution": "main",
-  "tree": {
-    "src": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/0d501b1ff9d97a12c8b371affb64c921b6fe9832/webcola/webcola.d.ts",
-    "raw": "github:DefinitelyTyped/DefinitelyTyped/webcola/webcola.d.ts#0d501b1ff9d97a12c8b371affb64c921b6fe9832",
-    "typings": "https://raw.githubusercontent.com/DefinitelyTyped/DefinitelyTyped/0d501b1ff9d97a12c8b371affb64c921b6fe9832/webcola/webcola.d.ts"
-  }
-}
