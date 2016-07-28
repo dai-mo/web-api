@@ -1,10 +1,15 @@
+///<reference path="../../../../typings/globals/webcola/index.d.ts"/>
+
 import {ElementRef, Directive} from "@angular/core"
 
-import cola from "webcola"
+declare let $: any
+declare let cola: any
+
 
 @Directive({
     selector: "[power-flow-graph]",
 })
+
 export class PowerFlowGraphDirective {
 
     private el:HTMLElement
@@ -40,14 +45,14 @@ export class PowerFlowGraphDirective {
                 .attr("class", "background")
                 .attr("width", "100%")
                 .attr("height", "100%")
-            let vis = outer.append("g")
-            let redraw = function (transition) {
+            let vis:any = outer.append("g")
+            let redraw = function (transition:any) {
                 return (transition ? vis.transition() : vis)
                     .attr("transform", "translate(" + zoom.translate() + ") scale(" + zoom.scale() + ")")
             }
             vis.zoomToFit = function () {
                 let b = cola.vpsc.Rectangle.empty()
-                vis.selectAll("rect").each(function (d) {
+                vis.selectAll("rect").each(function (d:any) {
                     let bb = this.getBBox()
                     b = b.union(new cola.vpsc.Rectangle(bb.x, bb.x + bb.width, bb.y, bb.y + bb.height))
                 })
@@ -63,26 +68,26 @@ export class PowerFlowGraphDirective {
                 .on("dblclick.zoom", vis.zoomToFit)
             return vis
         }
-        function createLabels(svg, graph, node, d3cola, margin) {
+        function createLabels(svg:any, graph:any, node:any, d3cola:any, margin:any) {
             let labelwidth = 0, labelheight = 0
             let labels = svg.selectAll(".flowlabel")
                 .data(graph.nodes)
                 .enter().append("text")
                 .attr("class", "flowlabel")
-                .text(function (d) { return d.name })
+                .text(function (d:any) { return d.name })
                 .call(d3cola.drag)
-                .each(function (d) {
+                .each(function (d:any) {
                     let bb = this.getBBox()
                     labelwidth = Math.max(labelwidth, bb.width)
                     labelheight = Math.max(labelheight, bb.height)
                 })
             node.attr("width", labelwidth)
-                .each(function (d) {
+                .each(function (d:any) {
                     d.width = labelwidth + 2 * margin + 10
                     d.height = labelheight + 2 * margin
                 })
             node.append("title")
-                .text(function (d) { return d.name })
+                .text(function (d:any) { return d.name })
             return labels
         }
         function flatGraph() {
@@ -109,44 +114,44 @@ export class PowerFlowGraphDirective {
                     .links(graph.links)
                     .start(10, 10, 10)
                 d3cola.on("tick", function () {
-                    node.each(function (d) { return d.innerBounds = d.bounds.inflate(-margin) })
-                    link.each(function (d) {
+                    node.each(function (d:any) { return d.innerBounds = d.bounds.inflate(-margin) })
+                    link.each(function (d:any) {
                         d.route = cola.vpsc.makeEdgeBetween(d.source.innerBounds, d.target.innerBounds, 5)
                         if (isIE())
                             this.parentNode.insertBefore(this, this)
                     })
-                    link.attr("x1", function (d) { return d.route.sourceIntersection.x })
-                        .attr("y1", function (d) { return d.route.sourceIntersection.y })
-                        .attr("x2", function (d) { return d.route.arrowStart.x })
-                        .attr("y2", function (d) { return d.route.arrowStart.y })
-                    node.attr("x", function (d) { return d.innerBounds.x })
-                        .attr("y", function (d) { return d.innerBounds.y })
-                        .attr("width", function (d) { return d.innerBounds.width() })
-                        .attr("height", function (d) { return d.innerBounds.height() })
-                    let b
+                    link.attr("x1", function (d:any) { return d.route.sourceIntersection.x })
+                        .attr("y1", function (d:any) { return d.route.sourceIntersection.y })
+                        .attr("x2", function (d:any) { return d.route.arrowStart.x })
+                        .attr("y2", function (d:any) { return d.route.arrowStart.y })
+                    node.attr("x", function (d:any) { return d.innerBounds.x })
+                        .attr("y", function (d:any) { return d.innerBounds.y })
+                        .attr("width", function (d:any) { return d.innerBounds.width() })
+                        .attr("height", function (d:any) { return d.innerBounds.height() })
+                    let b:any
                     label
-                        .each(function (d) {
+                        .each(function (d:any) {
                             b = this.getBBox()
                         })
-                        .attr("x", function (d) { return d.x })
-                        .attr("y", function (d) {
+                        .attr("x", function (d:any) { return d.x })
+                        .attr("y", function (d:any) {
                             return d.y + b.height / 3
                         })
                     // svg.zoomToFit()
                 }).on("end", function () { svg.zoomToFit() })
             })
         }
-        function expandGroup(g, ms) {
+        function expandGroup(g:any, ms:any) {
             if (g.groups) {
-                g.groups.forEach(function (cg) { return expandGroup(cg, ms) })
+                g.groups.forEach(function (cg:any) { return expandGroup(cg, ms) })
             }
             if (g.leaves) {
-                g.leaves.forEach(function (l) {
+                g.leaves.forEach(function (l:any) {
                     ms.push(l.index + 1)
                 })
             }
         }
-        function getId(v, n) {
+        function getId(v:any, n: any) {
             return (typeof v.index === "number" ? v.index : v.id + n) + 1
         }
         function powerGraph() {
@@ -158,17 +163,17 @@ export class PowerFlowGraphDirective {
                 .size([width, height])
             let svg = makeSVG()
             d3.json(graphfile, function (error, graph) {
-                graph.nodes.forEach(function (v, i) {
+                graph.nodes.forEach(function (v:any, i:any) {
                     v.index = i
                 })
-                let powerGraph
-                let doLayout = function (response) {
+                let powerGraph:any
+                let doLayout = function (response:any) {
                     let group = svg.selectAll(".group")
                         .data(powerGraph.groups)
                         .enter().append("rect")
                         .attr("rx", 8).attr("ry", 8)
                         .attr("class", "group")
-                        .style("fill", function (d, i) { return color(i) })
+                        .style("fill", function (d:any, i:any) { return color(i) })
                     let link = svg.selectAll(".link")
                         .data(powerGraph.powerEdges)
                         .enter().append("line")
@@ -178,12 +183,12 @@ export class PowerFlowGraphDirective {
                         .data(graph.nodes)
                         .enter().append("rect")
                         .attr("class", "node")
-                        .attr("width", function (d) { return d.width + 2 * margin })
-                        .attr("height", function (d) { return d.height + 2 * margin })
+                        .attr("width", function (d:any) { return d.width + 2 * margin })
+                        .attr("height", function (d:any) { return d.height + 2 * margin })
                         .attr("rx", 4).attr("ry", 4)
                     let label = createLabels(svg, graph, node, d3cola, margin)
-                    let vs = response.nodes.filter(function (v) { return v.label })
-                    vs.forEach(function (v) {
+                    let vs = response.nodes.filter(function (v:any) { return v.label })
+                    vs.forEach(function (v:any) {
                         let index = Number(v.label) - 1
                         let node = graph.nodes[index]
                         node.x = Number(v.x) * node.width / 80 + 50
@@ -192,31 +197,31 @@ export class PowerFlowGraphDirective {
                     })
                     d3cola.start(1, 1, 1)
                     d3cola.on("tick", function () {
-                        node.each(function (d) {
+                        node.each(function (d:any) {
                             d.bounds.setXCentre(d.x)
                             d.bounds.setYCentre(d.y)
                             d.innerBounds = d.bounds.inflate(-margin)
                         })
-                        group.each(function (d) { return d.innerBounds = d.bounds.inflate(-margin) })
-                        link.each(function (d) {
+                        group.each(function (d:any) { return d.innerBounds = d.bounds.inflate(-margin) })
+                        link.each(function (d:any) {
                             d.route = cola.vpsc.makeEdgeBetween(d.source.innerBounds, d.target.innerBounds, 5)
                             if (isIE())
                                 this.parentNode.insertBefore(this, this)
                         })
-                        link.attr("x1", function (d) { return d.route.sourceIntersection.x })
-                            .attr("y1", function (d) { return d.route.sourceIntersection.y })
-                            .attr("x2", function (d) { return d.route.arrowStart.x })
-                            .attr("y2", function (d) { return d.route.arrowStart.y })
-                        node.attr("x", function (d) { return d.innerBounds.x })
-                            .attr("y", function (d) { return d.innerBounds.y })
-                            .attr("width", function (d) { return d.innerBounds.width() })
-                            .attr("height", function (d) { return d.innerBounds.height() })
-                        group.attr("x", function (d) { return d.innerBounds.x })
-                            .attr("y", function (d) { return d.innerBounds.y })
-                            .attr("width", function (d) { return d.innerBounds.width() })
-                            .attr("height", function (d) { return d.innerBounds.height() })
-                        label.attr("x", function (d) { return d.x })
-                            .attr("y", function (d) {
+                        link.attr("x1", function (d:any) { return d.route.sourceIntersection.x })
+                            .attr("y1", function (d:any) { return d.route.sourceIntersection.y })
+                            .attr("x2", function (d:any) { return d.route.arrowStart.x })
+                            .attr("y2", function (d:any) { return d.route.arrowStart.y })
+                        node.attr("x", function (d:any) { return d.innerBounds.x })
+                            .attr("y", function (d:any) { return d.innerBounds.y })
+                            .attr("width", function (d:any) { return d.innerBounds.width() })
+                            .attr("height", function (d:any) { return d.innerBounds.height() })
+                        group.attr("x", function (d:any) { return d.innerBounds.x })
+                            .attr("y", function (d:any) { return d.innerBounds.y })
+                            .attr("width", function (d:any) { return d.innerBounds.width() })
+                            .attr("height", function (d:any) { return d.innerBounds.height() })
+                        label.attr("x", function (d:any) { return d.x })
+                            .attr("y", function (d:any) {
                                 let h = this.getBBox().height
                                 return d.y + h / 3.5
                             })
@@ -227,15 +232,17 @@ export class PowerFlowGraphDirective {
                 d3cola
                     .nodes(graph.nodes)
                     .links(graph.links)
-                    .powerGraphGroups(function (d) { return (powerGraph = d).groups.forEach(function (v) { return v.padding = 10 }) })
-                let modules = { N: graph.nodes.length, ms: [], edges: [] }
+                    .powerGraphGroups(function (d:any) {
+                        return (powerGraph = d).groups.forEach(function (v:any) { return v.padding = 10 })
+                    })
+                let modules = { N: graph.nodes.length, ms: <any>[], edges: <any>[] }
                 let n = modules.N
-                powerGraph.groups.forEach(function (g) {
-                    let m = []
+                powerGraph.groups.forEach(function (g:any) {
+                    let m = <any>[]
                     expandGroup(g, m)
                     modules.ms.push(m)
                 })
-                powerGraph.powerEdges.forEach(function (e) {
+                powerGraph.powerEdges.forEach(function (e:any) {
                     let N = graph.nodes.length
                     modules.edges.push({ source: getId(e.source, N), target: getId(e.target, N) })
                 })
@@ -245,10 +252,10 @@ export class PowerFlowGraphDirective {
                         url: "http://marvl.infotech.monash.edu/cgi-bin/test.py",
                         data: JSON.stringify(modules),
                         datatype: "json",
-                        success: function (response) {
+                        success: function (response:any) {
                             doLayout(response)
                         },
-                        error: function (jqXHR, status, err) {
+                        error: function (jqXHR:any, status: any, err: any) {
                             alert(status)
                         }
                     })
@@ -275,13 +282,13 @@ export class PowerFlowGraphDirective {
                 .size([width, height])
             let svg = makeSVG()
             d3.json("assets/javascripts/analyse/powergraph.json", function (error, graph) {
-                let powerGraph
+                let powerGraph:any
                 d3cola
                     .nodes(graph.nodes)
                     .links(graph.links)
-                    .powerGraphGroups(function (d) {
+                    .powerGraphGroups(function (d:any) {
                         powerGraph = d
-                        powerGraph.groups.forEach(function (v) { v.padding = 20 })
+                        powerGraph.groups.forEach(function (v:any) { v.padding = 20 })
                     })
                     .start(10, 10, 10)
                 let group = svg.selectAll(".group")
@@ -289,7 +296,7 @@ export class PowerFlowGraphDirective {
                     .enter().append("rect")
                     .attr("rx", 8).attr("ry", 8)
                     .attr("class", "group")
-                    .style("fill", function (d, i) { return color(i) })
+                    .style("fill", function (d:any, i:any) { return color(i) })
                 let link = svg.selectAll(".link")
                     .data(powerGraph.powerEdges)
                     .enter().append("line")
@@ -299,38 +306,38 @@ export class PowerFlowGraphDirective {
                     .data(graph.nodes)
                     .enter().append("rect")
                     .attr("class", "node")
-                    .attr("width", function (d) { return d.width + 2 * margin })
-                    .attr("height", function (d) { return d.height + 2 * margin })
+                    .attr("width", function (d:any) { return d.width + 2 * margin })
+                    .attr("height", function (d:any) { return d.height + 2 * margin })
                     .attr("rx", 4).attr("ry", 4)
                 let label = svg.selectAll(".label")
                     .data(graph.nodes)
                     .enter().append("text")
                     .attr("class", "label")
-                    .text(function (d) { return d.name })
+                    .text(function (d:any) { return d.name })
                 node.append("title")
-                    .text(function (d) { return d.name })
+                    .text(function (d:any) { return d.name })
                 d3cola.on("tick", function () {
-                    node.each(function (d) { d.innerBounds = d.bounds.inflate(-margin) })
-                    group.each(function (d) { d.innerBounds = d.bounds.inflate(-margin) })
-                    link.each(function (d) {
+                    node.each(function (d:any) { d.innerBounds = d.bounds.inflate(-margin) })
+                    group.each(function (d:any) { d.innerBounds = d.bounds.inflate(-margin) })
+                    link.each(function (d:any) {
                         d.route = cola.vpsc.makeEdgeBetween(d.source.innerBounds, d.target.innerBounds, 5)
                         if (isIE())
                             this.parentNode.insertBefore(this, this)
                     })
-                    link.attr("x1", function (d) { return d.route.sourceIntersection.x })
-                        .attr("y1", function (d) { return d.route.sourceIntersection.y })
-                        .attr("x2", function (d) { return d.route.arrowStart.x })
-                        .attr("y2", function (d) { return d.route.arrowStart.y })
-                    node.attr("x", function (d) { return d.innerBounds.x })
-                        .attr("y", function (d) { return d.innerBounds.y })
-                        .attr("width", function (d) { return d.innerBounds.width() })
-                        .attr("height", function (d) { return d.innerBounds.height() })
-                    group.attr("x", function (d) { return d.innerBounds.x })
-                        .attr("y", function (d) { return d.innerBounds.y })
-                        .attr("width", function (d) { return d.innerBounds.width() })
-                        .attr("height", function (d) { return d.innerBounds.height() })
-                    label.attr("x", function (d) { return d.x })
-                        .attr("y", function (d) {
+                    link.attr("x1", function (d:any) { return d.route.sourceIntersection.x })
+                        .attr("y1", function (d:any) { return d.route.sourceIntersection.y })
+                        .attr("x2", function (d:any) { return d.route.arrowStart.x })
+                        .attr("y2", function (d:any) { return d.route.arrowStart.y })
+                    node.attr("x", function (d:any) { return d.innerBounds.x })
+                        .attr("y", function (d:any) { return d.innerBounds.y })
+                        .attr("width", function (d:any) { return d.innerBounds.width() })
+                        .attr("height", function (d:any) { return d.innerBounds.height() })
+                    group.attr("x", function (d:any) { return d.innerBounds.x })
+                        .attr("y", function (d:any) { return d.innerBounds.y })
+                        .attr("width", function (d:any) { return d.innerBounds.width() })
+                        .attr("height", function (d:any) { return d.innerBounds.height() })
+                    label.attr("x", function (d:any) { return d.x })
+                        .attr("y", function (d:any) {
                             let h = this.getBBox().height
                             return d.y + h / 3.5
                         })
