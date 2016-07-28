@@ -29,11 +29,14 @@
         'common',
         'compiler',
         'core',
-        'http',
         'platform-browser',
         'platform-browser-dynamic',
         'router',
         'forms'
+    ];
+
+    var ngIndexPackageNames = [
+        'http'
     ];
 
     function packIndex(pkgName) {
@@ -50,7 +53,8 @@
     // Add package entries for angular packages
     var setPackageConfig = System.packageWithIndex ? packIndex : packUmd;
     ngPackageNames.forEach(setPackageConfig);
-
+    ngIndexPackageNames.forEach(packIndex);
+    
     // Add map entries for angular packages
     // ngPackageNames.forEach(function(pkgName){
     //     addAngularModulesToMap(pkgName);

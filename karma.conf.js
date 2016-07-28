@@ -10,14 +10,14 @@ module.exports = function(config) {
             
             {pattern: 'node_modules/core-js/client/shim.min.js', included: true, watched: true},
             {pattern: 'node_modules/zone.js/dist/zone.js', included: true, watched: true},
-
+            {pattern: 'node_modules/zone.js/dist/async-test.js', included: true, watched: true},
             {pattern: 'node_modules/reflect-metadata/Reflect.js', included: true, watched: true},
             {pattern: 'node_modules/systemjs/dist/system.src.js', included: true, watched: true},
             {pattern: 'app/assets/javascripts/systemjs.config.js', included: true, watched: true},
 
 
             // paths loaded via module imports
-            {pattern: 'target/web/typescript/main/javascripts/**/*.js', included: false, watched: false},
+            {pattern: 'target/web/typescript/main/javascripts/**/*.js', included: false, watched: true},
 
             {pattern: 'karma-test-shim.js', included: true, watched: true},
 
@@ -32,13 +32,18 @@ module.exports = function(config) {
         // proxied base paths
         proxies: {
             // required for component assests fetched by Angular's compiler
-            '/assets/lib/': '/base/node_modules/'
+            '/assets/lib/': '/base/node_modules/',
+            '/traceur.js': '/base/node_modules/traceur/bin/traceur.js'
         },
 
         port: 9876,
 
-        logLevel: config.LOG_INFO,
 
+        logLevel: config.LOG_INFO,
+        //logLevel: config.LOG_DEBUG,
+        client: {
+            captureConsole: true
+        },
         colors: true,
 
         autoWatch: true,
