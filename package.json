@@ -2,12 +2,12 @@
   "scripts": {
     "start": "concurrently \"sbt ~test:compile\" \"npm run lite-server-test\" ",
     "lite": "lite-server",
-    "pretest": "sbt test:compile",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "typings": "typings",
     "lite-server-test": "lite-server --config=./test/liteserver-test-config.json",
     "test": "karma start karma.conf.js",
+    "sbt-test": "sbt test:compile && karma start karma.conf.js",
     "posttest": "node_modules/.bin/remap-istanbul -i target/karma/coverage/coverage-final.json -o target/karma/coverage -t html",
     "coverage": "http-server -c-1 -o -p 9875 ./target/karma/coverage"
   },
