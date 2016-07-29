@@ -5,8 +5,8 @@ import {Component, OnInit} from "@angular/core"
 import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
 import {FlowService} from "./shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
-import {FlowGraphDirective} from "./flow-graph.directive"
-import {PowerFlowGraphDirective} from "./power-flow-graph.directive"
+import {FlowGraphDirective} from "./simple-graph.directive"
+import {PowerFlowGraphDirective} from "./flow-graph.directive"
 
 @Component({
     selector: "analyse",
@@ -61,11 +61,4 @@ export class AnalyseComponent implements OnInit {
         this.status.isopen = !this.status.isopen
         this.selectedTemplate = template
     }
-
-    public instantiateSelectedTemplate(template: any): void {
-        if(this.selectedTemplate != null)
-          return flow
-    }
-
-
 }

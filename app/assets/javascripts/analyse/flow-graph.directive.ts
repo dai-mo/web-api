@@ -1,67 +1,52 @@
-/**
- * Created by cmathew on 14/07/16.
- */
-import {ElementRef, Directive} from "@angular/core"
+///<reference path="../../../../typings/globals/webcola/index.d.ts"/>
 
-import d3 from "d3"
+import {ElementRef, Directive, Input, OnInit} from "@angular/core"
+import {FlowTemplate, FlowGraph} from "./flow.model"
+import {FlowGraphService} from "./shared/flow-graph.service"
+
+declare let $: any
+declare let cola: any
+
 
 @Directive({
-    selector: "[flow-graph]"
+  selector: "[flow-graph]",
+  providers: [FlowGraphService]
 })
-export class FlowGraphDirective {
 
-    private el:HTMLElement
+export class PowerFlowGraphDirective implements OnInit {
 
-    constructor(el:ElementRef) {
-        this.el = el.nativeElement
+  @Input() flowTemplate: FlowTemplate = new FlowTemplate()
 
-        let width = 300, height = 500
 
-        let select = d3.select(el.nativeElement)
+  ngOnInit() {
+    console.log(this.flowTemplate.id)
+  }
 
-        let svg = select.append("svg")
-            .attr("width", "100%")
-            .attr("height", "100%")
+  private el:HTMLElement
 
-        d3.json("assets/javascripts/analyse/graph.json", function(error, graph) {
+  private graph: FlowGraph = {
+    "nodes":[
+      {"name":"0","width":50,"height":50, "id":"0"},
+      {"name":"1","width":50,"height":50, "id":"1"},
+      {"name":"2","width":50,"height":50, "id":"2"},
+      {"name":"3","width":50,"height":50, "id":"3"},
+      {"name":"4","width":50,"height":50, "id":"4"},
+      {"name":"5","width":50,"height":50, "id":"5"},
+      {"name":"6","width":50,"height":50, "id":"6"}
+    ],
+    "links":[
+      {"source":0,"target":1},
+      {"source":1,"target":2},
+      {"source":1,"target":3},
+      {"source":2,"target":4},
+      {"source":3,"target":4},
+      {"source":4,"target":5},
+      {"source":4,"target":6}
+    ]
+  }
 
-            graph.links.forEach(function(d: any) {
-                d.source = graph.nodes[d.source]
-                d.target = graph.nodes[d.target]
-            })
-
-            let link = svg.append("g")
-                .attr("class", "link")
-                .selectAll("line")
-                .data(graph.links)
-                .enter().append("line")
-                .attr("x1", function(d: any) { return d.source.x })
-                .attr("y1", function(d: any) { return d.source.y })
-                .attr("x2", function(d: any) { return d.target.x })
-                .attr("y2", function(d: any) { return d.target.y })
-                .attr("stroke-width", 2)
-                .attr("stroke", "grey")
-
-            let node = svg.append("g")
-                .attr("class", "node")
-                .selectAll("circle")
-                .data(graph.nodes)
-                .enter().append("circle")
-                .attr("r", 10)
-                .attr("cx", function(d: any) { return d.x })
-                .attr("cy", function(d: any) { return d.y })
-                .attr("stroke", "white")
-                .attr("stroke-width", 2)
-                .attr("fill", "#3366ff")
-                .call(d3.behavior.drag()
-                    .origin(function(d: any) { return d })
-                    .on("drag", function(d: any) {
-                        let event = d3.event as DragEvent
-                        d.x = event.x, d.y = event.y
-                        d3.select(this).attr("cx", d.x).attr("cy", d.y)
-                        link.filter(function(l: any) { return l.source === d }).attr("x1", d.x).attr("y1", d.y)
-                        link.filter(function(l: any) { return l.target === d }).attr("x2", d.x).attr("y2", d.y)
-                    }))
-        })
-    }
+  constructor(el:ElementRef,
+              private flowGraphService: FlowGraphService) {
+    flowGraphService.addFlatGraph(el.nativeElement, this.graph)
+  }
 }
