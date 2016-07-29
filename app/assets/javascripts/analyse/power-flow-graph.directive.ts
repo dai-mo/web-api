@@ -12,7 +12,28 @@ declare let cola: any
 
 export class PowerFlowGraphDirective {
 
-    private el:HTMLElement
+  private el:HTMLElement
+
+  private graph = {
+    "nodes":[
+      {"name":"0","width":50,"height":50},
+      {"name":"1","width":50,"height":50},
+      {"name":"2","width":50,"height":50},
+      {"name":"3","width":50,"height":50},
+      {"name":"4","width":50,"height":50},
+      {"name":"5","width":50,"height":50},
+      {"name":"6","width":50,"height":50}
+    ],
+    "links":[
+      {"source":0,"target":1},
+      {"source":1,"target":2},
+      {"source":1,"target":3},
+      {"source":2,"target":4},
+      {"source":3,"target":4},
+      {"source":4,"target":5},
+      {"source":4,"target":6}
+    ]
+  }
 
     constructor(el:ElementRef) {
         this.el = el.nativeElement
@@ -69,18 +90,14 @@ export class PowerFlowGraphDirective {
             return vis
         }
         function createLabels(svg:any, graph:any, node:any, d3cola:any, margin:any) {
-            let labelwidth = 0, labelheight = 0
+            let labelwidth = 20, labelheight = 25
             let labels = svg.selectAll(".flowlabel")
                 .data(graph.nodes)
                 .enter().append("text")
                 .attr("class", "flowlabel")
                 .text(function (d:any) { return d.name })
                 .call(d3cola.drag)
-                .each(function (d:any) {
-                    let bb = this.getBBox()
-                    labelwidth = Math.max(labelwidth, bb.width)
-                    labelheight = Math.max(labelheight, bb.height)
-                })
+
             node.attr("width", labelwidth)
                 .each(function (d:any) {
                     d.width = labelwidth + 2 * margin + 10
@@ -90,13 +107,13 @@ export class PowerFlowGraphDirective {
                 .text(function (d:any) { return d.name })
             return labels
         }
-        function flatGraph() {
+        function flatGraph(graph: any) {
             let d3cola = cola.d3adaptor()
                 .linkDistance(80)
                 .avoidOverlaps(true)
                 .size([width, height])
             let svg = makeSVG()
-            d3.json(graphfile, function (error, graph) {
+            // d3.json(graphfile, function (error, graph) {
                 let link = svg.selectAll(".link")
                     .data(graph.links)
                     .enter().append("line")
@@ -139,7 +156,7 @@ export class PowerFlowGraphDirective {
                         })
                     // svg.zoomToFit()
                 }).on("end", function () { svg.zoomToFit() })
-            })
+            // })
         }
         function expandGroup(g:any, ms:any) {
             if (g.groups) {
@@ -268,13 +285,13 @@ export class PowerFlowGraphDirective {
             })
         }
         function isIE() { return ((navigator.appName === "Microsoft Internet Explorer") || ((navigator.appName === "Netscape") && (new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null))) }
-        flatGraph()
-        d3.select("#GridButton").on("click", powerGraph)
-        d3.select("#filemenu").on("change", function () {
-            d3.selectAll("svg").remove()
-            graphfile = this.value
-            flatGraph()
-        })
+        flatGraph(this.graph)
+        // d3.select("#GridButton").on("click", powerGraph)
+        // d3.select("#filemenu").on("change", function () {
+        //     d3.selectAll("svg").remove()
+        //     graphfile = this.value
+        //     flatGraph()
+        // })
         function powerGraph2() {
             let d3cola = cola.d3adaptor()
                 .jaccardLinkLengths(10, 0.5)
@@ -344,6 +361,6 @@ export class PowerFlowGraphDirective {
                 })
             })
         }
-        powerGraph2()
+        // powerGraph2()
     }
 }

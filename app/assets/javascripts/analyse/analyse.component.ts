@@ -23,7 +23,7 @@ export class AnalyseComponent implements OnInit {
         isopen: false
     }
     public templates: Array<any>
-    public selectedTemplate: any
+    public selectedTemplate: any = null
 
     constructor(window: Window,
                 private flowService: FlowService,
@@ -60,6 +60,11 @@ export class AnalyseComponent implements OnInit {
         event.stopPropagation()
         this.status.isopen = !this.status.isopen
         this.selectedTemplate = template
+    }
+
+    public instantiateSelectedTemplate(template: any): void {
+        if(this.selectedTemplate != null)
+          return flow
     }
 
 
