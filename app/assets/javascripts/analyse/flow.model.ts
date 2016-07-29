@@ -41,7 +41,7 @@ export class FlowNode {
   id: string
 
   constructor(id: string,
-              name: string = "",
+              name: string = "#",
               width: number = 50,
               height: number = 50) {
     this.name = name

@@ -5,12 +5,12 @@ import {Component, OnInit} from "@angular/core"
 import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
 import {FlowService} from "./shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
-import {FlowGraphDirective} from "./simple-graph.directive"
-import {PowerFlowGraphDirective} from "./flow-graph.directive"
+import {FlowGraphComponent} from "./flow-graph.component"
+
 
 @Component({
     selector: "analyse",
-    directives: [FlowGraphDirective, PowerFlowGraphDirective, DROPDOWN_DIRECTIVES],
+    directives: [FlowGraphComponent, DROPDOWN_DIRECTIVES],
     providers: [FlowService, ErrorService],
     templateUrl: "partials/analyse/view.html"
 })

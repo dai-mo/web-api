@@ -6,6 +6,8 @@ import {Injectable} from "@angular/core"
 
 import {FlowGraph} from "../flow.model"
 
+import d3 from "d3"
+
 declare let cola: any
 
 @Injectable()
@@ -15,9 +17,10 @@ export class FlowGraphService {
 
   addFlatGraph(el:HTMLElement, graph: FlowGraph) {
 
-    let width = 300, height = 500
+    let width = 500, height = 500
 
     let select = d3.select(el)
+
 
     function makeSVG() {
       let outer = select.append("svg")
@@ -63,42 +66,51 @@ export class FlowGraphService {
         .on("dblclick.zoom", vis.zoomToFit)
       return vis
     }
-    function createLabels(svg:any, graph:FlowGraph, node:any, d3cola:any, margin:any) {
-      let labelwidth = 20, labelheight = 25
-      let labels = svg.selectAll(".flowlabel")
-        .data(graph.nodes)
-        .enter().append("text")
-        .attr("class", "flowlabel")
-        .text(function (d:any) { return d.name })
-        .call(d3cola.drag)
 
-      node.attr("width", labelwidth)
-        .each(function (d:any) {
-          d.width = labelwidth + 2 * margin + 10
-          d.height = labelheight + 2 * margin
-        })
-      node.append("title")
-        .text(function (d:any) { return d.name })
-      return labels
-    }
+
     function flatGraph(graph: FlowGraph) {
+
       let d3cola = cola.d3adaptor()
         .linkDistance(80)
         .avoidOverlaps(true)
         .size([width, height])
       let svg = makeSVG()
 
+
       let link = svg.selectAll(".link")
         .data(graph.links)
         .enter().append("line")
         .attr("class", "link")
       let margin = 10
+
+      let tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+        .attr("class", "d3-tip")
+
       let node = svg.selectAll(".node")
         .data(graph.nodes)
         .enter().append("rect")
         .attr("class", "node")
         .attr("rx", 4).attr("ry", 4)
-      let label = createLabels(svg, graph, node, d3cola, margin)
+        .on("mouseenter", function(d:any) {
+          let event = d3.event as DragEvent
+          return tooltip
+            .style("visibility", "visible")
+            .style("top", (event.pageY-50)+"px").style("left",(event.pageX+40)+"px")
+            .html("<span style='color:grey'>id:</span> <strong>" + d.id + "</strong>")
+        })
+        .on("mousedown", function() {
+          return tooltip.style("visibility", "hidden")
+        })
+        .on("mouseleave", function() {
+          return tooltip.style("visibility", "hidden")
+        })
+        .call(d3cola.drag)
+
+
       d3cola
         .convergenceThreshold(0.1)
         .nodes(graph.nodes)
@@ -115,19 +127,20 @@ export class FlowGraphService {
           .attr("y1", function (d:any) { return d.route.sourceIntersection.y })
           .attr("x2", function (d:any) { return d.route.arrowStart.x })
           .attr("y2", function (d:any) { return d.route.arrowStart.y })
+        let nodewidth = 35, nodeheight = 35
         node.attr("x", function (d:any) { return d.innerBounds.x })
           .attr("y", function (d:any) { return d.innerBounds.y })
-          .attr("width", function (d:any) { return d.innerBounds.width() })
-          .attr("height", function (d:any) { return d.innerBounds.height() })
-        let b:any
-        label
-          .each(function (d:any) {
-            b = this.getBBox()
-          })
-          .attr("x", function (d:any) { return d.x })
-          .attr("y", function (d:any) {
-            return d.y + b.height / 3
-          })
+          .attr("width", nodewidth)
+          .attr("height", nodeheight)
+        // let b:any
+        // label
+        //   .each(function (d:any) {
+        //     b = this.getBBox()
+        //   })
+        //   .attr("x", function (d:any) { return d.x })
+        //   .attr("y", function (d:any) {
+        //     return d.y + b.height / 3
+        //   })
 
       }).on("end", function () { svg.zoomToFit() })
 

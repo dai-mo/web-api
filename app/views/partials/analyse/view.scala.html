@@ -18,6 +18,5 @@
 </nav>
 <div class="fill" *ngIf="selectedTemplate">
     <span class="label label-default"> {{selectedTemplate.name}} </span>
-
+    <div  class="fill" flow-graph [flowTemplate]="selectedTemplate"></div>
 </div>
-<div  class="fill" flow-graph ></div>
