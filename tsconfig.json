@@ -9,27 +9,19 @@
     "sourceMap": true,
     "rootDirs": ["app/assets","test/assets"],
     "baseUrl": ".",
-    "paths": {
-      "*": [
-        "*",
-        "target/web/node-modules/main/webjars/*"
-      ]
-    },
     "noImplicitAny":true,
     "noFallthroughCasesInSwitch":true,
     "noImplicitReturns":true,
-    "outDir": "./target/ts",
-    "lib": ["es6", "dom"]
+    "lib": ["es6", "dom"],
+    "outDir": "./target/classes/assets"
   },
-  "files": [
-    "typings/globals/d3/index.d.ts"
-  ],
   "exclude": [
     "node_modules",
     "project/target",
     "typings/main",
     "typings/main.d.ts",
     "typings/browser",
-    "target/web"
+    "target/web",
+    "target/classes"
   ]
 }

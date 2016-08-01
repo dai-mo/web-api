@@ -17,12 +17,15 @@
     <script src="@routes.Assets.versioned("lib/zone.js/dist/zone.js")"></script>
     <script src="@routes.Assets.versioned("lib/reflect-metadata/Reflect.js")"></script>
     <script src="@routes.Assets.versioned("lib/systemjs/dist/system.src.js")"></script>
-
+    <script src="@routes.Assets.versioned("lib/webcola/WebCola/cola.js")"></script>
     <script src="@routes.Assets.versioned("javascripts/systemjs.config.js")"></script>
     <script>
       System.import('app').catch(function(err){ console.error(err); });
     </script>
 </head>
 <body>
-    <app>Loading ... </app>
+    <app>
+        <p style="font-size: 125%;text-align:center;color:green;"><b>loading ....</b></p>
+    </app>
+
 </body>

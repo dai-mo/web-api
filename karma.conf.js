@@ -10,36 +10,40 @@ module.exports = function(config) {
             
             {pattern: 'node_modules/core-js/client/shim.min.js', included: true, watched: true},
             {pattern: 'node_modules/zone.js/dist/zone.js', included: true, watched: true},
-
+            {pattern: 'node_modules/zone.js/dist/async-test.js', included: true, watched: true},
             {pattern: 'node_modules/reflect-metadata/Reflect.js', included: true, watched: true},
             {pattern: 'node_modules/systemjs/dist/system.src.js', included: true, watched: true},
             {pattern: 'app/assets/javascripts/systemjs.config.js', included: true, watched: true},
-            {pattern: 'karma-test-shim.js', included: true, watched: true},
+
 
             // paths loaded via module imports
-            {pattern: 'test/dist/**/*.js', included: false, watched: true},
-            {pattern: 'target/web/public/main/javascripts/**/*.js', included: false, watched: true},
+            {pattern: 'target/web/typescript/main/javascripts/**/*.js', included: false, watched: true},
+
+            {pattern: 'karma-test-shim.js', included: true, watched: true},
 
             // third party libs
-            {pattern: 'node_modules/@angular/platform-browser/**/*.js', included: false, watched: false},
+            {pattern: 'node_modules/**/*.js', included: false, watched: false},
 
             // paths to support debugging with source maps in dev tools
             {pattern: 'app/assets/**/*.ts', included: false, watched: false},
-            {pattern: 'test/assets/**/*.ts', included: false, watched: false},
-            {pattern: 'test/dist/**/*.js.map', included: false, watched: false}
+            {pattern: 'target/web/typescript/main/javascripts/**/*.js.map', included: false, watched: false}
         ],
 
         // proxied base paths
         proxies: {
             // required for component assests fetched by Angular's compiler
-            '/test/': '/base/test/',
-            '/assets/lib/': '/base/node_modules/'
+            '/assets/lib/': '/base/node_modules/',
+            '/traceur.js': '/base/node_modules/traceur/bin/traceur.js'
         },
 
         port: 9876,
 
-        logLevel: config.LOG_INFO,
 
+        logLevel: config.LOG_INFO,
+        //logLevel: config.LOG_DEBUG,
+        client: {
+            captureConsole: true
+        },
         colors: true,
 
         autoWatch: true,
@@ -68,7 +72,7 @@ module.exports = function(config) {
         reporters: ['mocha', 'dots', 'junit', 'coverage'],
 
         junitReporter: {
-            outputDir: 'test/dist',
+            outputDir: 'target/karma',
             outputFile: 'test-results.xml',
             useBrowserName: false
         },
@@ -80,7 +84,7 @@ module.exports = function(config) {
 
         coverageReporter: {
             reporters:[
-                {type: 'json', dir: 'test', subdir: 'coverage', file: 'coverage-final.json'}
+                {type: 'json', dir: 'target/karma', subdir: 'coverage', file: 'coverage-final.json'}
             ]
         },
 

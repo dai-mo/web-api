@@ -6,7 +6,7 @@ import controllers.routing.ResourceRouter
 import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
 import org.dcs.commons.JsonSerializerImplicits._
 import org.dcs.flow.nifi.{NifiApiConfig, NifiFlowClient}
-import play.api.mvc.{Action, Controller, EssentialAction}
+import play.api.mvc.EssentialAction
 
 /**
   * Created by cmathew on 08/06/16.

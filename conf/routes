@@ -27,7 +27,7 @@ GET     /api/users/:id/auth              controllers.UserApi.auth(id: Long)
 ->      /api/flow/templates              controllers.FlowTemplateApi
 # - Instance Api
 ->      /api/flow/instances              controllers.FlowInstanceApi
-GET     /api/flow/instances/create/:tid  controllers.FlowInstanceApi.create(tid: String)
+POST    /api/flow/instances/create/:tid  controllers.FlowInstanceApi.create(tid: String)
 
 
 # Map static resources from the /public folder to the /assets URL path

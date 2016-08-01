@@ -6,6 +6,7 @@
         '@angular':'assets/lib/@angular',
         'rxjs':'assets/lib/rxjs',
         'symbol-observable': 'assets/lib/rxjs/node_modules/symbol-observable',
+        'webcola':'assets/lib/webcola/WebCola',
         'd3':'assets/lib/d3',
         'moment': 'assets/lib/moment',
         'ng2-bootstrap': 'assets/lib/ng2-bootstrap'
@@ -18,6 +19,7 @@
         'assets/lib': {defaultExtension: 'js'},
         'symbol-observable': {defaultExtension: 'js', main: 'index.js'},
         'd3': {defaultExtension: 'js', main: 'd3.js'},
+        'webcola': {defaultExtension: 'js', main: 'index.js'},
         'moment': {defaultExtension: 'js', main: 'moment.js'},
         'ng2-bootstrap': {defaultExtension: 'js', main: 'ng2-bootstrap.js'}
 
@@ -27,11 +29,14 @@
         'common',
         'compiler',
         'core',
-        'http',
         'platform-browser',
         'platform-browser-dynamic',
         'router',
         'forms'
+    ];
+
+    var ngIndexPackageNames = [
+        'http'
     ];
 
     function packIndex(pkgName) {
@@ -48,7 +53,8 @@
     // Add package entries for angular packages
     var setPackageConfig = System.packageWithIndex ? packIndex : packUmd;
     ngPackageNames.forEach(setPackageConfig);
-
+    ngIndexPackageNames.forEach(packIndex);
+    
     // Add map entries for angular packages
     // ngPackageNames.forEach(function(pkgName){
     //     addAngularModulesToMap(pkgName);

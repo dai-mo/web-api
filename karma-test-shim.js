@@ -16,7 +16,7 @@ function isSpecFile(path) {
 }
 
 function isBuiltFile(path) {
-    var builtPath = '/base/test/dist';
+    var builtPath = '/base/target/web/typescript/main/javascripts';
     return isJsFile(path) && (path.substr(0, builtPath.length) == builtPath);
 }
 
@@ -32,3 +32,7 @@ System.import('@angular/platform-browser/src/browser/browser_adapter')
         }));
     })
     .then(function() { __karma__.start(); }, function(error) { __karma__.error(error.stack || error); });
+
+System.config({
+    "defaultJSExtensions": true
+});

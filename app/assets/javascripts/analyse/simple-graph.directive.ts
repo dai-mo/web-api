@@ -6,7 +6,7 @@ import {ElementRef, Directive} from "@angular/core"
 import d3 from "d3"
 
 @Directive({
-    selector: "[flow-graph]"
+    selector: "[simple-flow-graph]"
 })
 export class FlowGraphDirective {
 

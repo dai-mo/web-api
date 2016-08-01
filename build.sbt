@@ -7,12 +7,21 @@ import sbtrelease.ReleaseStateTransformations.{setReleaseVersion=>_,_}
 val projectName = "org.dcs.web"
 name := projectName
 
-lazy val web = (project in file(".")).enablePlugins(PlayScala, BuildInfoPlugin, GitVersioning, GitBranchPrompt).
-  settings(
-  // Disable NPM node modules
-  // JsEngineKeys.npmNodeModules in Assets := Nil,
-  // JsEngineKeys.npmNodeModules in TestAssets := Nil
-)
+lazy val UNIT = sbt.config("unit") extend Test
+lazy val IT = sbt.config("it") extend Test
+
+lazy val web = Project("web", file(".")).
+  enablePlugins(PlayScala, BuildInfoPlugin, GitVersioning, GitBranchPrompt).
+  configs(IT).
+  settings(inConfig(IT)(Defaults.testTasks): _*).
+  settings(testOptions in IT := Seq(Tests.Argument("-n", "IT"))).
+  configs(UNIT).
+  settings(inConfig(UNIT)(Defaults.testTasks): _*).
+  settings(testOptions in UNIT := Seq(
+    Tests.Argument("-l", "IT"),
+    Tests.Argument("-l", "E2E")
+  )
+  )
 scalaVersion := "2.11.7"
 
 crossPaths := false
