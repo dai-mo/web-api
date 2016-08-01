@@ -39,6 +39,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
       case ("", "wsview.html") => Ok(views.html.partials.wsview())
       case ("", "layout.html") => Ok(views.html.partials.layout())
       case ("analyse", "view.html") => Ok(views.html.partials.analyse.view())
+      case ("analyse", "flowtabs.html") => Ok(views.html.partials.analyse.flowtabs())
       case ("mobilise", "view.html") => Ok(views.html.partials.mobilise.view())
       case ("visualise", "view.html") => Ok(views.html.partials.visualise.view())
       case _ => NotFound

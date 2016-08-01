@@ -46,7 +46,8 @@ export class FlowGraphService {
       let vis:any = outer.append("g")
       let redraw = function (transition:any) {
         return (transition ? vis.transition() : vis)
-          .attr("transform", "translate(" + zoom.translate() + ") scale(" + zoom.scale() + ")")
+          // FIXME: zooming currently produces the error - Error: <g> attribute transform: Expected number, "translate(NaN,NaN) scale(N…".
+          // .attr("transform", "translate(" + zoom.translate() + ") scale(" + zoom.scale() + ")")
       }
       vis.zoomToFit = function () {
         let b = cola.vpsc.Rectangle.empty()

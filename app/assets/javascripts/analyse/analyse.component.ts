@@ -6,11 +6,12 @@ import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
 import {FlowService} from "./shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {FlowGraphComponent} from "./flow-graph.component"
+import {FlowTabsComponent} from "./flow-tabs.component"
 
 
 @Component({
     selector: "analyse",
-    directives: [FlowGraphComponent, DROPDOWN_DIRECTIVES],
+    directives: [FlowTabsComponent, DROPDOWN_DIRECTIVES],
     providers: [FlowService, ErrorService],
     templateUrl: "partials/analyse/view.html"
 })

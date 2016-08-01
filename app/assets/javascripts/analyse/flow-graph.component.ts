@@ -1,6 +1,6 @@
 
-import {ElementRef, Input, OnInit, Component, Directive} from "@angular/core"
-import {FlowTemplate, FlowGraph, FlowInstance} from "./flow.model"
+import {ElementRef, Input, OnInit, Directive} from "@angular/core"
+import {FlowGraph, FlowTab, FlowInstance} from "./flow.model"
 import {FlowGraphService} from "./shared/flow-graph.service"
 import {FlowService} from "./shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
@@ -18,21 +18,21 @@ export class FlowGraphComponent implements OnInit {
 
   private el:HTMLElement
 
-  @Input() flowTemplate: FlowTemplate = null
+  @Input() flowTab: FlowTab = null
 
 
   ngOnInit() {
-    // if (this.flowTemplate != null) {
-    //   this.flowService
-    //     .instantiateTemplate(this.flowTemplate.id)
-    //     .subscribe(
-    //       (flowInstance: FlowInstance) => {
-    //         this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(flowInstance))
-    //       },
-    //       (error:any) => this.errorService.handleError(error)
-    //     )
-    // }
-    this.flowGraphService.addFlatGraph(this.el, this.testGraph)
+    if (this.flowTab != null && this.flowTab.type === FlowTab.TemplateType) {
+      this.flowService
+        .instantiateTemplate(this.flowTab.id)
+        .subscribe(
+          (flowInstance: FlowInstance) => {
+            this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(flowInstance))
+          },
+          (error:any) => this.errorService.handleError(error)
+        )
+    }
+    // this.flowGraphService.addFlatGraph(this.el, this.testGraph)
   }
 
 

@@ -12,18 +12,16 @@
     "noImplicitAny":true,
     "noFallthroughCasesInSwitch":true,
     "noImplicitReturns":true,
-    "outDir": "./dist",
-    "lib": ["es6", "dom"]
+    "lib": ["es6", "dom"],
+    "outDir": "./target/classes/assets"
   },
-  "files": [
-    "typings/index.d.ts"
-  ],
   "exclude": [
     "node_modules",
     "project/target",
     "typings/main",
     "typings/main.d.ts",
     "typings/browser",
-    "target/web"
+    "target/web",
+    "target/classes"
   ]
 }

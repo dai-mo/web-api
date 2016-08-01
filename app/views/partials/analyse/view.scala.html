@@ -16,7 +16,7 @@
         </li>
     </ul>
 </nav>
-<div class="fill" *ngIf="selectedTemplate">
-    <span class="label label-default"> {{selectedTemplate.name}} </span>
-    <div  class="fill" flow-graph [flowTemplate]="selectedTemplate"></div>
-</div>
+
+<flow-tabs class="fill" [templateToInstantiate]="selectedTemplate"></flow-tabs>
+
+
