@@ -201,7 +201,7 @@ html, body {
   stroke: #555;
   stroke-width: 3px;
   stroke-opacity: 1;
-  marker-end: url(#end-arrow);
+
 }
 
 .flowlabel {

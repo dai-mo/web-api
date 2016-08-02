@@ -27,7 +27,7 @@ export class FlowGraphComponent implements OnInit {
         .instantiateTemplate(this.flowTab.id)
         .subscribe(
           (flowInstance: FlowInstance) => {
-            this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(flowInstance))
+            this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(flowInstance), Math.random().toString())
           },
           (error:any) => this.errorService.handleError(error)
         )

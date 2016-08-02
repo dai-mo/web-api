@@ -4,7 +4,7 @@
 
 import {Injectable} from "@angular/core"
 
-import {FlowGraph} from "../flow.model"
+import {FlowGraph, FlowNode} from "../flow.model"
 
 import d3 from "d3"
 
@@ -15,29 +15,29 @@ export class FlowGraphService {
 
 
 
-  addFlatGraph(el:HTMLElement, graph: FlowGraph) {
+  addFlatGraph(el:HTMLElement, graph: FlowGraph, id: string) {
 
     let width = 500, height = 500
 
     let select = d3.select(el)
 
 
-    function makeSVG() {
+    function makeSVG(id: string) {
       let outer = select.append("svg")
         .attr("width", "100%")
         .attr("height", "100%")
         .attr("pointer-events", "all")
       // define arrow markers for graph links
-      outer.append("svg:defs").append("svg:marker")
-        .attr("id", "end-arrow")
+      outer.append("defs").append("marker")
+        .attr("id", "end-arrow-" + id)
         .attr("viewBox", "0 -5 10 10")
         .attr("refX", 5)
         .attr("markerWidth", 3)
         .attr("markerHeight", 3)
         .attr("orient", "auto")
-        .append("svg:path")
-        .attr("d", "M0,-5L10,0L0,5L2,0")
-        .attr("stroke-width", "0px")
+        .append("path")
+        .attr("d", "M0,-5L10,0L0,5")
+        .attr("stroke-width", "2px")
         .attr("fill", "#555")
       let zoomBox = outer.append("rect")
         .attr("class", "background")
@@ -46,8 +46,8 @@ export class FlowGraphService {
       let vis:any = outer.append("g")
       let redraw = function (transition:any) {
         return (transition ? vis.transition() : vis)
-          // FIXME: zooming currently produces the error - Error: <g> attribute transform: Expected number, "translate(NaN,NaN) scale(N…".
-          // .attr("transform", "translate(" + zoom.translate() + ") scale(" + zoom.scale() + ")")
+        // FIXME: zooming currently produces the error - Error: <g> attribute transform: Expected number, "translate(NaN,NaN) scale(N…".
+        //  .attr("transform", "translate(" + zoom.translate() + ") scale(" + zoom.scale() + ")")
       }
       vis.zoomToFit = function () {
         let b = cola.vpsc.Rectangle.empty()
@@ -69,13 +69,13 @@ export class FlowGraphService {
     }
 
 
-    function flatGraph(graph: FlowGraph) {
+    function flatGraph(graph: FlowGraph, id: string) {
 
       let d3cola = cola.d3adaptor()
         .linkDistance(80)
         .avoidOverlaps(true)
         .size([width, height])
-      let svg = makeSVG()
+      let svg = makeSVG(id)
 
 
       let link = svg.selectAll(".link")
@@ -124,29 +124,21 @@ export class FlowGraphService {
           if (isIE())
             this.parentNode.insertBefore(this, this)
         })
-        link.attr("x1", function (d:any) { return d.route.sourceIntersection.x })
+        link.attr("marker-end", "url(#end-arrow-" + id +  ")")
+          .attr("x1", function (d:any) { return d.route.sourceIntersection.x })
           .attr("y1", function (d:any) { return d.route.sourceIntersection.y })
           .attr("x2", function (d:any) { return d.route.arrowStart.x })
           .attr("y2", function (d:any) { return d.route.arrowStart.y })
-        let nodewidth = 35, nodeheight = 35
+        let nodewidth = 30, nodeheight = 30
         node.attr("x", function (d:any) { return d.innerBounds.x })
           .attr("y", function (d:any) { return d.innerBounds.y })
           .attr("width", nodewidth)
           .attr("height", nodeheight)
-        // let b:any
-        // label
-        //   .each(function (d:any) {
-        //     b = this.getBBox()
-        //   })
-        //   .attr("x", function (d:any) { return d.x })
-        //   .attr("y", function (d:any) {
-        //     return d.y + b.height / 3
-        //   })
 
       }).on("end", function () { svg.zoomToFit() })
 
     }
     function isIE() { return ((navigator.appName === "Microsoft Internet Explorer") || ((navigator.appName === "Netscape") && (new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null))) }
-    flatGraph(graph)
+    flatGraph(graph, id)
   }
 }
