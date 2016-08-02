@@ -1,8 +1,9 @@
+import java.io.File
+
 import sbt._
 import NativePackagerHelper._
-
 import sbtrelease._
-import sbtrelease.ReleaseStateTransformations.{setReleaseVersion=>_,_}
+import sbtrelease.ReleaseStateTransformations.{setReleaseVersion => _, _}
 
 val projectName = "org.dcs.web"
 name := projectName
@@ -64,6 +65,25 @@ copyNodeModules := {
   val node_modules = new File("node_modules")
   val target = new File("target/web/web-modules/main/webjars/lib")
   IO.copyDirectory(node_modules,target,true, true)
+  // FIXME: Need to find a better way to exclude js test dependencies
+  val jsLibBaseDir = "target/web/web-modules/main/webjars/lib/"
+  val toDelete: List[File]  = List(new File(jsLibBaseDir + "webcola/WebCola/examples"),
+    new File(jsLibBaseDir + "phantomjs-prebuilt"),
+    new File(jsLibBaseDir + "karma"),
+    new File(jsLibBaseDir + "concurrently"),
+    new File(jsLibBaseDir + "jasmine-core"),
+    new File(jsLibBaseDir + "typescript"),
+    new File(jsLibBaseDir + "typings"),
+    new File(jsLibBaseDir + "karma"),
+    new File(jsLibBaseDir + "karma-chrome-launcher"),
+    new File(jsLibBaseDir + "karma-coverage"),
+    new File(jsLibBaseDir + "karma-jasmine"),
+    new File(jsLibBaseDir + "phantomjs-prebuilt"),
+    new File(jsLibBaseDir + "karma-phantomjs-launcher"),
+    new File(jsLibBaseDir + "karma-mocha-reporter"),
+    new File(jsLibBaseDir + "karma-junit-reporter"),
+    new File(jsLibBaseDir + "remap-istanbul"))
+  IO.delete(toDelete)
 }
 
 addCommandAlias("resolveNpm", ";web-assets:jseNpmNodeModules;copyNodeModules")
@@ -71,6 +91,11 @@ addCommandAlias("resolveNpm", ";web-assets:jseNpmNodeModules;copyNodeModules")
 pipelineStages := Seq(uglify, digest, gzip)
 
 crossPaths := false
+
+excludeFilter in Universal := {
+  val wc_examples = (baseDirectory.value / "target" / "web" /" public" / "main" /"lib"/ "webcola" / "WebCola" / "examples" ).getCanonicalPath
+  new SimpleFileFilter(_.getCanonicalPath startsWith wc_examples)
+}
 
 
 publish <<= (publish) dependsOn  dist

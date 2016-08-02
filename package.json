@@ -1,11 +1,9 @@
 {
   "scripts": {
     "start": "concurrently \"sbt ~test:compile\" \"karma start karma.conf.js -- --singleRun false\" ",
-    "lite": "lite-server",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "typings": "typings",
-    "lite-server-test": "lite-server --config=./test/liteserver-test-config.json",
     "test": "karma start karma.conf.js",
     "sbt-test": "sbt test:compile && karma start karma.conf.js",
     "posttest": "node_modules/.bin/remap-istanbul -i target/karma/coverage/coverage-final.json -o target/karma/coverage -t html",
@@ -31,7 +29,6 @@
     "reflect-metadata": "0.1.3",
     "rxjs": "5.0.0-beta.6",
     "systemjs": "0.19.31",
-    "traceur": "0.0.111",
     "todomvc-common": "1.0.2",
     "es6-promise": "3.1.2",
     "es6-shim": "0.35.1",
@@ -44,7 +41,6 @@
   "devDependencies": {
     "concurrently": "^2.0.0",
     "jasmine-core": "2.4.1",
-    "lite-server": "^2.2.0",
     "typescript": "2.0.0-dev.20160707",
     "typings": "^1.0.4",
     "karma": "0.13.19",
@@ -55,7 +51,6 @@
     "karma-phantomjs-launcher": "1.0.1",
     "karma-mocha-reporter": "2.0.4",
     "karma-junit-reporter": "1.1.0",
-    "http-server": "0.8.5",
     "remap-istanbul": "0.6.4"
   }
 }
