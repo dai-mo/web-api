@@ -25,6 +25,8 @@ lazy val web = Project("web", file(".")).
   )
 scalaVersion := "2.11.7"
 
+updateOptions := updateOptions.value.withCachedResolution(true)
+
 crossPaths := false
 
 Common.commonSettings

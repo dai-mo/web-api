@@ -17,16 +17,20 @@ export class FlowGraphService {
 
   addFlatGraph(el:HTMLElement, graph: FlowGraph, id: string) {
 
-    let width = 500, height = 500
+    let width = 500
+    let height = 500
 
     let select = d3.select(el)
 
 
     function makeSVG(id: string) {
+
       let outer = select.append("svg")
         .attr("width", "100%")
         .attr("height", "100%")
         .attr("pointer-events", "all")
+
+
       // define arrow markers for graph links
       outer.append("defs").append("marker")
         .attr("id", "end-arrow-" + id)
@@ -89,6 +93,7 @@ export class FlowGraphService {
         .style("position", "absolute")
         .style("z-index", "10")
         .style("visibility", "hidden")
+        .style("display", "none")
         .attr("class", "d3-tip")
 
       let node = svg.selectAll(".node")
@@ -100,6 +105,7 @@ export class FlowGraphService {
           let event = d3.event as DragEvent
           return tooltip
             .style("visibility", "visible")
+            .style("display", "block")
             .style("top", (event.pageY-50)+"px").style("left",(event.pageX+40)+"px")
             .html("<span style='color:grey'>id:</span> <strong>" + d.id + "</strong>")
         })

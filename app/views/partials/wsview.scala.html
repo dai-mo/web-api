@@ -11,18 +11,9 @@ onmousedown="return false">
         <button type="button" class="btn" ><span class="fa fa-expand"></span></button>
     </div>
 </div>
-@*<div *ngIf="name === 'analyse'" class="card-block analyse" ws-panel>*@
-    @*<analyse class="wsview"></analyse>*@
-@*</div>*@
-@*<div *ngIf="name === 'mobilise'" class="card-block  mobilise" ws-panel>*@
-    @*<mobilise class="wsview" ></mobilise>*@
-@*</div>*@
-@*<div *ngIf="name === 'visualise'" class="card-block  visualise" ws-panel>*@
-    @*<visualise class="wsview"></visualise>*@
-@*</div>*@
 
-<div class="card-block" ws-panel>
+<div class="card-block flex-panel">
     <visualise class="wsview" *ngIf="name === 'visualise'"></visualise>
     <mobilise class="wsview" *ngIf="name === 'mobilise'"></mobilise>
-    <analyse class="wsview" *ngIf="name === 'analyse'"></analyse>
+    <analyse class="flex-header-panel" *ngIf="name === 'analyse'"></analyse>
 </div>
