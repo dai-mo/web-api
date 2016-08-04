@@ -29,6 +29,7 @@ export class FlowGraphService {
         .attr("width", "100%")
         .attr("height", "100%")
         .attr("pointer-events", "all")
+        .attr("class", "flex-panel")
 
 
       // define arrow markers for graph links
@@ -110,10 +111,10 @@ export class FlowGraphService {
             .html("<span style='color:grey'>id:</span> <strong>" + d.id + "</strong>")
         })
         .on("mousedown", function() {
-          return tooltip.style("visibility", "hidden")
+          return tooltip.style("visibility", "hidden").style("display", "none")
         })
         .on("mouseleave", function() {
-          return tooltip.style("visibility", "hidden")
+          return tooltip.style("visibility", "hidden").style("display", "none")
         })
         .call(d3cola.drag)
 
