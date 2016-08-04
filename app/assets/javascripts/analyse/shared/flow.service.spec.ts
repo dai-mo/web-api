@@ -70,7 +70,7 @@ describe("Flow Service", () => {
       })
 
       flowService
-        .getTemplates()
+        .templates()
         .subscribe(
           templates => {
             expect(templates.length).toBe(2)

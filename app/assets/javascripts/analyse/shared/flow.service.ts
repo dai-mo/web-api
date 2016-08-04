@@ -13,13 +13,13 @@ export class FlowService {
 
   private templatesUrl = "api/flow/templates"
   private createInstanceBaseUrl: string = "api/flow/instances/create/"
-  private destroyInstanceBaseUrl: string = "api/flow/instances/"
+  private instancesBaseUrl: string = "api/flow/instances/"
 
   constructor(private http: Http) {
 
   }
 
-  getTemplates(): Observable<Array<FlowTemplate>> {
+  templates(): Observable<Array<FlowTemplate>> {
     return this.http.get(this.templatesUrl).map(response => response.json())
   }
 
@@ -27,8 +27,12 @@ export class FlowService {
     return this.http.post(this.createInstanceBaseUrl + templateId, {}).map(response => response.json())
   }
 
+  instances(): Observable<Array<FlowInstance>> {
+    return this.http.get(this.instancesBaseUrl).map(response => response.json())
+  }
+
   destroyInstance(flowInstanceId: string): Observable<FlowInstance> {
-    return this.http.delete(this.destroyInstanceBaseUrl + flowInstanceId, {}).map(response => response.json())
+    return this.http.delete(this.instancesBaseUrl + flowInstanceId, {}).map(response => response.json())
   }
 
   toFlowGraph(flowInstance: FlowInstance): FlowGraph {

@@ -34,7 +34,9 @@ export class FlowTabsComponent implements OnInit {
   @Input()
   set templateToInstantiate(flowTemplate: FlowTemplate) {
     if (flowTemplate != null) {
-      let tab = new FlowTab("#" + (this.tabs.length + 1), FlowTab.TemplateType, flowTemplate.id, flowTemplate.name)
+      // create a flow tab with the flow template id - this will be updated later
+      // to the instantiated flow instance id
+      let tab = new FlowTab("#" + (this.tabs.length + 1), flowTemplate.id, flowTemplate.name)
       this.tabs.push(tab)
       this.setActiveTab(tab)
     }
@@ -53,9 +55,18 @@ export class FlowTabsComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(this.tabs.length > 0)
-      this.tabs[0].active = true
+    this.flowService
+      .instances()
+      .subscribe(
+        instances => {
+          instances.map(i => {
+            let flowTab = new FlowTab("#" + (this.tabs.length + 1), i.id, "Flow Instance", i)
+            this.tabs.push(flowTab)
+          })
+          if(this.tabs.length > 0)
+            this.tabs[0].active = true
+        },
+        (error: any) => this.errorService.handleError(error)
+      )
   }
-
-
 }

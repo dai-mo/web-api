@@ -36,7 +36,7 @@ export class AnalyseComponent implements OnInit {
 
     getTemplates() {
         this.flowService
-            .getTemplates()
+            .templates()
             .subscribe(
                 templates => {
                     this.templates = templates
