@@ -16,10 +16,12 @@ import play.api.mvc.EssentialAction
 class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAction: CSRFTokenAction)
   extends ResourceRouter[String] {
 
+  val DefaultUserId = "root"
+
   object NifiFlowApi extends NifiFlowClient with NifiApiConfig
 
-  override def list: EssentialAction = csrfCheckAction {
-    NotImplemented
+  override def list: EssentialAction = csrfCheckAction { implicit request =>
+    serialize(NifiFlowApi.instances(DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
   }
 
   override def update(id: String): EssentialAction = csrfCheckAction { implicit request =>
@@ -27,11 +29,11 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
   }
 
   override def destroy(id: String): EssentialAction = csrfCheckAction { implicit request =>
-    Ok(NifiFlowApi.remove(id, Req.tokenOrError(Req.AuthTokenKey)).toJson).as(JSON)
+    serialize(NifiFlowApi.remove(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
   }
 
   override def find(id: String): EssentialAction = csrfCheckAction { implicit request =>
-    Ok(NifiFlowApi.instance(id, Req.tokenOrError(Req.AuthTokenKey)).toJson).as(JSON)
+    serialize(NifiFlowApi.instance(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
   }
 
   override def create: EssentialAction = csrfCheckAction {
@@ -39,7 +41,7 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
   }
 
   def create(flowTemplateId: String): EssentialAction = csrfCheckAction { implicit request =>
-    Ok(NifiFlowApi.instantiate(flowTemplateId, Req.tokenOrError(Req.AuthTokenKey)).toJson).as(JSON)
+    serialize(NifiFlowApi.instantiate(flowTemplateId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
   }
 }
 

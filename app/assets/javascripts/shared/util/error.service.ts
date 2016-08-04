@@ -4,7 +4,7 @@
 
 export class ErrorService {
     handleError(error: any) {
-        console.error("An error occurred", error)
+        alert(JSON.stringify(error))
         return Promise.reject(error.message || error)
     }
 }

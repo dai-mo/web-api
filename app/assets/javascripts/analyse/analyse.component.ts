@@ -36,7 +36,7 @@ export class AnalyseComponent implements OnInit {
 
     getTemplates() {
         this.flowService
-            .getTemplates()
+            .templates()
             .subscribe(
                 templates => {
                     this.templates = templates
@@ -56,7 +56,7 @@ export class AnalyseComponent implements OnInit {
         this.status.isopen = !this.status.isopen
     }
 
-    public selectTemplate(template: any): void {
+    public selectTemplate(event: MouseEvent, template: any): void {
         event.preventDefault()
         event.stopPropagation()
         this.status.isopen = !this.status.isopen

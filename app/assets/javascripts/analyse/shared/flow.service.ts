@@ -12,18 +12,27 @@ import {FlowTemplate, FlowInstance, FlowGraph, FlowLink, FlowNode, Processor} fr
 export class FlowService {
 
   private templatesUrl = "api/flow/templates"
-  private instanceBaseUrl: string = "api/flow/instances/create/"
+  private createInstanceBaseUrl: string = "api/flow/instances/create/"
+  private instancesBaseUrl: string = "api/flow/instances/"
 
   constructor(private http: Http) {
 
   }
 
-  getTemplates(): Observable<Array<FlowTemplate>> {
+  templates(): Observable<Array<FlowTemplate>> {
     return this.http.get(this.templatesUrl).map(response => response.json())
   }
 
   instantiateTemplate(templateId: string): Observable<FlowInstance> {
-    return this.http.post(this.instanceBaseUrl + templateId, {}).map(response => response.json())
+    return this.http.post(this.createInstanceBaseUrl + templateId, {}).map(response => response.json())
+  }
+
+  instances(): Observable<Array<FlowInstance>> {
+    return this.http.get(this.instancesBaseUrl).map(response => response.json())
+  }
+
+  destroyInstance(flowInstanceId: string): Observable<FlowInstance> {
+    return this.http.delete(this.instancesBaseUrl + flowInstanceId, {}).map(response => response.json())
   }
 
   toFlowGraph(flowInstance: FlowInstance): FlowGraph {
@@ -33,7 +42,7 @@ export class FlowService {
       let tp: Processor[] = flowInstance.processors.filter(p =>  p.id === c.destination.id)
       if(sp != null && tp != null)
         links.push(new FlowLink(flowInstance.processors.indexOf(sp[0]),
-          flowInstance.processors.indexOf(tp[0])))
+            flowInstance.processors.indexOf(tp[0])))
     })
 
     let nodes: FlowNode[] = flowInstance.processors.map(p => new FlowNode(p.id))

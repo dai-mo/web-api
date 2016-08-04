@@ -22,17 +22,22 @@ export class FlowGraphComponent implements OnInit {
 
 
   ngOnInit() {
-    if (this.flowTab != null && this.flowTab.type === FlowTab.TemplateType) {
-      this.flowService
-        .instantiateTemplate(this.flowTab.id)
-        .subscribe(
-          (flowInstance: FlowInstance) => {
-            this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(flowInstance))
-          },
-          (error:any) => this.errorService.handleError(error)
-        )
+    if (this.flowTab != null) {
+      if(this.flowTab.flowInstance == null) {
+        this.flowService
+          .instantiateTemplate(this.flowTab.id)
+          .subscribe(
+            (flowInstance:FlowInstance) => {
+              this.flowTab.id = flowInstance.id
+              this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(flowInstance), Math.random().toString())
+            },
+            (error:any) => this.errorService.handleError(error)
+          )
+      } else {
+        this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(this.flowTab.flowInstance), Math.random().toString())
+      }
     }
-    // this.flowGraphService.addFlatGraph(this.el, this.testGraph)
+// this.flowGraphService.addFlatGraph(this.el, this.testGraph, "#1")
   }
 
 
