@@ -78,6 +78,7 @@ export class FlowTab {
   title: string
   id: string
   name: string
+  label: string
   flowInstance: FlowInstance
   active: boolean
   disabled: boolean
@@ -87,6 +88,7 @@ export class FlowTab {
   constructor(title: string,
               id: string,
               name: string,
+              label: string,
               flowInstance: FlowInstance = null,
               active: boolean = false,
               disabled: boolean = false,
@@ -94,6 +96,7 @@ export class FlowTab {
     this.title = title
     this.id = id
     this.name = name
+    this.label = label
     this.active = active
     this.disabled = disabled
     this.removable = removable

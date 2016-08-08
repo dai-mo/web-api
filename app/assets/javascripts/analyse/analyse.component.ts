@@ -7,6 +7,7 @@ import {FlowService} from "./shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {FlowGraphComponent} from "./flow-graph.component"
 import {FlowTabsComponent} from "./flow-tabs.component"
+import {FlowTemplate, FlowInstance, FlowTab} from "./flow.model"
 
 
 @Component({
@@ -24,7 +25,7 @@ export class AnalyseComponent implements OnInit {
         isopen: false
     }
     public templates: Array<any>
-    public selectedTemplate: any = null
+    public flowInstanceToAdd: FlowInstance = null
 
     constructor(window: Window,
                 private flowService: FlowService,
@@ -54,10 +55,21 @@ export class AnalyseComponent implements OnInit {
         this.status.isopen = !this.status.isopen
     }
 
-    public selectTemplate(event: MouseEvent, template: any): void {
+    public selectTemplate(event: MouseEvent, flowTemplate: FlowTemplate): void {
         event.preventDefault()
         event.stopPropagation()
         this.status.isopen = !this.status.isopen
-        this.selectedTemplate = template
+        this.instantiateTemplate(flowTemplate)
+    }
+
+    private instantiateTemplate(flowTemplate: FlowTemplate): void {
+        this.flowService
+          .instantiateTemplate(flowTemplate.id)
+          .subscribe(
+            (flowInstance: FlowInstance) => {
+                this.flowInstanceToAdd = flowInstance
+            },
+            (error:any) => this.errorService.handleError(error)
+          )
     }
 }
