@@ -83,6 +83,8 @@ describe("Flow Service", () => {
 
         let mockResponseBody: FlowInstance = {
           "id": "",
+          "name": "DateConversion",
+          "nameId": "aff997c4-d43c-4a7e-93b6-1f1ae2bddf8a",
           "version": "3",
           "processors": [
             {
