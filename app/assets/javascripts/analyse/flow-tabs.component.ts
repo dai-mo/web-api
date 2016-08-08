@@ -1,7 +1,7 @@
 import {TAB_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap"
 import {CORE_DIRECTIVES} from "@angular/common"
 import {Component, OnInit, Input} from "@angular/core"
-import {FlowTemplate, FlowTab} from "./flow.model"
+import {FlowTemplate, FlowTab, Processor, FlowInstance} from "./flow.model"
 import {FlowGraphComponent} from "./flow-graph.component"
 import {FlowService} from "./shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
@@ -14,11 +14,19 @@ import {ErrorService} from "../shared/util/error.service"
   templateUrl: "partials/analyse/flowtabs.html"
 })
 export class FlowTabsComponent implements OnInit {
+
+  public nifiUrl: string
   public tabs:Array<FlowTab> = []
+
+
+  private stateRunning = "RUNNING"
+  private stateStopped = "STOPPED"
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService) {
-
+    this.nifiUrl = window.location.protocol + "//" +
+      window.location.host +
+      "/nifi"
   }
 
   public setActiveTab(flowTab: FlowTab):void {
@@ -30,13 +38,21 @@ export class FlowTabsComponent implements OnInit {
     })
   }
 
+  public toggleTabLabel(flowTab: FlowTab) {
+    flowTab.labelToggle = !flowTab.labelToggle
+  }
+
+  public tabLabel(flowTab: FlowTab): string {
+    if(flowTab.labelToggle)
+      return flowTab.flowInstance.nameId
+    else
+      return flowTab.flowInstance.name
+  }
 
   @Input()
-  set templateToInstantiate(flowTemplate: FlowTemplate) {
-    if (flowTemplate != null) {
-      // create a flow tab with the flow template id - this will be updated later
-      // to the instantiated flow instance id
-      let tab = new FlowTab("#" + (this.tabs.length + 1), flowTemplate.id, flowTemplate.name)
+  set addFlowInstance(flowInstance: FlowInstance) {
+    if(flowInstance != null) {
+      let tab = new FlowTab("#" + (this.tabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
       this.tabs.push(tab)
       this.setActiveTab(tab)
     }
@@ -48,7 +64,30 @@ export class FlowTabsComponent implements OnInit {
       .subscribe(
         deleteOK => {
           this.tabs.filter(t => t.id === flowTab.id).forEach(t => this.tabs.splice(this.tabs.indexOf(t), 1))
-          alert("Flow Instance with id " + flowTab.id + " deleted")
+        },
+        (error: any) => this.errorService.handleError(error)
+      )
+  }
+
+  public startFlow(flowTab: FlowTab) {
+    this.flowService
+      .startInstance(flowTab.id)
+      .subscribe(
+        (processors: Array<Processor>) => {
+          if(processors.filter(p => p.status !== this.stateRunning).length > 0)
+            alert("At least one processor failed to start")
+        },
+        (error: any) => this.errorService.handleError(error)
+      )
+  }
+
+  public stopFlow(flowTab: FlowTab) {
+    this.flowService
+      .stopInstance(flowTab.id)
+      .subscribe(
+        (processors: Array<Processor>) => {
+          if(processors.filter(p => p.status !== this.stateStopped).length > 0)
+            alert("At least one processor failed to start")
         },
         (error: any) => this.errorService.handleError(error)
       )
@@ -59,8 +98,8 @@ export class FlowTabsComponent implements OnInit {
       .instances()
       .subscribe(
         instances => {
-          instances.map(i => {
-            let flowTab = new FlowTab("#" + (this.tabs.length + 1), i.id, "Flow Instance", i)
+          instances.map(flowInstance => {
+            let flowTab = new FlowTab("#" + (this.tabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
             this.tabs.push(flowTab)
           })
           if(this.tabs.length > 0)

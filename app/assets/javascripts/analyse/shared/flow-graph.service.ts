@@ -57,7 +57,7 @@ export class FlowGraphService {
       vis.zoomToFit = function () {
         let b = cola.vpsc.Rectangle.empty()
         vis.selectAll("rect").each(function (d:any) {
-          let bb = this.getBBox()
+          let bb = this.getBoundingClientRect()
           b = b.union(new cola.vpsc.Rectangle(bb.x, bb.x + bb.width, bb.y, bb.y + bb.height))
         })
         let w = b.width(), h = b.height()

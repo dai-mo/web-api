@@ -14,6 +14,8 @@ export class FlowService {
   private templatesUrl = "api/flow/templates"
   private createInstanceBaseUrl: string = "api/flow/instances/create/"
   private instancesBaseUrl: string = "api/flow/instances/"
+  private instancesStartUrl = this.instancesBaseUrl + "start/"
+  private instancesStopUrl = this.instancesBaseUrl + "stop/"
 
   constructor(private http: Http) {
 
@@ -29,6 +31,14 @@ export class FlowService {
 
   instances(): Observable<Array<FlowInstance>> {
     return this.http.get(this.instancesBaseUrl).map(response => response.json())
+  }
+
+  startInstance(flowInstanceId: string): Observable<Array<Processor>> {
+    return this.http.put(this.instancesStartUrl + flowInstanceId, {}).map(response => response.json())
+  }
+
+  stopInstance(flowInstanceId: string): Observable<Array<Processor>> {
+    return this.http.put(this.instancesStopUrl + flowInstanceId, {}).map(response => response.json())
   }
 
   destroyInstance(flowInstanceId: string): Observable<FlowInstance> {
