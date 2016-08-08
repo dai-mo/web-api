@@ -10,11 +10,7 @@
         [removable]="tabz.removable"
         (removed)="removeTabHandler(tabz)">
             <nav class="navbar">
-                <ul class="nav navbar-nav">
-                    <li class="nav-item active">
-                        <h6>{{tabz.name}}</h6>
-                    </li>
-                </ul>
+                <button class="btn btn-secondary" (click)="toggleTabLabel(tabz)">{{tabLabel(tabz)}}</button>
                 <div class="pull-xs-right">
                     <a class="btn btn-secondary" href="{{nifiUrl}}" target="_NiFi Flow">
                         <img src="assets/images/bgNifiLogo.png" alt="nifi" height="24" width="20">

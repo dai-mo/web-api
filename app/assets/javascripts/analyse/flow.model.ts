@@ -29,6 +29,8 @@ export class Connection {
 }
 export class FlowInstance {
   id: string
+  name: string
+  nameId: string
   version: string
   processors: Processor[]
   connections: Connection[]
@@ -78,7 +80,7 @@ export class FlowTab {
   title: string
   id: string
   name: string
-  label: string
+  labelToggle: boolean
   flowInstance: FlowInstance
   active: boolean
   disabled: boolean
@@ -88,18 +90,19 @@ export class FlowTab {
   constructor(title: string,
               id: string,
               name: string,
-              label: string,
               flowInstance: FlowInstance = null,
+              labelToggle: boolean = false,
               active: boolean = false,
               disabled: boolean = false,
               removable: boolean = false){
     this.title = title
     this.id = id
     this.name = name
-    this.label = label
+    this.flowInstance = flowInstance
+    this.labelToggle = labelToggle
     this.active = active
     this.disabled = disabled
     this.removable = removable
-    this.flowInstance = flowInstance
+
   }
 }

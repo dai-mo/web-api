@@ -18,6 +18,7 @@ export class FlowTabsComponent implements OnInit {
   public nifiUrl: string
   public tabs:Array<FlowTab> = []
 
+
   private stateRunning = "RUNNING"
   private stateStopped = "STOPPED"
 
@@ -37,11 +38,21 @@ export class FlowTabsComponent implements OnInit {
     })
   }
 
+  public toggleTabLabel(flowTab: FlowTab) {
+    flowTab.labelToggle = !flowTab.labelToggle
+  }
+
+  public tabLabel(flowTab: FlowTab): string {
+    if(flowTab.labelToggle)
+      return flowTab.flowInstance.nameId
+    else
+      return flowTab.flowInstance.name
+  }
 
   @Input()
   set addFlowInstance(flowInstance: FlowInstance) {
     if(flowInstance != null) {
-      let tab = new FlowTab("#" + (this.tabs.length + 1), flowInstance.id, flowInstance.id, "Flow Instance", flowInstance)
+      let tab = new FlowTab("#" + (this.tabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
       this.tabs.push(tab)
       this.setActiveTab(tab)
     }
@@ -87,8 +98,8 @@ export class FlowTabsComponent implements OnInit {
       .instances()
       .subscribe(
         instances => {
-          instances.map(i => {
-            let flowTab = new FlowTab("#" + (this.tabs.length + 1), i.id, i.id, "Flow Instance", i)
+          instances.map(flowInstance => {
+            let flowTab = new FlowTab("#" + (this.tabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
             this.tabs.push(flowTab)
           })
           if(this.tabs.length > 0)
