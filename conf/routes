@@ -6,14 +6,14 @@
 ->      /                               controllers.HomeController
 
 # Partial endpoints
-GET     /partials/:partial              controllers.HomeController.modulePartials(module = "", partial)
-GET     /partials/:module/:partial      controllers.HomeController.modulePartials(module, partial)
+GET     /partials/:partial               controllers.HomeController.modulePartials(module = "", partial)
+GET     /partials/:module/:partial       controllers.HomeController.modulePartials(module, partial)
 
 # Utility endpoints
-GET     /api/health                     controllers.HomeController.health
+GET     /api/health                      controllers.HomeController.health
 
 # Documentation endpoints
-GET     /api/doc                        controllers.HomeController.doc
+GET     /api/doc                         controllers.HomeController.doc
 
 # Test Api
 ->      /api/tests                       controllers.TestApi
@@ -28,10 +28,12 @@ GET     /api/users/:id/auth              controllers.UserApi.auth(id: Long)
 # - Instance Api
 ->      /api/flow/instances              controllers.FlowInstanceApi
 POST    /api/flow/instances/create/:tid  controllers.FlowInstanceApi.create(tid: String)
+PUT     /api/flow/instances/start/:fid   controllers.FlowInstanceApi.start(fid: String)
+PUT     /api/flow/instances/stop/:fid    controllers.FlowInstanceApi.stop(fid: String)
 
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
-GET     /webjars/*file                  controllers.WebJarAssets.at(file)
-GET     /vassets/*file                  controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file                    controllers.Assets.versioned(path="/public", file: Asset)
+GET     /webjars/*file                   controllers.WebJarAssets.at(file)
+GET     /vassets/*file                   controllers.Assets.versioned(path="/public", file: Asset)
 

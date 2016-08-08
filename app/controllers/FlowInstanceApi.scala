@@ -43,5 +43,13 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
   def create(flowTemplateId: String): EssentialAction = csrfCheckAction { implicit request =>
     serialize(NifiFlowApi.instantiate(flowTemplateId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
   }
+
+  def start(flowInstanceId: String): EssentialAction = csrfCheckAction { implicit request =>
+    serialize(NifiFlowApi.start(flowInstanceId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
+  }
+
+  def stop(flowInstanceId: String): EssentialAction = csrfCheckAction { implicit request =>
+    serialize(NifiFlowApi.stop(flowInstanceId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
+  }
 }
 

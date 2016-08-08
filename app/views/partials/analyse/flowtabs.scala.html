@@ -1,5 +1,5 @@
 @()
-<div class="fill" (click)="$event.preventDefault()">
+<div class="fill">
     <tabset class="flex-header-panel">
         <tab  class="flex-header-panel" *ngFor="let tabz of tabs"
         [heading]="tabz.title"
@@ -16,8 +16,11 @@
                     </li>
                 </ul>
                 <div class="pull-xs-right">
-                    <button class="btn btn-secondary"><i class="fa fa-play" aria-hidden="true"></i></button>
-                    <button class="btn btn-secondary" disabled><i class="fa fa-stop" aria-hidden="true"></i></button>
+                    <a class="btn btn-secondary" href="{{nifiUrl}}" target="_NiFi Flow">
+                        <img src="assets/images/bgNifiLogo.png" alt="nifi" height="24" width="20">
+                    </a>
+                    <button class="btn btn-secondary" (click)="startFlow(tabz)"><i class="fa fa-play" aria-hidden="true"></i></button>
+                    <button class="btn btn-secondary" (click)="stopFlow(tabz)"><i class="fa fa-stop" aria-hidden="true"></i></button>
                     <button class="btn btn-secondary" (click)="deleteTab(tabz)"><i class="fa fa-trash" aria-hidden="true"></i></button>
                 </div>
             </nav>

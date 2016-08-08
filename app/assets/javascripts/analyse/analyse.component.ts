@@ -17,7 +17,7 @@ import {FlowTabsComponent} from "./flow-tabs.component"
 })
 export class AnalyseComponent implements OnInit {
     public disabled:boolean = false
-    public nifiUrl: string
+
     public status: {
         isopen:boolean
     } = {
@@ -29,9 +29,7 @@ export class AnalyseComponent implements OnInit {
     constructor(window: Window,
                 private flowService: FlowService,
                 private errorService: ErrorService) {
-        this.nifiUrl = window.location.protocol + "//" +
-            window.location.host +
-            "/nifi"
+
     }
 
     getTemplates() {
