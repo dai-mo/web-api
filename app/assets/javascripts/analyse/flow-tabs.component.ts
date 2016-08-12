@@ -63,7 +63,10 @@ export class FlowTabsComponent implements OnInit {
       .destroyInstance(flowTab.id)
       .subscribe(
         deleteOK => {
-          this.tabs.filter(t => t.id === flowTab.id).forEach(t => this.tabs.splice(this.tabs.indexOf(t), 1))
+          if(!deleteOK)
+            alert("Flow Instance could not be deleted")
+          else
+            this.tabs.filter(t => t.id === flowTab.id).forEach(t => this.tabs.splice(this.tabs.indexOf(t), 1))
         },
         (error: any) => this.errorService.handleError(error)
       )
@@ -73,9 +76,9 @@ export class FlowTabsComponent implements OnInit {
     this.flowService
       .startInstance(flowTab.id)
       .subscribe(
-        (processors: Array<Processor>) => {
-          if(processors.filter(p => p.status !== this.stateRunning).length > 0)
-            alert("At least one processor failed to start")
+        startOK => {
+          if(!startOK)
+            alert("Flow Instance failed to start")
         },
         (error: any) => this.errorService.handleError(error)
       )
@@ -85,9 +88,9 @@ export class FlowTabsComponent implements OnInit {
     this.flowService
       .stopInstance(flowTab.id)
       .subscribe(
-        (processors: Array<Processor>) => {
-          if(processors.filter(p => p.status !== this.stateStopped).length > 0)
-            alert("At least one processor failed to start")
+        stopOK => {
+          if(!stopOK)
+            alert("Flow Instance failed to stop")
         },
         (error: any) => this.errorService.handleError(error)
       )

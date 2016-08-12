@@ -23,7 +23,7 @@ export class FlowGraphComponent implements OnInit {
 
   ngOnInit() {
     if (this.flowTab != null && this.flowTab.flowInstance) {
-      this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(this.flowTab.flowInstance), Math.random().toString())
+      this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(this.flowTab.flowInstance))
     } else {
       this.errorService.handleError("No Flow Instance to initialise")
     }

@@ -35,7 +35,7 @@ class ErrorHandler extends HttpErrorHandler {
         val errorResponse = exception.asInstanceOf[RESTException].errorResponse
         Status(errorResponse.httpStatusCode)(Json.toJson(errorResponse))
       } else {
-        InternalServerError(Json.toJson(ErrorConstants.UnknownErrorResponse))
+        InternalServerError(Json.toJson(ErrorConstants.UnknownErrorResponse.withErrorMessage(exception.getMessage)))
       }
     )
   }

@@ -15,10 +15,13 @@ export class FlowGraphService {
 
 
 
-  addFlatGraph(el:HTMLElement, graph: FlowGraph, id: string) {
+  addFlatGraph(el:HTMLElement, graph: FlowGraph) {
 
     let width = 500
     let height = 500
+
+    // Used for generating id attributes e.g. marker entities
+    let id = Math.random().toString()
 
     let select = d3.select(el)
 
