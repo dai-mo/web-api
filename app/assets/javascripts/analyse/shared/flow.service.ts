@@ -29,6 +29,9 @@ export class FlowService {
     return this.http.post(this.createInstanceBaseUrl + templateId, {}).map(response => response.json())
   }
 
+  instance(flowInstanceId: string): Observable<FlowInstance> {
+    return this.http.get(this.instancesBaseUrl + flowInstanceId).map(response => response.json())
+  }
   instances(): Observable<Array<FlowInstance>> {
     return this.http.get(this.instancesBaseUrl).map(response => response.json())
   }

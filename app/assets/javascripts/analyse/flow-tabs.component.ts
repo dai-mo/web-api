@@ -84,6 +84,17 @@ export class FlowTabsComponent implements OnInit {
       )
   }
 
+  public refreshFlow(flowTab: FlowTab) {
+    this.flowService
+      .instance(flowTab.id)
+      .subscribe(
+        (flowInstance: FlowInstance) => {
+          this.tabs.filter(t => t.id === flowTab.id).forEach(t => t.flowInstance = flowInstance)
+        },
+        (error: any) => this.errorService.handleError(error)
+      )
+  }
+
   public stopFlow(flowTab: FlowTab) {
     this.flowService
       .stopInstance(flowTab.id)
