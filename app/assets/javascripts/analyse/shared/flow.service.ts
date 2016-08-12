@@ -33,15 +33,15 @@ export class FlowService {
     return this.http.get(this.instancesBaseUrl).map(response => response.json())
   }
 
-  startInstance(flowInstanceId: string): Observable<Array<Processor>> {
+  startInstance(flowInstanceId: string): Observable<boolean> {
     return this.http.put(this.instancesStartUrl + flowInstanceId, {}).map(response => response.json())
   }
 
-  stopInstance(flowInstanceId: string): Observable<Array<Processor>> {
+  stopInstance(flowInstanceId: string): Observable<boolean> {
     return this.http.put(this.instancesStopUrl + flowInstanceId, {}).map(response => response.json())
   }
 
-  destroyInstance(flowInstanceId: string): Observable<FlowInstance> {
+  destroyInstance(flowInstanceId: string): Observable<boolean> {
     return this.http.delete(this.instancesBaseUrl + flowInstanceId, {}).map(response => response.json())
   }
 
