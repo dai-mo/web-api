@@ -24,6 +24,7 @@ import { MockBackend, MockConnection } from "@angular/http/testing"
 
 import {FlowService} from "./flow.service"
 import {FlowTemplate, FlowInstance, FlowGraph} from "../analyse/flow.model"
+import {ErrorService} from "./util/error.service"
 
 
 describe("Flow Service", () => {
@@ -31,13 +32,19 @@ describe("Flow Service", () => {
   // setup
   beforeEach(() => {
     addProviders([
-      FlowService,
+
       MockBackend,
       BaseRequestOptions,
       {
         provide: Http,
         useFactory: (backend:MockBackend, options:BaseRequestOptions) => new Http(backend, options),
         deps: [MockBackend, BaseRequestOptions]
+      },
+      ErrorService,
+      {
+        provide: FlowService,
+        useFactory: (http: Http, errorService: ErrorService) => new FlowService(http, errorService),
+        deps: [Http, ErrorService]
       }
     ])
   })
@@ -45,7 +52,8 @@ describe("Flow Service", () => {
 
 
   it("can retrieve templates",
-    async(inject([MockBackend, FlowService], (mockbackend: MockBackend, flowService: FlowService) => {
+    async(inject([MockBackend, FlowService],
+      (mockbackend: MockBackend, flowService: FlowService) => {
       mockbackend.connections.subscribe((connection: MockConnection) => {
 
         let mockResponseBody: FlowTemplate[] = [
