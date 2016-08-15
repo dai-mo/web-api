@@ -14,20 +14,19 @@ declare let cola: any
   providers: [FlowGraphService, FlowService, ErrorService]
 })
 
-export class FlowGraphComponent implements OnInit {
+export class FlowGraphComponent {
 
   private el:HTMLElement
 
-  @Input() flowTab: FlowTab = null
-
-
-  ngOnInit() {
-    if (this.flowTab != null && this.flowTab.flowInstance) {
-      this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(this.flowTab.flowInstance))
+  @Input()
+  set showFlowInstance(flowInstance: FlowInstance) {
+    if (flowInstance != null) {
+      this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(flowInstance), flowInstance.id)
     } else {
-      this.errorService.handleError("No Flow Instance to initialise")
+      this.errorService.handleError("No Flow Instance to display")
     }
   }
+
 
   private testGraph: FlowGraph = {
     "nodes":[

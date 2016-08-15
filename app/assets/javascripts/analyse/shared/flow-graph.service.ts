@@ -15,20 +15,25 @@ export class FlowGraphService {
 
 
 
-  addFlatGraph(el:HTMLElement, graph: FlowGraph) {
+  addFlatGraph(el:HTMLElement, graph: FlowGraph, id: string) {
 
     let width = 500
     let height = 500
 
-    // Used for generating id attributes e.g. marker entities
-    let id = Math.random().toString()
-
     let select = d3.select(el)
 
-
+    let svg: any = null
     function makeSVG(id: string) {
 
-      let outer = select.append("svg")
+      let svgId = "svg-" + id
+
+      let svg = d3.select("#" + svgId)
+
+      if(svg)
+        svg.remove()
+
+      svg = select.append("svg")
+        .attr("id", svgId)
         .attr("width", "100%")
         .attr("height", "100%")
         .attr("pointer-events", "all")
@@ -36,7 +41,7 @@ export class FlowGraphService {
 
 
       // define arrow markers for graph links
-      outer.append("defs").append("marker")
+      svg.append("defs").append("marker")
         .attr("id", "end-arrow-" + id)
         .attr("viewBox", "0 -5 10 10")
         .attr("refX", 5)
@@ -47,11 +52,11 @@ export class FlowGraphService {
         .attr("d", "M0,-5L10,0L0,5")
         .attr("stroke-width", "2px")
         .attr("fill", "#555")
-      let zoomBox = outer.append("rect")
+      let zoomBox = svg.append("rect")
         .attr("class", "background")
         .attr("width", "100%")
         .attr("height", "100%")
-      let vis:any = outer.append("g")
+      let vis:any = svg.append("g")
       let redraw = function (transition:any) {
         return (transition ? vis.transition() : vis)
         // FIXME: zooming currently produces the error - Error: <g> attribute transform: Expected number, "translate(NaN,NaN) scale(N…".
@@ -64,7 +69,7 @@ export class FlowGraphService {
           b = b.union(new cola.vpsc.Rectangle(bb.x, bb.x + bb.width, bb.y, bb.y + bb.height))
         })
         let w = b.width(), h = b.height()
-        let cw = Number(outer.attr("width")), ch = Number(outer.attr("height"))
+        let cw = Number(svg.attr("width")), ch = Number(svg.attr("height"))
         let s = Math.min(cw / w, ch / h)
         let tx = (-b.x * s + (cw / s - w) * s / 2), ty = (-b.y * s + (ch / s - h) * s / 2)
         zoom.translate([tx, ty]).scale(s)
