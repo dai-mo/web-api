@@ -3,7 +3,7 @@
  */
 import {Component, OnInit} from "@angular/core"
 import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
-import {FlowService} from "./shared/flow.service"
+import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {FlowGraphComponent} from "./flow-graph.component"
 import {FlowTabsComponent} from "./flow-tabs.component"

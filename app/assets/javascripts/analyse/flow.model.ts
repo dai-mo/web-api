@@ -106,3 +106,8 @@ export class FlowTab {
 
   }
 }
+
+export class Provenance {
+  id: string
+  content: string
+}

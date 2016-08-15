@@ -119,7 +119,6 @@ html, body {
 }
 
 .node {
-  stroke: #fff;
   stroke-width: 1.5px;
   cursor: move;
   fill: #3366ff;

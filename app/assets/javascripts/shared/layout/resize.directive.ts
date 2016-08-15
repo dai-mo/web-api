@@ -161,6 +161,8 @@ export class ResizeDirective {
 
 
     this.dragging = true
+    this.init()
+    this.initProperties()
 
     let self = this
     this.dragFunction = this.renderer.listenGlobal("document", "mousemove", (event: MouseEvent) => {

@@ -3,7 +3,7 @@ import {CORE_DIRECTIVES} from "@angular/common"
 import {Component, OnInit, Input} from "@angular/core"
 import {FlowTemplate, FlowTab, Processor, FlowInstance} from "./flow.model"
 import {FlowGraphComponent} from "./flow-graph.component"
-import {FlowService} from "./shared/flow.service"
+import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 
 

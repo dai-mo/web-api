@@ -23,7 +23,7 @@ import {
 import { MockBackend, MockConnection } from "@angular/http/testing"
 
 import {FlowService} from "./flow.service"
-import {FlowTemplate, FlowInstance, FlowGraph} from "../flow.model"
+import {FlowTemplate, FlowInstance, FlowGraph} from "../analyse/flow.model"
 
 
 describe("Flow Service", () => {
