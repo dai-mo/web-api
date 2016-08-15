@@ -7,6 +7,7 @@ import {Injectable} from "@angular/core"
 import {FlowGraph, FlowNode} from "../flow.model"
 
 import d3 from "d3"
+import {ViewManagerService} from "../../shared/view-manager.service"
 
 declare let cola: any
 
@@ -14,6 +15,28 @@ declare let cola: any
 export class FlowGraphService {
 
 
+  private self = this
+  private selectedNode: any = null
+
+  constructor(private vms: ViewManagerService) {
+
+  }
+
+  selectNode(node: any,
+             fn: FlowNode,
+             vms: ViewManagerService) {
+    if(this.selectedNode != null)
+      d3.select(this.selectedNode).style("stroke", "#fff")
+
+    if(fn == null) {
+      vms.selectedProcessor = null
+      this.selectedNode = null
+    } else {
+      vms.selectedProcessor = fn.id
+      this.selectedNode = node
+      d3.select(node).style("stroke", "#000000")
+    }
+  }
 
   addFlatGraph(el:HTMLElement, graph: FlowGraph, id: string) {
 
@@ -21,6 +44,7 @@ export class FlowGraphService {
     let height = 500
 
     let select = d3.select(el)
+    let self = this
 
     let svg: any = null
     function makeSVG(id: string) {
@@ -39,6 +63,9 @@ export class FlowGraphService {
         .attr("pointer-events", "all")
         .attr("class", "flex-panel")
 
+      svg.on("click", function() {
+        self.selectNode(null, null, self.vms)
+      })
 
       // define arrow markers for graph links
       svg.append("defs").append("marker")
@@ -52,10 +79,12 @@ export class FlowGraphService {
         .attr("d", "M0,-5L10,0L0,5")
         .attr("stroke-width", "2px")
         .attr("fill", "#555")
+
       let zoomBox = svg.append("rect")
         .attr("class", "background")
         .attr("width", "100%")
         .attr("height", "100%")
+
       let vis:any = svg.append("g")
       let redraw = function (transition:any) {
         return (transition ? vis.transition() : vis)
@@ -82,7 +111,11 @@ export class FlowGraphService {
     }
 
 
-    function flatGraph(graph: FlowGraph, id: string) {
+
+    function flatGraph(graph: FlowGraph,
+                       id: string,
+                       vms: ViewManagerService,
+                       fgs: FlowGraphService) {
 
       let d3cola = cola.d3adaptor()
         .linkDistance(80)
@@ -110,6 +143,7 @@ export class FlowGraphService {
         .enter().append("rect")
         .attr("class", "node")
         .attr("rx", 4).attr("ry", 4)
+        .style("stroke", "#fff")
         .on("mouseenter", function(d:any) {
           let event = d3.event as DragEvent
           return tooltip
@@ -123,6 +157,11 @@ export class FlowGraphService {
         })
         .on("mouseleave", function() {
           return tooltip.style("visibility", "hidden").style("display", "none")
+        })
+        .on("click", function(fn: FlowNode) {
+          let event = d3.event as MouseEvent
+          event.stopPropagation()
+          fgs.selectNode(this, fn, vms)
         })
         .call(d3cola.drag)
 
@@ -154,6 +193,6 @@ export class FlowGraphService {
 
     }
     function isIE() { return ((navigator.appName === "Microsoft Internet Explorer") || ((navigator.appName === "Netscape") && (new RegExp("Trident/.*rv:([0-9]{1,}[\.0-9]{0,})").exec(navigator.userAgent) != null))) }
-    flatGraph(graph, id)
+    flatGraph(graph, id, this.vms, this)
   }
 }

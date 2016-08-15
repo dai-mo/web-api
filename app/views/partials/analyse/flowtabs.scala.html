@@ -1,7 +1,7 @@
 @()
 <div class="fill">
-    <tabset class="flex-header-panel">
-        <tab  class="flex-header-panel" *ngFor="let tabz of tabs"
+    <tabset class="flex-panel-parent">
+        <tab  class="flex-panel-parent" *ngFor="let tabz of tabs"
         [heading]="tabz.title"
         [active]="tabz.active"
         (select)="tabz.active = true"
@@ -21,7 +21,7 @@
                     <button class="btn btn-secondary" (click)="deleteTab(tabz)"><i class="fa fa-trash"   aria-hidden="true"></i></button>
                 </div>
             </nav>
-            <div  class="flex-panel flex-header-panel" flow-graph [showFlowInstance]="tabz.flowInstance"></div>
+            <div  class="flex-panel flex-panel-parent" flow-graph [showFlowInstance]="tabz.flowInstance"></div>
         </tab>
     </tabset>
 </div>

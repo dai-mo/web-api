@@ -1,0 +1,17 @@
+@()
+<div class="fill">
+    <table class="table table-striped table-bordered table-hover table-sm  table-scrollable fill">
+        <thead class="thead-inverse">
+            <tr>
+                <th>#</th>
+                <th>content</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let provenance of provenances">
+                <th scope="row"><i class="fa fa-info-circle" aria-hidden="true" tooltipPlacement="right" tooltip="id: {{provenance.id}}"></i></th>
+                <td>{{provenance.content}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

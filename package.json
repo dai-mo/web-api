@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "concurrently \"sbt ~test:compile\" \"karma start karma.conf.js -- --singleRun false\" ",
+    "sbt-test-run": "concurrently \"sbt ~test:compile\" \"karma start karma.conf.js -- --singleRun false\" ",
     "tsc": "tsc",
     "tsc:w": "tsc -w",
     "typings": "typings",

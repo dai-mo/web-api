@@ -2,7 +2,7 @@
 import {ElementRef, Input, OnInit, Directive} from "@angular/core"
 import {FlowGraph, FlowTab, FlowInstance} from "./flow.model"
 import {FlowGraphService} from "./shared/flow-graph.service"
-import {FlowService} from "./shared/flow.service"
+import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 
 declare let $: any

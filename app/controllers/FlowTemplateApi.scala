@@ -8,6 +8,7 @@ import org.dcs.commons.JsonSerializerImplicits._
 import org.dcs.flow.nifi.{NifiApiConfig, NifiFlowClient}
 import play.api.mvc.{Action, Controller, EssentialAction}
 import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
+import org.dcs.flow.FlowApi
 
 /**
   * Created by cmathew on 08/06/16.
@@ -17,10 +18,10 @@ import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
 class FlowTemplateApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAction: CSRFTokenAction)
   extends ResourceRouter[Long] {
 
-  object NifiFlowApi extends NifiFlowClient with NifiApiConfig
+
 
   override def list: EssentialAction = csrfCheckAction { implicit request =>
-    serialize(NifiFlowApi.templates(Req.tokenOrError(Req.AuthTokenKey)))
+    serialize(FlowApi.templates(Req.tokenOrError(Req.AuthTokenKey)))
   }
 
   override def update(id: Long): EssentialAction = csrfCheckAction {

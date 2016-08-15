@@ -4,8 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import controllers.routing.ResourceRouter
 import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
-import org.dcs.commons.JsonSerializerImplicits._
-import org.dcs.flow.nifi.{NifiApiConfig, NifiFlowClient}
+import org.dcs.flow.FlowApi
 import play.api.mvc.EssentialAction
 
 /**
@@ -18,10 +17,9 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
 
   val DefaultUserId = "root"
 
-  object NifiFlowApi extends NifiFlowClient with NifiApiConfig
 
   override def list: EssentialAction = csrfCheckAction { implicit request =>
-    serialize(NifiFlowApi.instances(DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
+    serialize(FlowApi.instances(DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
   }
 
   override def update(id: String): EssentialAction = csrfCheckAction { implicit request =>
@@ -29,11 +27,11 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
   }
 
   override def destroy(id: String): EssentialAction = csrfCheckAction { implicit request =>
-    serialize(NifiFlowApi.remove(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
+    serialize(FlowApi.remove(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
   }
 
   override def find(id: String): EssentialAction = csrfCheckAction { implicit request =>
-    serialize(NifiFlowApi.instance(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
+    serialize(FlowApi.instance(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
   }
 
   override def create: EssentialAction = csrfCheckAction {
@@ -41,15 +39,15 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
   }
 
   def create(flowTemplateId: String): EssentialAction = csrfCheckAction { implicit request =>
-    serialize(NifiFlowApi.instantiate(flowTemplateId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
+    serialize(FlowApi.instantiate(flowTemplateId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
   }
 
   def start(flowInstanceId: String): EssentialAction = csrfCheckAction { implicit request =>
-    serialize(NifiFlowApi.start(flowInstanceId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
+    serialize(FlowApi.start(flowInstanceId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
   }
 
   def stop(flowInstanceId: String): EssentialAction = csrfCheckAction { implicit request =>
-    serialize(NifiFlowApi.stop(flowInstanceId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
+    serialize(FlowApi.stop(flowInstanceId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
   }
 }
 

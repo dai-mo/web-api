@@ -38,6 +38,8 @@ export class ResizeDirective {
 
   constructor(elementRef: ElementRef, private renderer: Renderer) {
     this.el = elementRef.nativeElement
+
+
   }
 
   private init() {
@@ -81,6 +83,8 @@ export class ResizeDirective {
     let nextElmPanelHeadingStyle = window.getComputedStyle(this.nextElmPanelHeading, null)
     this.nextElmPanelHeadingHeight = parseInt(nextElmPanelHeadingStyle.height)
     this.nextElmPanelBody = nextElemChildren[1] as HTMLElement
+
+    this.updateFlexBasis(0)
   }
 
   private updatePanelProperties(prevHeight: number, nextHeight: number) {
@@ -98,19 +102,15 @@ export class ResizeDirective {
     this.endDragFunction()
   }
 
-  private drag(event: MouseEvent) {
-    if(!this.dragging) return
+  private updateFlexBasis(offset: number) {
 
-
-    let offset = 0, prevFlexBasis = 1, nextFlexBasis = 1
+    let prevFlexBasis = 1, nextFlexBasis = 1
     switch (this.resizeType) {
       case "column":
-        offset = this.start - event.clientY
         prevFlexBasis = this.prevElmHeight - offset
         nextFlexBasis = this.nextElmHeight + offset
         break
       case "row":
-        offset = this.start - event.clientX
         prevFlexBasis = this.prevElmWidth - offset
         nextFlexBasis = this.nextElmWidth + offset
         break
@@ -124,6 +124,22 @@ export class ResizeDirective {
       this.prevElmPanelHeadingHeight < prevFlexBasis) {
       this.updatePanelProperties(prevFlexBasis - this.prevElmPanelHeadingHeight,
         nextFlexBasis - this.nextElmPanelHeadingHeight)
+    }
+  }
+
+  private drag(event: MouseEvent) {
+    if(!this.dragging) return
+
+    let offset = 0
+    switch (this.resizeType) {
+      case "column":
+        offset = this.start - event.clientY
+        this.updateFlexBasis(offset)
+        break
+      case "row":
+        offset = this.start - event.clientX
+        this.updateFlexBasis(offset)
+        break
     }
   }
 
@@ -143,9 +159,10 @@ export class ResizeDirective {
         return
     }
 
-    this.initProperties()
-    this.initPanelProperties()
+
     this.dragging = true
+    this.init()
+    this.initProperties()
 
     let self = this
     this.dragFunction = this.renderer.listenGlobal("document", "mousemove", (event: MouseEvent) => {
@@ -163,6 +180,7 @@ export class ResizeDirective {
     this.resizeType = type
     this.init()
     this.initProperties()
+    this.initPanelProperties()
     this.el.onmousedown = function(event: MouseEvent) {
       if(event.which === 1) {
         self.startDrag(event)

@@ -30,7 +30,9 @@ GET     /api/users/:id/auth              controllers.UserApi.auth(id: Long)
 POST    /api/flow/instances/create/:tid  controllers.FlowInstanceApi.create(tid: String)
 PUT     /api/flow/instances/start/:fid   controllers.FlowInstanceApi.start(fid: String)
 PUT     /api/flow/instances/stop/:fid    controllers.FlowInstanceApi.stop(fid: String)
-
+# - Provenance Api
+->      /api/flow/provenance             controllers.FlowProvenanceApi
+GET     /api/flow/provenance/list/:pid   controllers.FlowProvenanceApi.list(pid: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file                    controllers.Assets.versioned(path="/public", file: Asset)
