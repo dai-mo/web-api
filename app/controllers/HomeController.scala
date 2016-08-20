@@ -8,6 +8,7 @@ import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
 import org.dcs.web.BuildInfo
 import play.api.mvc._
 import play.api.routing.Router
+import views.html.partials.modal
 
 /**
   * This controller creates an `Action` to handle HTTP requests to the
@@ -38,6 +39,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
     (module, partial) match  {
       case ("", "wsview.html") => Ok(views.html.partials.wsview())
       case ("", "layout.html") => Ok(views.html.partials.layout())
+      case ("", "modal.html") => Ok(views.html.partials.modal())
 
       case ("analyse", "view.html") => Ok(views.html.partials.analyse.view())
       case ("analyse", "flowtabs.html") => Ok(views.html.partials.analyse.flowtabs())

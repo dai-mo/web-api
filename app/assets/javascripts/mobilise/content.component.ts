@@ -4,20 +4,21 @@
 
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
-import {Component, Input} from "@angular/core"
+import {Component, Input, ViewChild} from "@angular/core"
 import {Provenance} from "../analyse/flow.model"
 import {TOOLTIP_DIRECTIVES} from "ng2-bootstrap"
+import {ModalComponent} from "../shared/modal.component"
+import {ViewManagerService} from "../shared/view-manager.service"
 
 @Component({
   selector: "content",
-  directives: [TOOLTIP_DIRECTIVES],
+  directives: [TOOLTIP_DIRECTIVES, ModalComponent],
   templateUrl: "partials/mobilise/content.html"
 })
 export class ContentComponent {
-
+  @ViewChild("dialog") public dialog: ModalComponent
   private provenances: Array<Provenance> = null
 
-  tooltipContent = "test"
   constructor(private flowService: FlowService,
               private errorService: ErrorService) {
 
@@ -31,8 +32,13 @@ export class ContentComponent {
         .subscribe(
           provenances => {
             this.provenances = provenances
+            if(provenances.length === 0)
+              this.dialog.show("Processor Output", "No output has yet been registered for this processor")
           },
-          (error: any) => this.errorService.handleError(error)
+          (error: any) => {
+            this.errorService.handleError(error)
+            this.dialog.show("Processor Output", "Output for this processor has expired or been deleted")
+          }
         )
     else
       this.provenances = null
@@ -41,4 +47,9 @@ export class ContentComponent {
   provenanceInfo(provenance: Provenance) {
     return "<b>id:</b> " + provenance.id
   }
+
+  hasResults(): boolean {
+    return this.provenances != null && this.provenances.length > 0
+  }
+
 }

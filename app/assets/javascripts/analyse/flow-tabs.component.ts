@@ -1,7 +1,7 @@
 import {TAB_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap"
-import {CORE_DIRECTIVES} from "@angular/common"
+import {CORE_DIRECTIVES, NgClass} from "@angular/common"
 import {Component, OnInit, Input} from "@angular/core"
-import {FlowTemplate, FlowTab, Processor, FlowInstance} from "./flow.model"
+import {FlowTab, FlowInstance} from "./flow.model"
 import {FlowGraphComponent} from "./flow-graph.component"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
@@ -9,7 +9,7 @@ import {ErrorService} from "../shared/util/error.service"
 
 @Component({
   selector: "flow-tabs",
-  directives: [FlowGraphComponent, TAB_DIRECTIVES, CORE_DIRECTIVES],
+  directives: [FlowGraphComponent, TAB_DIRECTIVES, CORE_DIRECTIVES, NgClass],
   providers: [FlowService, ErrorService],
   templateUrl: "partials/analyse/flowtabs.html"
 })
@@ -17,10 +17,6 @@ export class FlowTabsComponent implements OnInit {
 
   public nifiUrl: string
   public tabs:Array<FlowTab> = []
-
-
-  private stateRunning = "RUNNING"
-  private stateStopped = "STOPPED"
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService) {
@@ -77,7 +73,9 @@ export class FlowTabsComponent implements OnInit {
       .startInstance(flowTab.id)
       .subscribe(
         startOK => {
-          if(!startOK)
+          if(startOK)
+            flowTab.flowInstance.state = FlowInstance.stateRunning
+          else
             alert("Flow Instance failed to start")
         },
         (error: any) => this.errorService.handleError(error)
@@ -100,7 +98,9 @@ export class FlowTabsComponent implements OnInit {
       .stopInstance(flowTab.id)
       .subscribe(
         stopOK => {
-          if(!stopOK)
+          if(stopOK)
+            flowTab.flowInstance.state = FlowInstance.stateStopped
+          else
             alert("Flow Instance failed to stop")
         },
         (error: any) => this.errorService.handleError(error)

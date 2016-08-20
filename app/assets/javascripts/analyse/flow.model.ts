@@ -32,8 +32,13 @@ export class FlowInstance {
   name: string
   nameId: string
   version: string
+  state: string
   processors: Processor[]
   connections: Connection[]
+
+  static stateRunning = "RUNNING"
+  static stateStopped = "STOPPED"
+  static stateNotStarted = "NOT_STARTED"
 
 }
 
@@ -90,7 +95,7 @@ export class FlowTab {
   constructor(title: string,
               id: string,
               name: string,
-              flowInstance: FlowInstance = null,
+              flowInstance: FlowInstance,
               labelToggle: boolean = false,
               active: boolean = false,
               disabled: boolean = false,
@@ -103,7 +108,22 @@ export class FlowTab {
     this.active = active
     this.disabled = disabled
     this.removable = removable
+  }
 
+  instanceState() {
+    return this.flowInstance.state
+  }
+
+  isRunning() {
+    return this.flowInstance.state === FlowInstance.stateRunning
+  }
+
+  isStopped() {
+    return this.flowInstance.state === FlowInstance.stateStopped
+  }
+
+  isNotStarted() {
+    return this.flowInstance.state === FlowInstance.stateNotStarted
   }
 }
 

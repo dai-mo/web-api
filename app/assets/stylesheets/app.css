@@ -203,6 +203,18 @@ html, body {
   overflow-y: scroll;
 }
 
+.btn.red {
+  color:red
+}
+
+.btn.green {
+  color:green
+}
+
+.btn.black {
+  color:black
+}
+
 
 
 

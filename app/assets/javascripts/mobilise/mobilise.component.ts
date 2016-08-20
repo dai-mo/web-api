@@ -12,5 +12,9 @@ import {ViewManagerService} from "../shared/view-manager.service"
 })
 export class MobiliseComponent {
 
-  constructor(public viewManagerService: ViewManagerService) {}
+  constructor(private viewManagerService: ViewManagerService) {}
+
+  selectedProcessorId(): string {
+    return this.viewManagerService.selectedProcessorId
+  }
 }
