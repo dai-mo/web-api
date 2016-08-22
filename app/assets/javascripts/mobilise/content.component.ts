@@ -32,8 +32,11 @@ export class ContentComponent {
         .subscribe(
           provenances => {
             this.provenances = provenances
+            // FIXME: There are two cases for which the resulting provenance list can be empty
+            // 1) the processor has just started and not registered any output
+            // 2) there are no results corresponding to the query (e.g. date range)
             if(provenances.length === 0)
-              this.dialog.show("Processor Output", "No output has yet been registered for this processor")
+              this.dialog.show("Processor Output", "Output is not available. Please retry later or expand the query.")
           },
           (error: any) => {
             this.errorService.handleError(error)
