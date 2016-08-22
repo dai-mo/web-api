@@ -1,6 +1,7 @@
 package controllers
 
 import controllers.util.Req
+import org.scalatest.Ignore
 import org.scalatestplus.play._
 import play.api.libs.json.{JsArray, JsObject}
 import play.api.test.Helpers._
@@ -9,6 +10,11 @@ import play.api.test._
 /**
   * Created by cmathew on 25/07/16.
   */
+//FIXME: Setting to ignore
+//       otherwise this test will be run during the release
+//       process. This should be reverted once the integration
+//       test environment is setup.
+@Ignore
 class FlowInstanceApiISpec extends WebBaseSpec with OneAppPerTest {
 
   "Template Instantiation" should {
