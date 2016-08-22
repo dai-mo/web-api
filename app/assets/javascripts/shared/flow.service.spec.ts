@@ -93,6 +93,7 @@ describe("Flow Service", () => {
           "id": "",
           "name": "DateConversion",
           "nameId": "aff997c4-d43c-4a7e-93b6-1f1ae2bddf8a",
+          "state": "RUNNING",
           "version": "3",
           "processors": [
             {

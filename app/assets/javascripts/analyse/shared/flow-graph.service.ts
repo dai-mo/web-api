@@ -29,10 +29,10 @@ export class FlowGraphService {
       d3.select(this.selectedNode).style("stroke", "#fff")
 
     if(fn == null) {
-      vms.selectedProcessor = null
+      vms.selectedProcessorId = null
       this.selectedNode = null
     } else {
-      vms.selectedProcessor = fn.id
+      vms.selectedProcessorId = fn.id
       this.selectedNode = node
       d3.select(node).style("stroke", "#000000")
     }
