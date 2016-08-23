@@ -9,7 +9,8 @@
         'webcola':'assets/lib/webcola/WebCola',
         'd3':'assets/lib/d3',
         'moment': 'assets/lib/moment',
-        'ng2-bootstrap': 'assets/lib/ng2-bootstrap'
+        'ng2-bootstrap': 'assets/lib/ng2-bootstrap',
+        'primeng': 'assets/lib/primeng'
 
     };
 
@@ -21,7 +22,9 @@
         'd3': {defaultExtension: 'js', main: 'd3.js'},
         'webcola': {defaultExtension: 'js', main: 'index.js'},
         'moment': {defaultExtension: 'js', main: 'moment.js'},
-        'ng2-bootstrap': {defaultExtension: 'js', main: 'ng2-bootstrap.js'}
+        'ng2-bootstrap': {defaultExtension: 'js', main: 'ng2-bootstrap.js'},
+        'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
+        'primeng': { defaultExtension: 'js' }
 
     };
 
