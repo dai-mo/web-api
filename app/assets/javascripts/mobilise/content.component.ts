@@ -9,18 +9,27 @@ import {Provenance} from "../analyse/flow.model"
 import {TOOLTIP_DIRECTIVES} from "ng2-bootstrap"
 import {ModalComponent} from "../shared/modal.component"
 import {ViewManagerService} from "../shared/view-manager.service"
+import {SELECT_DIRECTIVES} from "ng2-select"
+import {MobiliseOverlayComponent} from "./overlay.component"
 
 @Component({
   selector: "content",
-  directives: [TOOLTIP_DIRECTIVES, ModalComponent],
+  directives: [TOOLTIP_DIRECTIVES, SELECT_DIRECTIVES, ModalComponent, MobiliseOverlayComponent],
   templateUrl: "partials/mobilise/content.html"
 })
 export class ContentComponent {
   @ViewChild("dialog") public dialog: ModalComponent
+  @ViewChild("moverlay") public moverlay: MobiliseOverlayComponent
+
   private provenances: Array<Provenance> = null
 
+  @Input() isMainPanel:boolean = true
+
+  private rows: Array<string> = ["last 10", "last 50", "last 100", "All"]
+  private formats: Array<string> = ["raw", "csv"]
   constructor(private flowService: FlowService,
-              private errorService: ErrorService) {
+              private errorService: ErrorService,
+              private viewManagerService: ViewManagerService) {
 
   }
 
@@ -55,4 +64,11 @@ export class ContentComponent {
     return this.provenances != null && this.provenances.length > 0
   }
 
+  selectedProcessorId(): string {
+    return this.viewManagerService.selectedProcessorId
+  }
+
+  showOverlay() {
+    this.moverlay.show()
+  }
 }

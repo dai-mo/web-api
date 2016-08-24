@@ -10,6 +10,7 @@
         'd3':'assets/lib/d3',
         'moment': 'assets/lib/moment',
         'ng2-bootstrap': 'assets/lib/ng2-bootstrap',
+        'ng2-select': 'assets/lib/ng2-select',
         'primeng': 'assets/lib/primeng'
 
     };
@@ -23,6 +24,7 @@
         'webcola': {defaultExtension: 'js', main: 'index.js'},
         'moment': {defaultExtension: 'js', main: 'moment.js'},
         'ng2-bootstrap': {defaultExtension: 'js', main: 'ng2-bootstrap.js'},
+        'ng2-select': {defaultExtension: 'js', main: 'ng2-select.js'},
         'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
         'primeng': { defaultExtension: 'js' }
 

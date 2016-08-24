@@ -46,6 +46,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
 
       case ("mobilise", "view.html") => Ok(views.html.partials.mobilise.view())
       case ("mobilise", "content.html") => Ok(views.html.partials.mobilise.content())
+      case ("mobilise", "overlay.html") => Ok(views.html.partials.mobilise.overlay())
 
       case ("visualise", "view.html") => Ok(views.html.partials.visualise.view())
       case _ => NotFound

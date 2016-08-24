@@ -7,6 +7,7 @@ import {FlowService} from "./shared/flow.service"
 import {ViewManagerService} from "./shared/view-manager.service"
 import {BrowserModule} from "@angular/platform-browser"
 import {DataTableModule,SharedModule} from "primeng/primeng"
+import {OverlayPanelModule} from "primeng/components/overlaypanel/overlaypanel"
 
 @NgModule({
   declarations: [App],
@@ -17,7 +18,8 @@ import {DataTableModule,SharedModule} from "primeng/primeng"
   imports: [BrowserModule,
     HttpModule,
     DataTableModule,
-    SharedModule],
+    SharedModule,
+    OverlayPanelModule],
   bootstrap: [App]
 
 })

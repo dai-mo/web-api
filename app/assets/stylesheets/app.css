@@ -215,6 +215,11 @@ html, body {
   color:black
 }
 
+.info-column {
+  width: 32px;
+  align-content: center;
+}
+
 
 
 
