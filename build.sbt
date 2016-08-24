@@ -1,9 +1,8 @@
 import java.io.File
 
 import sbt._
-import NativePackagerHelper._
 import sbtrelease._
-import sbtrelease.ReleaseStateTransformations.{setReleaseVersion => _, _}
+import sbtrelease.ReleaseStateTransformations._
 
 val projectName = "org.dcs.web"
 name := projectName
@@ -180,3 +179,16 @@ releaseVersion := {
 }
 
 releaseVersionBump := sbtrelease.Version.Bump.Minor
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,              // : ReleaseStep
+  inquireVersions,                        // : ReleaseStep
+  runTest,                                // : ReleaseStep
+  setReleaseVersion,                      // : ReleaseStep
+  commitReleaseVersion,                   // : ReleaseStep, performs the initial git checks
+  tagRelease,                             // : ReleaseStep
+  ReleaseStep(releaseStepTask(publish in Universal)),
+  setNextVersion,                         // : ReleaseStep
+  commitNextVersion,                      // : ReleaseStep
+  pushChanges                             // : ReleaseStep, also checks that an upstream branch is properly configured
+)
