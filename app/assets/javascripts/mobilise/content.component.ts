@@ -11,6 +11,7 @@ import {ModalComponent} from "../shared/modal.component"
 import {ViewManagerService} from "../shared/view-manager.service"
 import {SELECT_DIRECTIVES} from "ng2-select"
 import {MobiliseOverlayComponent} from "./overlay.component"
+import {SelectItem} from "primeng/components/common/api"
 
 @Component({
   selector: "content",
@@ -22,15 +23,32 @@ export class ContentComponent {
   @ViewChild("moverlay") public moverlay: MobiliseOverlayComponent
 
   private provenances: Array<Provenance> = null
+  private actions: Array<string> = []
 
   @Input() isMainPanel:boolean = true
 
-  private rows: Array<string> = ["last 10", "last 50", "last 100", "All"]
+
+  rowOptions: SelectItem[] = []
+  selectedRowOption: string
+
+  formatOptions: SelectItem[] = []
+  selectedFormatOption: string
+
   private formats: Array<string> = ["raw", "csv"]
+
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
               private viewManagerService: ViewManagerService) {
+    this.rowOptions = []
+    this.rowOptions.push({label:"rows", value: null})
+    this.rowOptions.push({label:"last 10", value:{id:1, name: "last 10", code: "last_10"}})
+    this.rowOptions.push({label:"last 50", value:{id:2, name: "last 50", code: "last_50"}})
+    this.rowOptions.push({label:"all", value:{id:3, name: "all", code: "all"}})
 
+    this.formatOptions = []
+    this.formatOptions.push({label:"format", value: null})
+    this.formatOptions.push({label:"csv", value:{id:1, name: "csv", code: "csv"}})
+    this.formatOptions.push({label:"raw", value:{id:2, name: "raw", code: "raw"}})
   }
 
   @Input()

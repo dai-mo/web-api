@@ -2,39 +2,43 @@
 <nav class="navbar navbar-light bg-faded main-header" *ngIf="hasResults()">
     <ul class="nav navbar-nav">
         <li class="nav-item active">
-            <ng-select [allowClear]="true"
-            [items]="rows"
-            placeholder="no. of rows">
-            </ng-select>
+            <p-dropdown [options]="rowOptions" [(ngModel)]="selectedRowOption"></p-dropdown>
         </li>
         <li class="nav-item active">
-            <ng-select [allowClear]="true"
-            [items]="formats"
-            placeholder="format">
-            </ng-select>
+            <p-dropdown [options]="formatOptions" [(ngModel)]="selectedFormatOption"></p-dropdown>
         </li>
     </ul>
     <div class="pull-xs-right" *ngIf="isMainPanel">
         <button class="btn btn-secondary" (click)="showOverlay()">
             <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
         </button>
-
     </div>
+
 </nav>
 
-<div class="flex-panel table-container" *ngIf="hasResults()">
-    <p-dataTable [value]="provenances"  scrollHeight="200px" scrollWidth="100%">
-        <p-column styleClass="info-column">
-            <template let-provenance="rowData">
-                <i class="fa fa-info-circle" aria-hidden="true" tooltipPlacement="right" tooltip="id: {{provenance.id}}"></i>
-            </template>
-        </p-column>
 
-        <p-column field="content" header="content"></p-column>
-    </p-dataTable>
+<div class="flex-panel table-container" *ngIf="hasResults()">
+
+    <div class="flex-row-parent padding">
+        <div class="flex-panel-30" >
+            <p-dataTable  [value]="actions"  scrollHeight="200px" scrollWidth="100%">
+                <p-column field="id" header="action"></p-column>
+            </p-dataTable>
+        </div>
+        <div class="flex-panel-70">
+            <p-dataTable  [value]="provenances"  scrollHeight="200px" scrollWidth="100%">
+                <p-column styleClass="info-column">
+                    <template let-provenance="rowData">
+                        <i class="fa fa-info-circle" aria-hidden="true" tooltipPlacement="right" tooltip="id: {{provenance.id}}"></i>
+                    </template>
+                </p-column>
+                <p-column field="content" header="content" ></p-column>
+            </p-dataTable>
+        </div>
+    </div>
 </div>
 
 <modal #dialog="dialog" *ngIf="isMainPanel"></modal>
 
-<mobilise-overlay #moverlay="moverlay" *ngIf="isMainPanel"></mobilise-overlay>
+<mobilise-overlay #moverlay="moverlay"  *ngIf="isMainPanel"></mobilise-overlay>
 

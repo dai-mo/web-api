@@ -156,7 +156,7 @@ html, body {
 }
 
 .main-header {
-  height:40px;
+  height:45px;
   font-size: 20px;
   padding:2px;
   background-color: #e6ffee;
@@ -175,7 +175,25 @@ html, body {
   flex-direction:column
 }
 
+.flex-row-parent {
+  width: 100%;
+  height: 100%;
+  display:-webkit-flex;
+  display:flex;
+  flex-direction:row
+}
+
 .flex-panel {
+  -webkit-flex: 1;
+  flex: 1 ;
+}
+
+.flex-panel-30 {
+  -webkit-flex: 1;
+  flex: .3 ;
+}
+
+.flex-panel-70 {
   -webkit-flex: 1;
   flex: 1 ;
 }
@@ -196,8 +214,6 @@ html, body {
 }
 
 .table-container {
-  height: 100%;
-  width: 100%;
   margin: 0;
   padding: 0;
   overflow-y: scroll;
@@ -219,6 +235,21 @@ html, body {
   width: 32px;
   align-content: center;
 }
+
+.padding {
+  padding: 2px;
+  margin: 2px;
+}
+
+.ui-dropdown .ui-dropdown-trigger {
+  width: 30px;
+}
+
+.ui-dropdown {
+  padding-right: 20px;
+}
+
+
 
 
 
