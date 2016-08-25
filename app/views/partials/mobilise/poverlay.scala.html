@@ -1,0 +1,33 @@
+@()
+<div bsModal #lgModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+aria-hidden="true" xmlns="http://www.w3.org/1999/html">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" (click)="lgModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Select / Configure Processor</h4>
+            </div>
+            <div class="modal-body">
+                <div class="flex-row-parent">
+                    <div class="flex-panel-30 padding">
+                        <p-listbox [options]="processors" [(ngModel)]="selectedProcessor"></p-listbox>
+                    </div>
+                    <div class="flex-panel-70 padding">
+                        <label >Property 1 :
+                            <input id="property1" type="text" size="30" pInputText [(ngModel)]="text"/>{{text}}
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <p-toolbar>
+                    <div class="ui-toolbar-group-left" >
+                        <button pButton type="text" label="Add" icon="fa-plus" (click)="addProcessor()" [disabled]="!isProcessorSelected()"></button>
+                    </div>
+                </p-toolbar>
+            </div>
+        </div>
+    </div>
+</div>

@@ -5,25 +5,28 @@
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {Component, Input, ViewChild} from "@angular/core"
-import {Provenance} from "../analyse/flow.model"
+import {Provenance, Action} from "../analyse/flow.model"
 import {TOOLTIP_DIRECTIVES} from "ng2-bootstrap"
 import {ModalComponent} from "../shared/modal.component"
 import {ViewManagerService} from "../shared/view-manager.service"
 import {SELECT_DIRECTIVES} from "ng2-select"
 import {MobiliseOverlayComponent} from "./overlay.component"
 import {SelectItem} from "primeng/components/common/api"
+import {ProcessorOverlayComponent} from "./processor-overlay.component"
 
 @Component({
   selector: "content",
-  directives: [TOOLTIP_DIRECTIVES, SELECT_DIRECTIVES, ModalComponent, MobiliseOverlayComponent],
+  directives: [TOOLTIP_DIRECTIVES, SELECT_DIRECTIVES, ModalComponent, MobiliseOverlayComponent, ProcessorOverlayComponent],
   templateUrl: "partials/mobilise/content.html"
 })
 export class ContentComponent {
   @ViewChild("dialog") public dialog: ModalComponent
   @ViewChild("moverlay") public moverlay: MobiliseOverlayComponent
+  @ViewChild("poverlay") public poverlay: MobiliseOverlayComponent
 
   private provenances: Array<Provenance> = null
-  private actions: Array<string> = []
+
+  private actions: Action[] = []
 
   @Input() isMainPanel:boolean = true
 
@@ -88,5 +91,13 @@ export class ContentComponent {
 
   showOverlay() {
     this.moverlay.show()
+  }
+
+  showProcessorOverlay() {
+    this.poverlay.show()
+  }
+
+  hasActions(): boolean {
+    return this.actions.length > 0
   }
 }

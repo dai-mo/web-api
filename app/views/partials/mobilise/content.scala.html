@@ -7,10 +7,21 @@
         <li class="nav-item active">
             <p-dropdown [options]="formatOptions" [(ngModel)]="selectedFormatOption"></p-dropdown>
         </li>
+        <li class="nav-item">
+            <button class="btn btn-secondary" (click)="showProcessorOverlay()">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+        </li>
     </ul>
     <div class="pull-xs-right" *ngIf="isMainPanel">
-        <button class="btn btn-secondary" (click)="showOverlay()">
-            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+        @*<button class="btn btn-secondary" (click)="showOverlay()">*@
+            @*<i class="fa fa-pencil-square-o" aria-hidden="true"></i>*@
+        @*</button>*@
+        <button class="btn btn-secondary">
+            <i class="fa fa-angle-right" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-secondary">
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
         </button>
     </div>
 
@@ -18,14 +29,13 @@
 
 
 <div class="flex-panel table-container" *ngIf="hasResults()">
-
-    <div class="flex-row-parent padding">
-        <div class="flex-panel-30" >
+    <div class="flex-row-parent">
+        <div class="flex-panel-30 padding" *ngIf="hasActions()">
             <p-dataTable  [value]="actions"  scrollHeight="200px" scrollWidth="100%">
-                <p-column field="id" header="action"></p-column>
+                <p-column field="label" header="action"></p-column>
             </p-dataTable>
         </div>
-        <div class="flex-panel-70">
+        <div class="padding" [ngClass]="{'flex-panel-70': hasActions, 'flex-panel': !hasActions}">
             <p-dataTable  [value]="provenances"  scrollHeight="200px" scrollWidth="100%">
                 <p-column styleClass="info-column">
                     <template let-provenance="rowData">
@@ -41,4 +51,5 @@
 <modal #dialog="dialog" *ngIf="isMainPanel"></modal>
 
 <mobilise-overlay #moverlay="moverlay"  *ngIf="isMainPanel"></mobilise-overlay>
+<processor-overlay #poverlay="poverlay"  [mobiliseActions]="actions"></processor-overlay>
 
