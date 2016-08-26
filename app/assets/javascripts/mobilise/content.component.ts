@@ -9,13 +9,12 @@ import {Provenance, Action} from "../analyse/flow.model"
 import {TOOLTIP_DIRECTIVES} from "ng2-bootstrap"
 import {ModalComponent} from "../shared/modal.component"
 import {ViewManagerService} from "../shared/view-manager.service"
-import {SELECT_DIRECTIVES} from "ng2-select"
 import {SelectItem} from "primeng/components/common/api"
 import {ProcessorPanelComponent} from "./processor-panel.component"
 
 @Component({
   selector: "content",
-  directives: [TOOLTIP_DIRECTIVES, SELECT_DIRECTIVES, ModalComponent, ProcessorPanelComponent],
+  directives: [TOOLTIP_DIRECTIVES, ModalComponent, ProcessorPanelComponent],
   templateUrl: "partials/mobilise/content.html"
 })
 export class ContentComponent {
