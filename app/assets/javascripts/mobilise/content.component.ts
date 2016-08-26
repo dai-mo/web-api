@@ -10,26 +10,22 @@ import {TOOLTIP_DIRECTIVES} from "ng2-bootstrap"
 import {ModalComponent} from "../shared/modal.component"
 import {ViewManagerService} from "../shared/view-manager.service"
 import {SELECT_DIRECTIVES} from "ng2-select"
-import {MobiliseOverlayComponent} from "./overlay.component"
 import {SelectItem} from "primeng/components/common/api"
-import {ProcessorOverlayComponent} from "./processor-overlay.component"
+import {ProcessorPanelComponent} from "./processor-panel.component"
 
 @Component({
   selector: "content",
-  directives: [TOOLTIP_DIRECTIVES, SELECT_DIRECTIVES, ModalComponent, MobiliseOverlayComponent, ProcessorOverlayComponent],
+  directives: [TOOLTIP_DIRECTIVES, SELECT_DIRECTIVES, ModalComponent, ProcessorPanelComponent],
   templateUrl: "partials/mobilise/content.html"
 })
 export class ContentComponent {
   @ViewChild("dialog") public dialog: ModalComponent
-  @ViewChild("moverlay") public moverlay: MobiliseOverlayComponent
-  @ViewChild("poverlay") public poverlay: MobiliseOverlayComponent
+
+  @ViewChild("poverlay") public poverlay: ProcessorPanelComponent
 
   private provenances: Array<Provenance> = null
 
   private actions: Action[] = []
-
-  @Input() isMainPanel:boolean = true
-
 
   rowOptions: SelectItem[] = []
   selectedRowOption: string
@@ -56,6 +52,7 @@ export class ContentComponent {
 
   @Input()
   set showProvenance(processorId: string) {
+    this.actions = []
     if(processorId != null)
       this.flowService
         .provenance(processorId)
@@ -87,10 +84,6 @@ export class ContentComponent {
 
   selectedProcessorId(): string {
     return this.viewManagerService.selectedProcessorId
-  }
-
-  showOverlay() {
-    this.moverlay.show()
   }
 
   showProcessorOverlay() {

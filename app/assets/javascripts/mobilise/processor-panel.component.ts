@@ -7,15 +7,16 @@ import {MODAL_DIRECTIVES, BS_VIEW_PROVIDERS, ModalDirective} from "ng2-bootstrap
 import {CORE_DIRECTIVES} from "@angular/common"
 import {SelectItem} from "primeng/components/common/api"
 import {Action} from "../analyse/flow.model"
+import {ConfigureProcessorComponent} from "../shared/configure-processor.component"
 
 @Component({
-  selector: "processor-overlay",
-  directives: [MODAL_DIRECTIVES, CORE_DIRECTIVES],
+  selector: "processor-panel",
+  directives: [MODAL_DIRECTIVES, CORE_DIRECTIVES, ConfigureProcessorComponent],
   viewProviders:[BS_VIEW_PROVIDERS],
   exportAs: "poverlay",
-  templateUrl: "partials/mobilise/poverlay.html"
+  templateUrl: "partials/mobilise/processorpanel.html"
 })
-export class ProcessorOverlayComponent {
+export class ProcessorPanelComponent {
   @ViewChild("lgModal") public lgModal: ModalDirective
 
   @Input() mobiliseActions: Action[]
@@ -37,6 +38,19 @@ export class ProcessorOverlayComponent {
     this.processors.push({label:"Processor9", value:"Processor9"})
     this.processors.push({label:"Processor10", value:"Processor10"})
     this.processors.push({label:"Processor11", value:"Processor11"})
+    this.processors.push({label:"Processor12", value:"Processor12"})
+    this.processors.push({label:"Processor13", value:"Processor13"})
+    this.processors.push({label:"Processor14", value:"Processor14"})
+    this.processors.push({label:"Processor15", value:"Processor15"})
+    this.processors.push({label:"Processor16", value:"Processor16"})
+    this.processors.push({label:"Processor17", value:"Processor17"})
+    this.processors.push({label:"Processor18", value:"Processor18"})
+    this.processors.push({label:"Processor19", value:"Processor19"})
+    this.processors.push({label:"Processor20", value:"Processor20"})
+    this.processors.push({label:"Processor21", value:"Processor21"})
+    this.processors.push({label:"Processor22", value:"Processor22"})
+    this.processors.push({label:"Processor23", value:"Processor23"})
+    this.processors.push({label:"Processor24", value:"Processor24"})
   }
 
   public show() {

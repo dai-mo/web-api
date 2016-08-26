@@ -101,6 +101,10 @@ html, body {
   height: 100%;
 }
 
+.hfill {
+  height: 100%;
+}
+
 
 
 .visualise {
@@ -184,18 +188,59 @@ html, body {
 }
 
 .flex-panel {
+  -webkit-box-flex: 1;
   -webkit-flex: 1;
+  -ms-flex: 1;
   flex: 1 ;
+  min-height:0;
 }
 
 .flex-panel-30 {
-  -webkit-flex: 1;
-  flex: .3 ;
+  -webkit-box-flex: .3;
+  -webkit-flex: .3;
+  -ms-flex: .3;
+  flex: .3;
+  min-height:0;
 }
 
 .flex-panel-70 {
-  -webkit-flex: 1;
-  flex: 1 ;
+  -webkit-box-flex: .7;
+  -webkit-flex: .7;
+  -ms-flex: .7;
+  flex: .7;
+  min-height:0;
+}
+
+.flex-panel-90 {
+  -webkit-box-flex: .9;
+  -webkit-flex: .9;
+  -ms-flex: .9;
+  flex: .9;
+  min-height:0;
+}
+
+.flex-panel-80 {
+  -webkit-box-flex: .8;
+  -webkit-flex: .8;
+  -ms-flex: .8;
+  flex: .8;
+  min-height:0;
+}
+
+.flex-panel-5 {
+  -webkit-box-flex: .5;
+  -webkit-flex: .5;
+  -ms-flex: .5;
+  flex: .5;
+  min-height:0;
+}
+
+.flex-panel-10 {
+  -webkit-box-flex: .1;
+  -webkit-flex: .1;
+  -ms-flex: .1;
+  flex: .1;
+  min-height:0;
 }
 
 .tab-content {
@@ -249,7 +294,41 @@ html, body {
   padding-right: 20px;
 }
 
+.plistbox {
+  max-height: 90%;
+}
 
+.overlay {
+  height:95%;
+}
+
+/* enable absolute positioning */
+.inner-addon {
+  position: relative;
+}
+
+/* style icon */
+.inner-addon .fa {
+  position: absolute;
+  padding: 10px;
+  pointer-events: none;
+}
+
+/* align icon */
+.left-addon .fa  { left:  0px;}
+.right-addon .fa { right: 0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+.right-addon input { padding-right: 30px; }
+
+.p-search {
+  width:200px;
+}
+
+.modal-dialog {
+  height:90%
+}
 
 
 

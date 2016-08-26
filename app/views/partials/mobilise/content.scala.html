@@ -7,16 +7,11 @@
         <li class="nav-item active">
             <p-dropdown [options]="formatOptions" [(ngModel)]="selectedFormatOption"></p-dropdown>
         </li>
-        <li class="nav-item">
-            <button class="btn btn-secondary" (click)="showProcessorOverlay()">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-            </button>
-        </li>
     </ul>
-    <div class="pull-xs-right" *ngIf="isMainPanel">
-        @*<button class="btn btn-secondary" (click)="showOverlay()">*@
-            @*<i class="fa fa-pencil-square-o" aria-hidden="true"></i>*@
-        @*</button>*@
+    <div class="pull-xs-right">
+        <button class="btn btn-secondary" (click)="showProcessorOverlay()">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+        </button>
         <button class="btn btn-secondary">
             <i class="fa fa-angle-right" aria-hidden="true"></i>
         </button>
@@ -24,9 +19,7 @@
             <i class="fa fa-angle-double-right" aria-hidden="true"></i>
         </button>
     </div>
-
 </nav>
-
 
 <div class="flex-panel table-container" *ngIf="hasResults()">
     <div class="flex-row-parent">
@@ -35,7 +28,7 @@
                 <p-column field="label" header="action"></p-column>
             </p-dataTable>
         </div>
-        <div class="padding" [ngClass]="{'flex-panel-70': hasActions, 'flex-panel': !hasActions}">
+        <div class="padding" [ngClass]="{'flex-panel-70': hasActions(), 'flex-panel': !hasActions()}">
             <p-dataTable  [value]="provenances"  scrollHeight="200px" scrollWidth="100%">
                 <p-column styleClass="info-column">
                     <template let-provenance="rowData">
@@ -48,8 +41,7 @@
     </div>
 </div>
 
-<modal #dialog="dialog" *ngIf="isMainPanel"></modal>
+<modal #dialog="dialog"></modal>
 
-<mobilise-overlay #moverlay="moverlay"  *ngIf="isMainPanel"></mobilise-overlay>
-<processor-overlay #poverlay="poverlay"  [mobiliseActions]="actions"></processor-overlay>
+<processor-panel #poverlay="poverlay"  [mobiliseActions]="actions"></processor-panel>
 
