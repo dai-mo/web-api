@@ -1,33 +1,47 @@
 @()
 <nav class="navbar navbar-light bg-faded main-header" *ngIf="hasResults()">
-    <form class="navbar-form form-inline">
-        <label for="rows">rows : </label>
-        <select name="rows" id="rows" class="form-control">
-            <option value="10">10</option>
-        </select>
-        <label for="format">format : </label>
-        <select name="format" id="format" class="form-control">
-            <option value="raw">raw</option>
-            <option value="csv">csv</option>
-        </select>
-    </form>
+    <ul class="nav navbar-nav">
+        <li class="nav-item active">
+            <p-dropdown [options]="rowOptions" [(ngModel)]="selectedRowOption"></p-dropdown>
+        </li>
+        <li class="nav-item active">
+            <p-dropdown [options]="formatOptions" [(ngModel)]="selectedFormatOption"></p-dropdown>
+        </li>
+    </ul>
+    <div class="pull-xs-right">
+        <button class="btn btn-secondary" (click)="showProcessorOverlay()">
+            <i class="fa fa-plus" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-secondary">
+            <i class="fa fa-angle-right" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-secondary">
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+        </button>
+    </div>
 </nav>
 
-<div class="fill" *ngIf="hasResults()">
-    <table class="table table-striped table-bordered table-hover table-sm  table-scrollable">
-        <thead class="thead-inverse">
-            <tr>
-                <th>#</th>
-                <th>content</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let provenance of provenances">
-                <th scope="row"><i class="fa fa-info-circle" aria-hidden="true" tooltipPlacement="right" tooltip="id: {{provenance.id}}"></i></th>
-                <td>{{provenance.content}}</td>
-            </tr>
-        </tbody>
-    </table>
+<div class="flex-panel table-container" *ngIf="hasResults()">
+    <div class="flex-row-parent">
+        <div class="flex-panel-30 padding" *ngIf="hasActions()">
+            <p-dataTable  [value]="actions"  scrollHeight="200px" scrollWidth="100%">
+                <p-column field="label" header="action"></p-column>
+            </p-dataTable>
+        </div>
+        <div class="padding" [ngClass]="{'flex-panel-70': hasActions(), 'flex-panel': !hasActions()}">
+            <p-dataTable  [value]="provenances"  scrollHeight="200px" scrollWidth="100%">
+                <p-column styleClass="info-column">
+                    <template let-provenance="rowData">
+                        <i class="fa fa-info-circle" aria-hidden="true" tooltipPlacement="right" tooltip="id: {{provenance.id}}"></i>
+                    </template>
+                </p-column>
+                <p-column field="content" header="content" ></p-column>
+            </p-dataTable>
+        </div>
+    </div>
 </div>
 
 <modal #dialog="dialog"></modal>
+
+<processor-panel #poverlay="poverlay"  [mobiliseActions]="actions"></processor-panel>
+

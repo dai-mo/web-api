@@ -131,3 +131,7 @@ export class Provenance {
   id: string
   content: string
 }
+
+export class Action {
+  label: string
+}

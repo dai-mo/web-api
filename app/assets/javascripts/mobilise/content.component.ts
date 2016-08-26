@@ -5,27 +5,53 @@
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {Component, Input, ViewChild} from "@angular/core"
-import {Provenance} from "../analyse/flow.model"
+import {Provenance, Action} from "../analyse/flow.model"
 import {TOOLTIP_DIRECTIVES} from "ng2-bootstrap"
 import {ModalComponent} from "../shared/modal.component"
 import {ViewManagerService} from "../shared/view-manager.service"
+import {SelectItem} from "primeng/components/common/api"
+import {ProcessorPanelComponent} from "./processor-panel.component"
 
 @Component({
   selector: "content",
-  directives: [TOOLTIP_DIRECTIVES, ModalComponent],
+  directives: [TOOLTIP_DIRECTIVES, ModalComponent, ProcessorPanelComponent],
   templateUrl: "partials/mobilise/content.html"
 })
 export class ContentComponent {
   @ViewChild("dialog") public dialog: ModalComponent
+
+  @ViewChild("poverlay") public poverlay: ProcessorPanelComponent
+
   private provenances: Array<Provenance> = null
 
-  constructor(private flowService: FlowService,
-              private errorService: ErrorService) {
+  private actions: Action[] = []
 
+  rowOptions: SelectItem[] = []
+  selectedRowOption: string
+
+  formatOptions: SelectItem[] = []
+  selectedFormatOption: string
+
+  private formats: Array<string> = ["raw", "csv"]
+
+  constructor(private flowService: FlowService,
+              private errorService: ErrorService,
+              private viewManagerService: ViewManagerService) {
+    this.rowOptions = []
+    this.rowOptions.push({label:"rows", value: null})
+    this.rowOptions.push({label:"last 10", value:{id:1, name: "last 10", code: "last_10"}})
+    this.rowOptions.push({label:"last 50", value:{id:2, name: "last 50", code: "last_50"}})
+    this.rowOptions.push({label:"all", value:{id:3, name: "all", code: "all"}})
+
+    this.formatOptions = []
+    this.formatOptions.push({label:"format", value: null})
+    this.formatOptions.push({label:"csv", value:{id:1, name: "csv", code: "csv"}})
+    this.formatOptions.push({label:"raw", value:{id:2, name: "raw", code: "raw"}})
   }
 
   @Input()
   set showProvenance(processorId: string) {
+    this.actions = []
     if(processorId != null)
       this.flowService
         .provenance(processorId)
@@ -55,4 +81,15 @@ export class ContentComponent {
     return this.provenances != null && this.provenances.length > 0
   }
 
+  selectedProcessorId(): string {
+    return this.viewManagerService.selectedProcessorId
+  }
+
+  showProcessorOverlay() {
+    this.poverlay.show()
+  }
+
+  hasActions(): boolean {
+    return this.actions.length > 0
+  }
 }
