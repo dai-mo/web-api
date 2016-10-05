@@ -12,8 +12,8 @@ onmousedown="return false">
     </div>
 </div>
 
-<div class="card-block flex-panel">
-    <visualise class="flex-panel-parent" *ngIf="name === 'visualise'"></visualise>
-    <mobilise class="flex-panel-parent" *ngIf="name === 'mobilise'"></mobilise>
-    <analyse class="flex-panel-parent" *ngIf="name === 'analyse'"></analyse>
+<div class="card-block flex-panel" [ngSwitch]="name">
+    <visualise class="flex-panel-parent" *ngSwitchCase="'visualise'"></visualise>
+    <mobilise class="flex-panel-parent" *ngSwitchCase="'mobilise'"></mobilise>
+    <analyse class="flex-panel-parent" *ngSwitchCase="'analyse'"></analyse>
 </div>
