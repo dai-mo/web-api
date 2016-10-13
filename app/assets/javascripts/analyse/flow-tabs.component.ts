@@ -5,6 +5,7 @@ import {FlowTab, FlowInstance} from "./flow.model"
 import {FlowGraphComponent} from "./flow-graph.component"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
+import {KeycloakService} from "../shared/keycloak.service"
 
 
 @Component({
@@ -55,17 +56,20 @@ export class FlowTabsComponent implements OnInit {
   }
 
   public deleteTab(flowTab: FlowTab) {
-    this.flowService
-      .destroyInstance(flowTab.id)
-      .subscribe(
-        deleteOK => {
-          if(!deleteOK)
-            alert("Flow Instance could not be deleted")
-          else
-            this.tabs.filter(t => t.id === flowTab.id).forEach(t => this.tabs.splice(this.tabs.indexOf(t), 1))
-        },
-        (error: any) => this.errorService.handleError(error)
-      )
+    KeycloakService.apiRpt.then(function (rpt: string) {
+      this.flowService
+        .destroyInstance(flowTab.id, rpt)
+        .subscribe(
+          (deleteOK: boolean) => {
+            if (!deleteOK)
+              alert("Flow Instance could not be deleted")
+            else
+              this.tabs.filter((t: FlowTab) => t.id === flowTab.id)
+                .forEach((t: FlowTab) => this.tabs.splice(this.tabs.indexOf(t), 1))
+          },
+          (error: any) => this.errorService.handleError(error)
+        )
+    }.bind(this))
   }
 
   public startFlow(flowTab: FlowTab) {

@@ -1,12 +1,14 @@
 
 import {Injectable} from "@angular/core"
-import {Http} from "@angular/http"
+import {Http, Headers, RequestOptions} from "@angular/http"
 import "rxjs/add/operator/toPromise"
 import "rxjs/add/operator/map"
 import {Observable} from "rxjs/Rx"
 
+
 import {FlowTemplate, FlowInstance, FlowGraph, FlowLink, FlowNode, Processor, Provenance} from "../analyse/flow.model"
 import {ErrorService} from "./util/error.service"
+import {KeycloakService} from "./keycloak.service"
 
 
 @Injectable()
@@ -21,17 +23,29 @@ export class FlowService {
 
   private listProvenanceBaseUrl: string = "api/flow/provenance/list/"
 
+  private headers = new Headers({ "Authorization" : "Bearer " + KeycloakService.rpt })
+  private options = new RequestOptions({ headers: this.headers })
+
   constructor(private http: Http,
               private errorService: ErrorService) {
 
+  }
+
+  static updateHeaders(options: RequestOptions, rpt: string): RequestOptions  {
+    if(options.headers == null)
+      options.headers = new Headers()
+    options.headers.append("Authorization", "Bearer " + rpt)
+    return options
   }
 
   templates(): Observable<Array<FlowTemplate>> {
     return this.http.get(this.templatesUrl).map(response => response.json())
   }
 
-  instantiateTemplate(templateId: string): Observable<FlowInstance> {
-    return this.http.post(this.createInstanceBaseUrl + templateId, {}).map(response => response.json())
+  instantiateTemplate(templateId: string, rpt: string): Observable<FlowInstance> {
+    return this.http.post(this.createInstanceBaseUrl + templateId,
+      {},
+      FlowService.updateHeaders(new RequestOptions(), rpt)).map(response => response.json())
   }
 
   instance(flowInstanceId: string): Observable<FlowInstance> {
@@ -49,8 +63,9 @@ export class FlowService {
     return this.http.put(this.instancesStopUrl + flowInstanceId, {}).map(response => response.json())
   }
 
-  destroyInstance(flowInstanceId: string): Observable<boolean> {
-    return this.http.delete(this.instancesBaseUrl + flowInstanceId, {}).map(response => response.json())
+  destroyInstance(flowInstanceId: string, rpt: string): Observable<boolean> {
+    return this.http.delete(this.instancesBaseUrl + flowInstanceId,
+      FlowService.updateHeaders(new RequestOptions(), rpt)).map(response => response.json())
   }
 
   provenance(processorId: string): Observable<Array<Provenance>> {

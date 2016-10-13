@@ -7,7 +7,7 @@ import play.api.mvc.RequestHeader
   * Created by cmathew on 09/07/16.
   */
 object Req {
-  val AuthTokenKey = "auth-token"
+  val AuthTokenKey = "authConfig-token"
 
   def authToken(implicit request: RequestHeader): Option[String] = {
     request.cookies.get(AuthTokenKey).map(x => x.value)

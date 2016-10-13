@@ -9,6 +9,7 @@ import org.scalatestplus.play.PlaySpec
 class WebBaseSpec extends PlaySpec {
   val XsrfTokenCookieName = "XSRF-TOKEN"
   val XsrfTokenHeaderName = "X-XSRF-TOKEN"
+  val AuthorizationHeaderName = "Authorization"
 }
 
 
