@@ -22,7 +22,6 @@ export class KeycloakService {
 
   }
 
-
   static init(): Observable<any> {
     KeycloakService.authConfig = new Keycloak("/assets/keycloak.json")
     KeycloakService.loggedIn = false

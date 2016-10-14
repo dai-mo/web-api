@@ -23,9 +23,6 @@ export class FlowService {
 
   private listProvenanceBaseUrl: string = "api/flow/provenance/list/"
 
-  private headers = new Headers({ "Authorization" : "Bearer " + KeycloakService.rpt })
-  private options = new RequestOptions({ headers: this.headers })
-
   constructor(private http: Http,
               private errorService: ErrorService) {
 
