@@ -112,18 +112,20 @@ export class FlowTabsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.flowService
-      .instances()
-      .subscribe(
-        instances => {
-          instances.map(flowInstance => {
-            let flowTab = new FlowTab("#" + (this.tabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
-            this.tabs.push(flowTab)
-          })
-          if(this.tabs.length > 0)
-            this.tabs[0].active = true
-        },
-        (error: any) => this.errorService.handleError(error)
-      )
+    KeycloakService.apiRpt.then(function (rpt: string) {
+      this.flowService
+        .instances(rpt)
+        .subscribe(
+          (instances: Array<FlowInstance>) => {
+            instances.map((flowInstance: FlowInstance) => {
+              let flowTab = new FlowTab("#" + (this.tabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
+              this.tabs.push(flowTab)
+            })
+            if (this.tabs.length > 0)
+              this.tabs[0].active = true
+          },
+          (error: any) => this.errorService.handleError(error)
+        )
+    }.bind(this))
   }
 }

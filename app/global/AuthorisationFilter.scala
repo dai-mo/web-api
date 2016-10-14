@@ -2,6 +2,7 @@ package global
 
 import javax.inject.Inject
 
+import controllers.ModelImplicits._
 import akka.stream.Materializer
 import org.dcs.api.error.{ErrorConstants, RESTException}
 import org.dcs.commons.JsonSerializerImplicits._
@@ -32,11 +33,11 @@ class AuthorisationFilter @Inject() (implicit val mat: Materializer) extends Fil
         case re: RESTException => {
           val er = re.errorResponse
           result = Some(Future {
-            Status(er.httpStatusCode)(er.toJson)
+            Status(er.httpStatusCode)(Json.toJson(er))
           })
         }
         case NonFatal(t) => result = Some(Future {
-          Status(401)(ErrorConstants.DCS500.toJson)
+          Status(401)(Json.toJson(ErrorConstants.DCS500))
         })
       }
     }

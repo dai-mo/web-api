@@ -139,7 +139,7 @@ object Authorisation {
         val perms = permissions(claims)
         val filteredPerms = perms.filter(p => policyPaths.head.name.r.findFirstIn(p.resourceName).isDefined)
         if (filteredPerms.isEmpty)
-          throw new RESTException(ErrorConstants.DCS503.withErrorMessage("Request Token does not contain permission to access resource " + policyPaths.head.name))
+          throw new RESTException(ErrorConstants.DCS503.withErrorMessage("Insufficient permissions to access resource (" + policyPaths.head.name + ")"))
         val policyScopes = policyPathMethods.head.scopes
         val permissionScopes = filteredPerms.head.scopes
         policyScopes.forall(scope => permissionScopes.contains(scope))

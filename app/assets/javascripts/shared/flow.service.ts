@@ -51,8 +51,9 @@ export class FlowService {
   instance(flowInstanceId: string): Observable<FlowInstance> {
     return this.http.get(this.instancesBaseUrl + flowInstanceId).map(response => response.json())
   }
-  instances(): Observable<Array<FlowInstance>> {
-    return this.http.get(this.instancesBaseUrl).map(response => response.json())
+  instances(rpt: string): Observable<Array<FlowInstance>> {
+    return this.http.get(this.instancesBaseUrl,
+      FlowService.updateHeaders(new RequestOptions(), rpt)).map(response => response.json())
   }
 
   startInstance(flowInstanceId: string): Observable<boolean> {

@@ -19,13 +19,21 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
 
   val DefaultUserId = "root"
 
-  val ScopeFlowInstanceView = "urn:alambeek:scopes:flow-instance:delete"
+  val ScopeFlowInstanceView = "urn:alambeek:scopes:flow-instance:view"
+  val ScopeFlowInstanceUpdate = "urn:alambeek:scopes:flow-instance:update"
+  val ScopeFlowInstanceDelete = "urn:alambeek:scopes:flow-instance:delete"
   val BaseUrl = "/api/flow/instances"
   val ResourceNamePrefix = "flow-instance"
+  val ResourceNameSeparator = ":"
   val Type = "http://alambeek.org/resource/instance"
 
-  override def list: EssentialAction = csrfCheckAction { implicit request =>
-    serialize(FlowApi.instances(DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
+  override def list: EssentialAction =  (csrfCheckAction
+    andThen AuthorisationAction) { implicit request =>
+    val ids = flowInstanceIds(Authorisation.permissions(request.claims))
+    if(ids.isEmpty)
+      serialize(Nil)
+    else
+      serialize(ids.map( id => FlowApi.instance(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey))))
   }
 
   override def update(id: String): EssentialAction = csrfCheckAction { implicit request =>
@@ -51,11 +59,13 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
     andThen AuthorisationAction) { implicit request =>
     val flowInstance: FlowInstance =
       FlowApi.instantiate(flowTemplateId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey))
-    Authorisation.createProtectedResource(ScopeFlowInstanceView :: Nil,
-      ResourceNamePrefix + ":" + flowInstance.id,
+    Authorisation.createProtectedResource(
+      ScopeFlowInstanceView :: ScopeFlowInstanceUpdate :: ScopeFlowInstanceDelete :: Nil,
+      ResourceNamePrefix + ResourceNameSeparator + flowInstance.id,
       BaseUrl + "/" + flowInstance.id,
       Type,
-      Authorisation.userId(request.claims))
+      Authorisation.userId(request.claims)
+    )
     serialize(flowInstance)
   }
 
@@ -65,6 +75,14 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
 
   def stop(flowInstanceId: String): EssentialAction = csrfCheckAction { implicit request =>
     serialize(FlowApi.stop(flowInstanceId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)))
+  }
+
+  private def flowInstanceIds(permissions: List[Permission]): List[String] = {
+    val ids: List[String] = Nil
+
+    permissions
+      .filter(p => p.resourceName.startsWith(ResourceNamePrefix + ResourceNameSeparator))
+        .map(p => p.resourceName.split(ResourceNameSeparator).tail.head)
   }
 }
 
