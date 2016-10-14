@@ -45,17 +45,6 @@ export class KeycloakService {
     return kcInitObs
   }
 
-  // static refreshRpt() {
-  //   KeycloakService.authz.entitlement("alambeek-api").then(function (rpt: string) {
-  //     KeycloakService.rpt = rpt
-  //   })
-  // }
-  //
-  // static addUpdatedHeaders(options: RequestOptions): RequestOptions {
-  //   KeycloakService.refreshRpt()
-  //   options.headers.append("Authorization", "Bearer " + KeycloakService.rpt)
-  //   return options
-  // }
 
   logout() {
     console.log("*** LOGOUT ***")

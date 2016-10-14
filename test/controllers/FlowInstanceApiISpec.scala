@@ -14,7 +14,7 @@ import play.api.test._
 //       otherwise this test will be run during the release
 //       process. This should be reverted once the integration
 //       test environment is setup.
-//@Ignore
+@Ignore
 class FlowInstanceApiISpec extends WebBaseSpec with OneAppPerTest {
 
   "Template Instantiation" should {
