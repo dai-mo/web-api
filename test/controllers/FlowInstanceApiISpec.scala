@@ -6,6 +6,7 @@ import org.scalatestplus.play._
 import play.api.libs.json.{JsArray, JsObject}
 import play.api.test.Helpers._
 import play.api.test._
+import WebBaseSpec._
 
 /**
   * Created by cmathew on 25/07/16.

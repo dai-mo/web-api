@@ -4,7 +4,7 @@ import javax.inject.{Inject, Singleton}
 
 import controllers.routing.ResourceRouter
 import controllers.util._
-import global.Authorisation
+import global.AuthorisationService
 import org.dcs.api.service.FlowInstance
 import org.dcs.flow.FlowApi
 import play.api.mvc.EssentialAction
@@ -14,7 +14,10 @@ import play.api.mvc.EssentialAction
   */
 
 @Singleton
-class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAction: CSRFTokenAction)
+class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
+                                csrfTokenAction: CSRFTokenAction,
+                                authorisationAction: AuthorisationAction,
+                                authService: AuthorisationService)
   extends ResourceRouter[String] {
 
   val DefaultUserId = "root"
@@ -28,8 +31,8 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
   val Type = "http://alambeek.org/resource/instance"
 
   override def list: EssentialAction =  (csrfCheckAction
-    andThen AuthorisationAction) { implicit request =>
-    val ids = flowInstanceIds(Authorisation.permissions(request.claims))
+    andThen authorisationAction) { implicit request =>
+    val ids = flowInstanceIds(authService.permissions(request.claims))
     if(ids.isEmpty)
       serialize(Nil)
     else
@@ -41,9 +44,9 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
   }
 
   override def destroy(id: String): EssentialAction = (csrfCheckAction
-    andThen AuthorisationAction) { implicit request =>
+    andThen authorisationAction) { implicit request =>
     val result = FlowApi.remove(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey))
-    Authorisation.deleteProtectedResource(BaseUrl + "/" + id)
+    authService.deleteProtectedResource(BaseUrl + "/" + id)
     serialize(result)
   }
 
@@ -56,15 +59,15 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActio
   }
 
   def create(flowTemplateId: String): EssentialAction = (csrfCheckAction
-    andThen AuthorisationAction) { implicit request =>
+    andThen authorisationAction) { implicit request =>
     val flowInstance: FlowInstance =
       FlowApi.instantiate(flowTemplateId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey))
-    Authorisation.createProtectedResource(
+    authService.createProtectedResource(
       ScopeFlowInstanceView :: ScopeFlowInstanceUpdate :: ScopeFlowInstanceDelete :: Nil,
       ResourceNamePrefix + ResourceNameSeparator + flowInstance.id,
       BaseUrl + "/" + flowInstance.id,
       Type,
-      Authorisation.userId(request.claims)
+      authService.userId(request.claims)
     )
     serialize(flowInstance)
   }

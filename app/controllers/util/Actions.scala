@@ -2,9 +2,8 @@ package controllers.util
 
 import javax.inject.{Inject, Singleton}
 
-import global.Authorisation
+import global.AuthorisationService
 import io.jsonwebtoken.Claims
-import org.dcs.api.error.{ErrorConstants, RESTException}
 import play.api.mvc.{ActionBuilder, Request, Result, _}
 import play.filters.csrf.{CSRFAddToken, CSRFCheck}
 
@@ -37,11 +36,12 @@ class CSRFTokenAction @Inject()(addToken: CSRFAddToken) extends ActionBuilder[Re
 
 class AuthorisationRequest[A](val claims: Claims, val request: Request[A]) extends WrappedRequest[A](request)
 
-object AuthorisationAction extends
+@Singleton
+class AuthorisationAction @Inject()(authService: AuthorisationService) extends
   ActionBuilder[AuthorisationRequest] with ActionTransformer[Request, AuthorisationRequest] {
 
   def transform[A](request: Request[A]) = Future.successful {
-    new AuthorisationRequest(Authorisation.claims(request.headers.get("authorization")), request)
+    new AuthorisationRequest(authService.claims(request.headers.get("authorization")), request)
   }
 }
 

@@ -3,6 +3,7 @@ package global
 import java.security.spec.X509EncodedKeySpec
 import java.security.{KeyFactory, PublicKey}
 import java.util.Date
+import javax.inject.Singleton
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64
 import controllers.{AuthPolicy, Permission}
@@ -22,19 +23,24 @@ import scala.util.control.NonFatal
 /**
   * Created by cmathew on 13.10.16.
   */
-class Authorisation {
 
-}
 
-object AuthConfigurator extends Configurator(None, Some("authConfig"))
-object AuthPolicyConfigurator extends Configurator(Some("/auth-policy.yaml"), Some("authPolicyConfig"))
+@Singleton
+class AuthorisationService {
 
-object Authorisation {
 
   val keycloakConfig: AdapterConfig =
-    JsonSerialization.readValue[AdapterConfig](AuthConfigurator.config(), classOf[AdapterConfig])
-  val authPolicy = AuthPolicyConfigurator.config().toObject[AuthPolicy]
-  val authzClient: AuthzClient = {
+    JsonSerialization.readValue[AdapterConfig](authConfig, classOf[AdapterConfig])
+  val authPolicy = authPolicyConfig
+  val authzClient: AuthzClient = initAuthzClient()
+
+  def authConfig =
+    new Configurator(None, Some("authConfig")).config()
+
+  def authPolicyConfig =
+    new Configurator(Some("/auth-policy.yaml"), Some("authPolicyConfig")).config().toObject[AuthPolicy]
+
+  def initAuthzClient(): AuthzClient = {
     try {
       val configuration: Configuration =
         new Configuration(keycloakConfig.getAuthServerUrl,
@@ -63,14 +69,17 @@ object Authorisation {
 
           if(claims.getExpiration.before(new Date()))
             throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Token has expired"))
-          else if(!authPolicy.clients.contains(claims.getAudience))
-            throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Client " + claims.getAudience + " not recognised"))
-          else if(claims.getIssuer != keycloakConfig.getAuthServerUrl + "/realms/" + keycloakConfig.getRealm)
+
+          if(!authPolicy.clients.contains(claims.getAudience))
+            throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Client '" + claims.getAudience + "' not recognised"))
+
+          if(claims.getIssuer != keycloakConfig.getAuthServerUrl + "/realms/" + keycloakConfig.getRealm)
             throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Token issuer is not valid"))
-          else
-            claims
+
+          claims
 
         } catch {
+          case re: RESTException => throw re
           case NonFatal(t) => throw new RESTException(ErrorConstants.DCS502.withErrorMessage(t.getMessage))
         }
       }
@@ -123,6 +132,7 @@ object Authorisation {
     permissionDetails
   }
 
+
   def checkPermissions(requestPath: String,
                        requestMethod: String,
                        claims: Claims): Boolean = {
@@ -139,7 +149,7 @@ object Authorisation {
         val perms = permissions(claims)
         val filteredPerms = perms.filter(p => policyPaths.head.name.r.findFirstIn(p.resourceName).isDefined)
         if (filteredPerms.isEmpty)
-          throw new RESTException(ErrorConstants.DCS503.withErrorMessage("Insufficient permissions to access resource (" + policyPaths.head.name + ")"))
+          throw new RESTException(ErrorConstants.DCS503.withErrorMessage("No permissions to access resource (" + policyPaths.head.name + ")"))
         val policyScopes = policyPathMethods.head.scopes
         val permissionScopes = filteredPerms.head.scopes
         policyScopes.forall(scope => permissionScopes.contains(scope))

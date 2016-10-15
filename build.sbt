@@ -46,7 +46,8 @@ libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.5.0",
   "io.jsonwebtoken" % "jjwt" % "0.7.0",
   "org.keycloak" % "keycloak-authz-client" % "2.2.1.Final",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test
+  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
+  "org.mockito" % "mockito-core" % "2.2.1" % Test
 )
 
 
