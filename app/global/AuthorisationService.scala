@@ -16,6 +16,7 @@ import org.keycloak.authorization.client.resource.ProtectionResource
 import org.keycloak.authorization.client.{AuthzClient, Configuration}
 import org.keycloak.representations.adapters.config.AdapterConfig
 import org.keycloak.util.JsonSerialization
+import play.api.Logger
 
 import scala.collection.JavaConverters._
 import scala.util.control.NonFatal
@@ -138,7 +139,7 @@ class AuthorisationService {
                        claims: Claims): Boolean = {
     val policyPaths =
       authPolicy.paths.filter(policyPath => {
-        policyPath.path.r.findFirstIn(requestPath).isDefined
+        policyPath.path.r.pattern.matcher(requestPath).matches()
       })
     // if no authConfig policy has been set for the requested endpoint uri path and http method
     // then there are no permissions to check
@@ -147,7 +148,9 @@ class AuthorisationService {
         policyPaths.head.methods.filter(policyPathMethod => policyPathMethod.method == requestMethod)
       if (policyPathMethods.nonEmpty) {
         val perms = permissions(claims)
-        val filteredPerms = perms.filter(p => policyPaths.head.name.r.findFirstIn(p.resourceName).isDefined)
+        val filteredPerms = perms.filter(
+          p => policyPaths.head.name.r.pattern.matcher(p.resourceName).matches()
+        )
         if (filteredPerms.isEmpty)
           throw new RESTException(ErrorConstants.DCS503.withErrorMessage("No permissions to access resource (" + policyPaths.head.name + ")"))
         val policyScopes = policyPathMethods.head.scopes

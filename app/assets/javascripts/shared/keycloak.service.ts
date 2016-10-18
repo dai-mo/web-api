@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core"
-import {Observable, Observer} from "rxjs/Rx"
-import Rx from "rxjs/Rx"
-import {RequestOptions, Http} from "@angular/http"
+import Rx, {Observable, Observer} from "rxjs/Rx"
+import {Http} from "@angular/http"
 import {ErrorService} from "./util/error.service"
 
 
@@ -44,7 +43,6 @@ export class KeycloakService {
     return kcInitObs
   }
 
-
   logout() {
     console.log("*** LOGOUT ***")
     KeycloakService.loggedIn = false
@@ -53,19 +51,16 @@ export class KeycloakService {
     window.location.href = KeycloakService.authConfig.logoutUrl
   }
 
-  refreshToken(): Observable<string> {
-    let kcRtObs = Rx.Observable.create(function (observer: Observer<any>) {
-      if (KeycloakService.authConfig.authz.token) {
-        KeycloakService.authConfig.authz.updateToken(5)
-          .success(() => {
-            observer.next(<string>KeycloakService.authConfig.authz.token)
-            observer.complete()
-          })
-          .error(() => {
-            observer.error("Failed to refresh token")
-          })
-      }
-    })
-    return kcRtObs
+
+  static withRptUpdate(apiCall: (rpt: string) => void): void {
+    KeycloakService.authConfig.updateToken(5)
+      .success(() => {
+        KeycloakService.apiRpt.then(function (rpt: string) {
+          apiCall(rpt)
+        })
+      })
+      .error(() => {
+        console.log("Failed to refresh token")
+      })
   }
 }

@@ -1,7 +1,7 @@
 /**
  * Created by cmathew on 14/07/16.
  */
-import {Component, OnInit, ViewChild} from "@angular/core"
+import {Component, OnInit, ViewChild, ChangeDetectorRef} from "@angular/core"
 import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
@@ -33,7 +33,8 @@ export class AnalyseComponent implements OnInit {
   constructor(window: Window,
               private flowService: FlowService,
               private errorService: ErrorService,
-              private keycloakService: KeycloakService) {
+              private keycloakService: KeycloakService,
+              private cdr: ChangeDetectorRef) {
   }
 
   getTemplates() {
@@ -67,12 +68,14 @@ export class AnalyseComponent implements OnInit {
   }
 
   private instantiateTemplate(flowTemplate: FlowTemplate): void {
-    KeycloakService.apiRpt.then(function (rpt: string) {
+
+    KeycloakService.withRptUpdate(function (rpt: string) {
       this.flowService
         .instantiateTemplate(flowTemplate.id, rpt)
         .subscribe(
           (flowInstance: FlowInstance) => {
             this.flowInstanceToAdd = flowInstance
+            this.cdr.detectChanges()
           },
           (error: any) => {
             this.errorService.handleError(error)
@@ -81,5 +84,6 @@ export class AnalyseComponent implements OnInit {
           }
         )
     }.bind(this))
+
   }
 }
