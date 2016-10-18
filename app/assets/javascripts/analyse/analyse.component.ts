@@ -83,7 +83,7 @@ export class AnalyseComponent implements OnInit {
             this.dialog.show(dcsError.message, dcsError.errorMessage)
           }
         )
-    }.bind(this))
+    }.bind(this), "flow-instance")
 
   }
 }

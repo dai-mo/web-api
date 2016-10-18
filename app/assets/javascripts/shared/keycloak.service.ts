@@ -16,6 +16,8 @@ export class KeycloakService {
   static loggedIn: boolean = false
   static logoutUrl: string
 
+  static ApiResourceId: string = "alambeek-api"
+
   constructor(private http: Http,
               private errorService: ErrorService) {
 
@@ -31,7 +33,6 @@ export class KeycloakService {
           KeycloakService.loggedIn = true
 
           KeycloakService.authz = new KeycloakAuthorization(KeycloakService.authConfig)
-          KeycloakService.apiRpt = KeycloakService.authz.entitlement("alambeek-api")
           KeycloakService.logoutUrl = KeycloakService.authConfig.authServerUrl + "/realms/demo/protocol/openid-connect/logout?redirect_uri=/index.html"
           observer.next(KeycloakService.authConfig)
           observer.complete()
@@ -52,10 +53,16 @@ export class KeycloakService {
   }
 
 
-  static withRptUpdate(apiCall: (rpt: string) => void): void {
+  static withRptUpdate(apiCall: (rpt: string) => void, filter: string = null): void {
     KeycloakService.authConfig.updateToken(5)
       .success(() => {
-        KeycloakService.apiRpt.then(function (rpt: string) {
+        let apiRpt: any
+        if(filter === null)
+          apiRpt = KeycloakService.authz.entitlement(KeycloakService.ApiResourceId)
+        else
+          apiRpt = KeycloakService.authz.entitlement(KeycloakService.ApiResourceId, filter)
+
+        apiRpt.then(function (rpt: string) {
           apiCall(rpt)
         })
       })

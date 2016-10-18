@@ -130,6 +130,6 @@ export class FlowTabsComponent implements OnInit {
           },
           (error: any) => this.errorService.handleError(error)
         )
-    }.bind(this))
+    }.bind(this), "flow-instance\\:.*")
   }
 }
