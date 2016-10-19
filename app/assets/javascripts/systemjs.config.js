@@ -10,7 +10,9 @@
         'd3':'assets/lib/d3',
         'moment': 'assets/lib/moment',
         'ng2-bootstrap': 'assets/lib/ng2-bootstrap',
-        'primeng': 'assets/lib/primeng'
+        'primeng': 'assets/lib/primeng',
+        'keycloak': 'assets/lib/keycloak-js/dist',
+        'keycloak-authz': 'assets/lib/keycloak-js/dist'
 
     };
 
@@ -24,7 +26,9 @@
         'moment': {defaultExtension: 'js', main: 'moment.js'},
         'ng2-bootstrap': {defaultExtension: 'js', main: 'ng2-bootstrap.js'},
         'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
-        'primeng': { defaultExtension: 'js' }
+        'primeng': { defaultExtension: 'js' },
+        'keycloak': { defaultExtension: 'js' },
+        'keycloak-authz': { defaultExtension: 'js' }
 
     };
 

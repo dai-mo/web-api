@@ -1,0 +1,11 @@
+{
+  "realm": "alambeek",
+  "realm-public-key": "",
+  "auth-server-url": "http://keycloak.alambeek/auth",
+  "ssl-required": "external",
+  "resource": "alambeek-api",
+  "credentials": {
+    "secret": "04ea5841-c59d-4c06-81f6-6c1b69d9fe39"
+  },
+  "policy-enforcer": {}
+}

@@ -1,7 +1,12 @@
 package controllers.util
 
+import controllers.{MockAuthorisationService, WebBaseSpec}
+import global.AuthorisationService
 import org.dcs.web.BuildInfo
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import play.api.Application
+import play.api.inject._
+import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.JsObject
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -9,7 +14,12 @@ import play.api.test.Helpers._
 /**
   * Created by cmathew on 22/07/16.
   */
-class ContentSpec extends PlaySpec with OneAppPerSuite {
+class ContentSpec extends WebBaseSpec with OneAppPerSuite {
+
+  override implicit lazy val app: Application =
+    new GuiceApplicationBuilder()
+      .overrides(bind[AuthorisationService].to[MockAuthorisationService])
+      .build
 
   "Default serialized response content type" should {
     "be json" in {

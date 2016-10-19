@@ -135,3 +135,10 @@ export class Provenance {
 export class Action {
   label: string
 }
+
+export class DCSError {
+  code: string
+  message: string
+  httpStatusCode: number
+  errorMessage: string
+}

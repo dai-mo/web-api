@@ -273,13 +273,13 @@ declare namespace d3 {
             data<NewDatum>(data: (datum: Datum, index: number, outerIndex: number) => NewDatum[], key?: (datum: NewDatum, index: number, outerIndex: number) => string): Update<NewDatum>;
 
             /**
-             * Filters the selection, returning only those nodes that match the given CSS selector.
+             * global.Filters the selection, returning only those nodes that match the given CSS selector.
              * @param selector the CSS selector
              */
             filter(selector: string): Update<Datum>;
 
             /**
-             * Filters the selection, returning only those nodes for which the given function returned true.
+             * global.Filters the selection, returning only those nodes for which the given function returned true.
              * @param selector the filter function
              */
             filter(selector: (datum: Datum, index: number, outerIndex: number) => boolean): Update<Datum>;
@@ -666,13 +666,13 @@ declare namespace d3 {
         data<NewDatum>(data: (datum: Datum, index: number, outerIndex: number) => NewDatum[], key?: (datum: NewDatum, index: number, outerIndex: number) => string): selection.Update<NewDatum>;
 
         /**
-         * Filters the selection, returning only those nodes that match the given CSS selector.
+         * global.Filters the selection, returning only those nodes that match the given CSS selector.
          * @param selector the CSS selector
          */
         filter(selector: string): Selection<Datum>;
 
         /**
-         * Filters the selection, returning only those nodes for which the given function returned true.
+         * global.Filters the selection, returning only those nodes for which the given function returned true.
          * @param selector the filter function
          */
         filter(selector: (datum: Datum, index: number, outerIndex: number) => boolean): Selection<Datum>;

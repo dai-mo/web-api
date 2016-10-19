@@ -171,7 +171,7 @@ xdescribe("Flow Service", () => {
 
 
       flowService
-        .instantiateTemplate("7c88e3e4-0dce-498b-8ee0-098281abb32a")
+        .instantiateTemplate("7c88e3e4-0dce-498b-8ee0-098281abb32a", "qwerty")
         .subscribe(
           instance => {
             expect(instance.processors.length).toBe(5)

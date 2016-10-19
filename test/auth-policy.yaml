@@ -1,0 +1,21 @@
+clients:
+  - "alambeek-webapp"
+paths:
+  - name: "flow-instance"
+    path: "/api/flow/instances/create/.*"
+    methods:
+    - method: "POST"
+      scopes:
+      - "urn:alambeek:scopes:flow-instance:create"
+  - name: "flow-instance\\:.*"
+    path: "/api/flow/instances/*"
+    methods:
+    - method: "GET"
+      scopes:
+      - "urn:alambeek:scopes:flow-instance:view"
+    - method: "PUT"
+      scopes:
+      - "urn:alambeek:scopes:flow-instance:update"
+    - method: "DELETE"
+      scopes:
+      - "urn:alambeek:scopes:flow-instance:delete"

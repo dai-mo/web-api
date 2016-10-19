@@ -1,0 +1,7 @@
+{
+  "realm": "alambeek",
+  "auth-server-url": "http://localhost:18080/auth",
+  "ssl-required": "external",
+  "resource": "alambeek-webapp",
+  "public-client": true
+}
