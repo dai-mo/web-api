@@ -53,15 +53,16 @@ export class KeycloakService {
   }
 
 
-  static withRptUpdate(apiCall: (rpt: string) => void, filter: string = null): void {
+  static withRptUpdate(apiCall: (rpt: string) => void, entitlementRequest: any = null): void {
     KeycloakService.authConfig.updateToken(5)
       .success(() => {
         let apiRpt: any
-        if(filter === null)
+        if(entitlementRequest === null)
           apiRpt = KeycloakService.authz.entitlement(KeycloakService.ApiResourceId)
-        else
-          apiRpt = KeycloakService.authz.entitlement(KeycloakService.ApiResourceId, filter)
-
+        else {
+          entitlementRequest.rpt = KeycloakService.authz.rpt
+          apiRpt = KeycloakService.authz.entitlement(KeycloakService.ApiResourceId, entitlementRequest)
+        }
         apiRpt.then(function (rpt: string) {
           apiCall(rpt)
         })
