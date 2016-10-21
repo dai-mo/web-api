@@ -68,6 +68,11 @@ export class AnalyseComponent implements OnInit {
   }
 
   private instantiateTemplate(flowTemplate: FlowTemplate): void {
+    let er:any = {}
+    let pr:any  = {}
+
+    pr.resource_set_name = "flow-instance"
+    er.permissions = [pr]
 
     KeycloakService.withRptUpdate(function (rpt: string) {
       this.flowService
@@ -83,7 +88,7 @@ export class AnalyseComponent implements OnInit {
             this.dialog.show(dcsError.message, dcsError.errorMessage)
           }
         )
-    }.bind(this), "flow-instance")
+    }.bind(this), er)
 
   }
 }
