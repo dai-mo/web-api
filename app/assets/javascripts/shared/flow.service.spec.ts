@@ -179,18 +179,18 @@ xdescribe("Flow Service", () => {
 
             let expFlowGraph: FlowGraph = {
               "nodes":[
-                {"name":"","width":50,"height":50,"id":"555bde07-8282-4719-aec6-6a64ce227c60"},
-                {"name":"","width":50,"height":50,"id":"623f3887-cc72-412e-82d8-e21ee0d7705f"},
-                {"name":"","width":50,"height":50,"id":"9b9620fe-3c40-4263-82eb-f49853a6ef79"},
-                {"name":"","width":50,"height":50,"id":"31893b7f-2b44-48d6-b07f-174edde34745"},
-                {"name":"","width":50,"height":50,"id":"ee25be65-4479-4528-b5f7-dc24a75eaf22"},
+                {"label":"","id":"555bde07-8282-4719-aec6-6a64ce227c60"},
+                {"label":"","id":"623f3887-cc72-412e-82d8-e21ee0d7705f"},
+                {"label":"","id":"9b9620fe-3c40-4263-82eb-f49853a6ef79"},
+                {"label":"","id":"31893b7f-2b44-48d6-b07f-174edde34745"},
+                {"label":"","id":"ee25be65-4479-4528-b5f7-dc24a75eaf22"},
 
               ],
-              "links":[
-                {"source":0,"target":1},
-                {"source":1,"target":2},
-                {"source":2,"target":3},
-                {"source":3,"target":4}
+              "edges":[
+                {"from":0,"to":1},
+                {"from":1,"to":2},
+                {"from":2,"to":3},
+                {"from":3,"to":4}
               ]
             }
             let actFlowGraph = flowService.toFlowGraph(instance)
@@ -200,16 +200,16 @@ xdescribe("Flow Service", () => {
               expect(expFlowGraph.nodes.filter(en => an.id === en.id).length).toBe(1)
             })
 
-            expect(actFlowGraph.links.length).toBe(expFlowGraph.links.length)
-            let actConnTuples = actFlowGraph.links.map(l =>
-              [actFlowGraph.nodes[l.source].id, actFlowGraph.nodes[l.target].id])
+            expect(actFlowGraph.edges.length).toBe(expFlowGraph.edges.length)
+            let actConnTuples = actFlowGraph.edges.map(l =>
+              [actFlowGraph.nodes[l.from].id, actFlowGraph.nodes[l.to].id])
               .sort((c1, c2) => {
                 if(c1[0] < c2[0]) return -1
                 if(c1[0] > c2[0]) return 1
                 return 0
               })
-            let expConnTuples = expFlowGraph.links.map(l =>
-              [expFlowGraph.nodes[l.source].id, expFlowGraph.nodes[l.target].id])
+            let expConnTuples = expFlowGraph.edges.map(l =>
+              [expFlowGraph.nodes[l.from].id, expFlowGraph.nodes[l.to].id])
               .sort((c1, c2) => {
                 if(c1[0] < c2[0]) return -1
                 if(c1[0] > c2[0]) return 1

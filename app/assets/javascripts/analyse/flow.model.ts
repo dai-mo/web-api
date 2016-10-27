@@ -43,43 +43,39 @@ export class FlowInstance {
 }
 
 export class FlowNode {
-  name: string
-  width: number
-  height: number
+  label: string
   id: string
 
   constructor(id: string,
-              name: string = "#",
-              width: number = 50,
-              height: number = 50) {
-    this.name = name
-    this.width = width
-    this.height = height
+              label: string = "") {
+    this.label = label
+
     this.id = id
   }
 }
 
-export class FlowLink {
-  source: number
-  target: number
+export class FlowEdge {
+  from: number
+  to: number
 
-  constructor(source: number,
-              target: number) {
-    this.source = source
-    this.target = target
+  constructor(from: number,
+              to: number) {
+    this.from = from
+    this.to = to
   }
 }
 
 export class FlowGraph {
   nodes: FlowNode[]
-  links: FlowLink[]
+  edges: FlowEdge[]
 
   constructor(nodes: FlowNode[] = [],
-              links: FlowLink[] = []) {
+              edges: FlowEdge[] = []) {
     this.nodes = nodes
-    this.links = links
+    this.edges = edges
   }
 }
+
 
 export class FlowTab {
   title: string

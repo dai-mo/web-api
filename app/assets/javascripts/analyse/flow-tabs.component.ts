@@ -2,7 +2,7 @@ import {TAB_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap"
 import {CORE_DIRECTIVES, NgClass} from "@angular/common"
 import {Component, OnInit, Input, ChangeDetectorRef} from "@angular/core"
 import {FlowTab, FlowInstance} from "./flow.model"
-import {FlowGraphComponent} from "./flow-graph.component"
+import {FlowGraphDirective} from "./flow-graph.directive"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {KeycloakService} from "../shared/keycloak.service"
@@ -10,7 +10,7 @@ import {KeycloakService} from "../shared/keycloak.service"
 
 @Component({
   selector: "flow-tabs",
-  directives: [FlowGraphComponent, TAB_DIRECTIVES, CORE_DIRECTIVES, NgClass],
+  directives: [FlowGraphDirective, TAB_DIRECTIVES, CORE_DIRECTIVES, NgClass],
   providers: [FlowService, ErrorService],
   templateUrl: "partials/analyse/flowtabs.html"
 })

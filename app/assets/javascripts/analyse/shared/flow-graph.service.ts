@@ -125,7 +125,7 @@ export class FlowGraphService {
 
 
       let link = svg.selectAll(".link")
-        .data(graph.links)
+        .data(graph.edges)
         .enter().append("line")
         .attr("class", "link")
       let margin = 10
@@ -169,7 +169,7 @@ export class FlowGraphService {
       d3cola
         .convergenceThreshold(0.1)
         .nodes(graph.nodes)
-        .links(graph.links)
+        .links(graph.edges)
         .start(10, 10, 10)
       d3cola.on("tick", function () {
         node.each(function (d:any) { return d.innerBounds = d.bounds.inflate(-margin) })

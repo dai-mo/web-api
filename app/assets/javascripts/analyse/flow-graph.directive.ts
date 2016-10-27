@@ -14,7 +14,7 @@ declare let cola: any
   providers: [FlowGraphService, FlowService, ErrorService]
 })
 
-export class FlowGraphComponent {
+export class FlowGraphDirective {
 
   private el:HTMLElement
 
@@ -25,28 +25,6 @@ export class FlowGraphComponent {
     } else {
       this.errorService.handleError("No Flow Instance to display")
     }
-  }
-
-
-  private testGraph: FlowGraph = {
-    "nodes":[
-      {"name":"0","width":50,"height":50, "id":"0"},
-      {"name":"1","width":50,"height":50, "id":"1"},
-      {"name":"2","width":50,"height":50, "id":"2"},
-      {"name":"3","width":50,"height":50, "id":"3"},
-      {"name":"4","width":50,"height":50, "id":"4"},
-      {"name":"5","width":50,"height":50, "id":"5"},
-      {"name":"6","width":50,"height":50, "id":"6"}
-    ],
-    "links":[
-      {"source":0,"target":1},
-      {"source":1,"target":2},
-      {"source":1,"target":3},
-      {"source":2,"target":4},
-      {"source":3,"target":4},
-      {"source":4,"target":5},
-      {"source":4,"target":6}
-    ]
   }
 
   constructor(el:ElementRef,
