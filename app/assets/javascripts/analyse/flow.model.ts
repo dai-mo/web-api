@@ -45,23 +45,27 @@ export class FlowInstance {
 export class FlowNode {
   label: string
   id: string
+  title: string
 
   constructor(id: string,
               label: string = "") {
     this.label = label
-
     this.id = id
+    this.title = "id: " + id
   }
 }
 
 export class FlowEdge {
-  from: number
-  to: number
+  from: string
+  to: string
+  arrows: string
 
-  constructor(from: number,
-              to: number) {
+  constructor(from: string,
+              to: string,
+              arrows: string = "to") {
     this.from = from
     this.to = to
+    this.arrows = arrows
   }
 }
 

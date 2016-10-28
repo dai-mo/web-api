@@ -179,18 +179,17 @@ xdescribe("Flow Service", () => {
 
             let expFlowGraph: FlowGraph = {
               "nodes":[
-                {"label":"","id":"555bde07-8282-4719-aec6-6a64ce227c60"},
-                {"label":"","id":"623f3887-cc72-412e-82d8-e21ee0d7705f"},
-                {"label":"","id":"9b9620fe-3c40-4263-82eb-f49853a6ef79"},
-                {"label":"","id":"31893b7f-2b44-48d6-b07f-174edde34745"},
-                {"label":"","id":"ee25be65-4479-4528-b5f7-dc24a75eaf22"},
-
+                {"label":"","id":"555bde07-8282-4719-aec6-6a64ce227c60", "title":"id:555bde07-8282-4719-aec6-6a64ce227c60"},
+                {"label":"","id":"623f3887-cc72-412e-82d8-e21ee0d7705f", "title":"id:623f3887-cc72-412e-82d8-e21ee0d7705f"},
+                {"label":"","id":"9b9620fe-3c40-4263-82eb-f49853a6ef79", "title":"id:9b9620fe-3c40-4263-82eb-f49853a6ef79"},
+                {"label":"","id":"31893b7f-2b44-48d6-b07f-174edde34745", "title":"id:31893b7f-2b44-48d6-b07f-174edde34745"},
+                {"label":"","id":"ee25be65-4479-4528-b5f7-dc24a75eaf22", "title":"id:ee25be65-4479-4528-b5f7-dc24a75eaf22"}
               ],
               "edges":[
-                {"from":0,"to":1},
-                {"from":1,"to":2},
-                {"from":2,"to":3},
-                {"from":3,"to":4}
+                {"from":"555bde07-8282-4719-aec6-6a64ce227c60","to":"623f3887-cc72-412e-82d8-e21ee0d7705f","arrows":"to"},
+                {"from":"623f3887-cc72-412e-82d8-e21ee0d7705f","to":"9b9620fe-3c40-4263-82eb-f49853a6ef79","arrows":"to"},
+                {"from":"9b9620fe-3c40-4263-82eb-f49853a6ef79","to":"31893b7f-2b44-48d6-b07f-174edde34745","arrows":"to"},
+                {"from":"31893b7f-2b44-48d6-b07f-174edde34745","to":"ee25be65-4479-4528-b5f7-dc24a75eaf22","arrows":"to"}
               ]
             }
             let actFlowGraph = flowService.toFlowGraph(instance)
@@ -202,14 +201,14 @@ xdescribe("Flow Service", () => {
 
             expect(actFlowGraph.edges.length).toBe(expFlowGraph.edges.length)
             let actConnTuples = actFlowGraph.edges.map(l =>
-              [actFlowGraph.nodes[l.from].id, actFlowGraph.nodes[l.to].id])
+              [l.from, l.to])
               .sort((c1, c2) => {
                 if(c1[0] < c2[0]) return -1
                 if(c1[0] > c2[0]) return 1
                 return 0
               })
             let expConnTuples = expFlowGraph.edges.map(l =>
-              [expFlowGraph.nodes[l.from].id, expFlowGraph.nodes[l.to].id])
+              [l.from, l.to])
               .sort((c1, c2) => {
                 if(c1[0] < c2[0]) return -1
                 if(c1[0] > c2[0]) return 1

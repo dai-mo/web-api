@@ -76,8 +76,7 @@ export class FlowService {
       let sp: Processor[] = flowInstance.processors.filter(p =>  p.id === c.source.id)
       let tp: Processor[] = flowInstance.processors.filter(p =>  p.id === c.destination.id)
       if(sp !== null && sp.length === 1 && tp !== null && tp.length === 1)
-        links.push(new FlowEdge(flowInstance.processors.indexOf(sp[0]),
-            flowInstance.processors.indexOf(tp[0])))
+        links.push(new FlowEdge(sp[0].id, tp[0].id))
       else
         this.errorService.handleError("Flow Instance with id " + flowInstance.id + " is not valid")
     })
