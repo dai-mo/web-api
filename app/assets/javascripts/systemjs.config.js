@@ -6,13 +6,12 @@
         '@angular':'assets/lib/@angular',
         'rxjs':'assets/lib/rxjs',
         'symbol-observable': 'assets/lib/rxjs/node_modules/symbol-observable',
-        'webcola':'assets/lib/webcola/WebCola',
-        'd3':'assets/lib/d3',
         'moment': 'assets/lib/moment',
         'ng2-bootstrap': 'assets/lib/ng2-bootstrap',
         'primeng': 'assets/lib/primeng',
         'keycloak': 'assets/lib/keycloak-js/dist',
-        'keycloak-authz': 'assets/lib/keycloak-js/dist'
+        'keycloak-authz': 'assets/lib/keycloak-js/dist',
+        'vis': 'lib/vis/dist'
 
     };
 
@@ -21,14 +20,13 @@
         'rxjs': {defaultExtension: 'js'},
         'assets/lib': {defaultExtension: 'js'},
         'symbol-observable': {defaultExtension: 'js', main: 'index.js'},
-        'd3': {defaultExtension: 'js', main: 'd3.js'},
-        'webcola': {defaultExtension: 'js', main: 'index.js'},
         'moment': {defaultExtension: 'js', main: 'moment.js'},
         'ng2-bootstrap': {defaultExtension: 'js', main: 'ng2-bootstrap.js'},
         'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
         'primeng': { defaultExtension: 'js' },
         'keycloak': { defaultExtension: 'js' },
-        'keycloak-authz': { defaultExtension: 'js' }
+        'keycloak-authz': { defaultExtension: 'js' },
+        'vis': { defaultExtension: 'js' }
 
     };
 
@@ -61,7 +59,7 @@
     var setPackageConfig = System.packageWithIndex ? packIndex : packUmd;
     ngPackageNames.forEach(setPackageConfig);
     ngIndexPackageNames.forEach(packIndex);
-    
+
     // Add map entries for angular packages
     // ngPackageNames.forEach(function(pkgName){
     //     addAngularModulesToMap(pkgName);

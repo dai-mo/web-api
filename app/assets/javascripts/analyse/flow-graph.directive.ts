@@ -14,39 +14,40 @@ declare let cola: any
   providers: [FlowGraphService, FlowService, ErrorService]
 })
 
-export class FlowGraphComponent {
+export class FlowGraphDirective {
 
   private el:HTMLElement
+
+  private testGraph: FlowGraph = {
+    "nodes":[
+      {"label":"0","id":"0","title":"0"},
+      {"label":"1","id":"1","title":"1"},
+      {"label":"2","id":"2","title":"2"},
+      {"label":"3","id":"3","title":"3"},
+      {"label":"4","id":"4","title":"4"},
+      {"label":"5","id":"5","title":"5"},
+      {"label":"6","id":"6","title":"6"}
+    ],
+    "edges":[
+      {"from":"0","to":"1","arrows":"to"},
+      {"from":"1","to":"2","arrows":"to"},
+      {"from":"1","to":"3","arrows":"to"},
+      {"from":"2","to":"4","arrows":"to"},
+      {"from":"3","to":"4","arrows":"to"},
+      {"from":"4","to":"5","arrows":"to"},
+      {"from":"4","to":"6","arrows":"to"}
+    ]
+  }
+
 
   @Input()
   set showFlowInstance(flowInstance: FlowInstance) {
     if (flowInstance != null) {
       this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(flowInstance), flowInstance.id)
+      // this.flowGraphService.addFlatGraph(this.el, this.testGraph, flowInstance.id)
     } else {
       this.errorService.handleError("No Flow Instance to display")
     }
-  }
-
-
-  private testGraph: FlowGraph = {
-    "nodes":[
-      {"name":"0","width":50,"height":50, "id":"0"},
-      {"name":"1","width":50,"height":50, "id":"1"},
-      {"name":"2","width":50,"height":50, "id":"2"},
-      {"name":"3","width":50,"height":50, "id":"3"},
-      {"name":"4","width":50,"height":50, "id":"4"},
-      {"name":"5","width":50,"height":50, "id":"5"},
-      {"name":"6","width":50,"height":50, "id":"6"}
-    ],
-    "links":[
-      {"source":0,"target":1},
-      {"source":1,"target":2},
-      {"source":1,"target":3},
-      {"source":2,"target":4},
-      {"source":3,"target":4},
-      {"source":4,"target":5},
-      {"source":4,"target":6}
-    ]
   }
 
   constructor(el:ElementRef,
