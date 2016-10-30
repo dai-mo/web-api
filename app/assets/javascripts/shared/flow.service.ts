@@ -15,7 +15,6 @@ import {KeycloakService} from "./keycloak.service"
 export class FlowService {
 
   private templatesUrl = "api/flow/templates"
-
   private createInstanceBaseUrl: string = "api/flow/instances/create/"
   private instancesBaseUrl: string = "api/flow/instances/"
   private instancesStartUrl = this.instancesBaseUrl + "start/"
@@ -25,7 +24,6 @@ export class FlowService {
 
   constructor(private http: Http,
               private errorService: ErrorService) {
-
   }
 
   static updateHeaders(options: RequestOptions, rpt: string): RequestOptions  {
