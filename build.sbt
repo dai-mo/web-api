@@ -51,29 +51,42 @@ libraryDependencies ++= Seq(
 )
 
 
-dependencyOverrides += "org.webjars.npm" % "minimatch" % "3.0.0"
+lazy val Npm = config("npm") describedAs "Sbt configuration for npm commands"
 
-// the typescript typing information is by convention in the typings directory
-// It provides ES6 implementations. This is required when compiling to ES5.
-typingsFile := Some(baseDirectory.value / "typings" / "index.d.ts")
+lazy val npmClean =
+  TaskKey[Unit]("clean", "Deletes node modules dirctory installed by npm as well as the copy in the target directory").
+  in(Npm)
+
+npmClean := {
+  val npmNodeModulesDir = new File("node_modules")
+  val targetNodeModulesDir = new File("target/web/web-modules/main/webjars/lib")
+  IO.delete(npmNodeModulesDir)
+  IO.delete(targetNodeModulesDir)
+  val s: TaskStreams = streams.value
+  s.log.success("Node modules delete successful!")
+}
+
+lazy val npmInstall = TaskKey[Unit]("install","Install node modules as specified in package.json").
+  in(Npm)
+
+npmInstall := {
+  "npm install" !
+  val s: TaskStreams = streams.value
+  s.log.success("Npm install Successful!")
+}
+
+lazy val npmResolve =
+  TaskKey[Unit]("resolve", "Copies the contents of the root node_module dir to the test target dir").
+    in(Npm)
 
 
-// use the combined tslint and eslint rules plus ng2 lint rules
-(rulesDirectories in tslint) := Some(List(
-  tslintEslintRulesDir.value  //,
-  //  ng2LintRulesDir.value //  disable codelyzer until it supports ts 2.0
-))
-
-lazy val copyNodeModules = taskKey[Unit]("Copies the contents of the root node_module dir to the test target dir")
-
-copyNodeModules := {
+npmResolve := {
   val node_modules = new File("node_modules")
   val target = new File("target/web/web-modules/main/webjars/lib")
   IO.copyDirectory(node_modules,target,true, true)
   // FIXME: Need to find a better way to exclude js test dependencies
   val jsLibBaseDir = "target/web/web-modules/main/webjars/lib/"
-  val toDelete: List[File]  = List(new File(jsLibBaseDir + "webcola/WebCola/examples"),
-    new File(jsLibBaseDir + "phantomjs-prebuilt"),
+  val toDelete: List[File]  = List(new File(jsLibBaseDir + "phantomjs-prebuilt"),
     new File(jsLibBaseDir + "karma"),
     new File(jsLibBaseDir + "concurrently"),
     new File(jsLibBaseDir + "jasmine-core"),
@@ -89,19 +102,43 @@ copyNodeModules := {
     new File(jsLibBaseDir + "karma-junit-reporter"),
     new File(jsLibBaseDir + "remap-istanbul"))
   IO.delete(toDelete)
+  val s: TaskStreams = streams.value
+  s.log.success("Node modules copy successful!")
 }
 
-addCommandAlias("resolveNpm", ";web-assets:jseNpmNodeModules;copyNodeModules")
+npmResolve <<= npmResolve.dependsOn(npmInstall)
+
+lazy val tsc = TaskKey[Unit]("tsc", "Compile Typescript").
+  in(Npm)
+
+
+tsc := {
+  "node_modules/typescript/bin/tsc" !
+  val s: TaskStreams = streams.value
+  s.log.success("Typescript Compilation Successful!")
+}
+
+
+(compile in Compile) <<= (compile in Compile).dependsOn(tsc)
+
+lazy val npmTest = TaskKey[Unit]("test","Run npm tests").
+  in(Npm)
+
+npmTest := {
+  "npm test" !
+  val s: TaskStreams = streams.value
+  s.log.success("Npm Test Successful!")
+}
+
+npmTest <<= npmTest.dependsOn(tsc)
+
+(test in Test) <<= (test in Test).dependsOn(npmTest)
+
+unmanagedResourceDirectories in Assets += baseDirectory.value / "target" / "web" / "public" / "main"
 
 pipelineStages := Seq(uglify, digest, gzip)
 
 crossPaths := false
-
-excludeFilter in Universal := {
-  val wc_examples = (baseDirectory.value / "target" / "web" /" public" / "main" /"lib"/ "webcola" / "WebCola" / "examples" ).getCanonicalPath
-  new SimpleFileFilter(_.getCanonicalPath startsWith wc_examples)
-}
-
 
 publish <<= (publish) dependsOn  dist
 
@@ -120,8 +157,6 @@ val publishDistSettings = Seq[Setting[_]] (
   }) ++ Seq(addArtifact(artifact in publishDist, publishDist).settings: _*)
 
 Seq(publishDistSettings: _*)
-
-
 
 
 scalacOptions in ThisBuild ++= Seq(

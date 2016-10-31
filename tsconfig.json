@@ -2,7 +2,7 @@
 
   "compilerOptions": {
     "target": "es5",
-    "module": "system",
+    "module": "commonjs",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators":true,
@@ -13,7 +13,7 @@
     "noFallthroughCasesInSwitch":true,
     "noImplicitReturns":true,
     "lib": ["es6", "dom"],
-    "outDir": "./target/classes/assets"
+    "outDir": "./target/web/public/main/javascripts"
   },
   "exclude": [
     "node_modules",

@@ -1,5 +1,6 @@
 import {Injectable} from "@angular/core"
-import Rx, {Observable, Observer} from "rxjs/Rx"
+import {Observable, Observer} from "rxjs/Rx"
+import * as Rx from "rxjs/Rx"
 import {Http} from "@angular/http"
 import {ErrorService} from "./util/error.service"
 

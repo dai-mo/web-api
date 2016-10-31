@@ -22,9 +22,6 @@ addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.0")
 
-addSbtPlugin("name.de-vries" % "sbt-typescript"  % "0.3.0-beta.1")
-
-addSbtPlugin("name.de-vries" % "sbt-tslint" % "0.9.7")
 
 // Release / Versioning PLugins
 
