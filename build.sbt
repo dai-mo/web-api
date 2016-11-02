@@ -119,7 +119,7 @@ tsc := {
 }
 
 
-(compile in Compile) <<= (compile in Compile).dependsOn(tsc)
+// (compile in Compile) <<= (compile in Compile).dependsOn(tsc)
 
 lazy val npmTest = TaskKey[Unit]("test","Run npm tests").
   in(Npm)
@@ -134,7 +134,7 @@ npmTest <<= npmTest.dependsOn(tsc)
 
 (test in Test) <<= (test in Test).dependsOn(npmTest)
 
-unmanagedResourceDirectories in Assets += baseDirectory.value / "target" / "web" / "public" / "main"
+unmanagedResourceDirectories in Assets += baseDirectory.value / "target" / "typescript" / "main"
 
 pipelineStages := Seq(uglify, digest, gzip)
 

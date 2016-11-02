@@ -17,7 +17,7 @@ module.exports = function(config) {
 
 
             // paths loaded via module imports
-            {pattern: 'target/web/public/main/javascripts/**/*.js', included: false, watched: true},
+            {pattern: 'target/typescript/main/javascripts/**/*.js', included: false, watched: true},
 
             {pattern: 'karma-test-shim.js', included: true, watched: true},
 
@@ -26,7 +26,7 @@ module.exports = function(config) {
 
             // paths to support debugging with source maps in dev tools
             {pattern: 'app/assets/**/*.ts', included: false, watched: false},
-            {pattern: 'target/web/public/main/javascripts/**/*.js.map', included: false, watched: false}
+            {pattern: 'target/typescript/main/javascripts/**/*.js.map', included: false, watched: false}
         ],
 
         // proxied base paths
