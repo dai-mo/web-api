@@ -7,6 +7,9 @@ import controllers.util._
 import org.dcs.flow.FlowApi
 import play.api.mvc.EssentialAction
 
+import global.ResultSerialiserImplicits._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
 /**
   * Created by cmathew on 08/06/16.
   */
@@ -18,8 +21,8 @@ class FlowTemplateApi @Inject()(csrfCheckAction: CSRFCheckAction,
 
 
 
-  override def list: EssentialAction = (csrfCheckAction) { implicit request =>
-    serialize(FlowApi.templates(Req.tokenOrError(Req.AuthTokenKey)))
+  override def list: EssentialAction = csrfCheckAction async { implicit request =>
+    FlowApi.templates(Req.tokenOrError(Req.AuthTokenKey)).map(_.toResult)
   }
 
   override def update(id: Long): EssentialAction = csrfCheckAction {
