@@ -1,7 +1,7 @@
 /**
  * Created by cmathew on 14/07/16.
  */
-import {Component, OnInit, ViewChild, ChangeDetectorRef} from "@angular/core"
+import {Component, OnInit, ViewChild, ChangeDetectorRef, NgZone} from "@angular/core"
 import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
@@ -9,6 +9,7 @@ import {FlowTabsComponent} from "./flow-tabs.component"
 import {FlowTemplate, FlowInstance, DCSError} from "./flow.model"
 import {ModalComponent} from "../shared/modal.component"
 import {KeycloakService} from "../shared/keycloak.service"
+import {UIStateStore} from "../shared/ui.state.store"
 
 
 @Component({
@@ -20,21 +21,12 @@ import {KeycloakService} from "../shared/keycloak.service"
 export class AnalyseComponent implements OnInit {
   @ViewChild("dialog") public dialog: ModalComponent
 
-  public disabled:boolean = false
-
-  public status: {
-    isopen:boolean
-  } = {
-    isopen: false
-  }
+  public status: { isopen:boolean } = { isopen: false }
   public templates: Array<any>
-  public flowInstanceToAdd: FlowInstance = null
 
-  constructor(window: Window,
-              private flowService: FlowService,
+  constructor(private flowService: FlowService,
               private errorService: ErrorService,
-              private keycloakService: KeycloakService,
-              private cdr: ChangeDetectorRef) {
+              private uiStateStore: UIStateStore) {
   }
 
   getTemplates() {
@@ -79,8 +71,7 @@ export class AnalyseComponent implements OnInit {
         .instantiateTemplate(flowTemplate.id, rpt)
         .subscribe(
           (flowInstance: FlowInstance) => {
-            this.flowInstanceToAdd = flowInstance
-            this.cdr.detectChanges()
+              this.uiStateStore.setFlowInstanceToAdd(flowInstance)
           },
           (error: any) => {
             this.errorService.handleError(error)

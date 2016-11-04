@@ -5,12 +5,12 @@
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {Component, Input, ViewChild} from "@angular/core"
-import {Provenance, Action} from "../analyse/flow.model"
+import {Provenance, Action, ProcessorUIState} from "../analyse/flow.model"
 import {TOOLTIP_DIRECTIVES} from "ng2-bootstrap"
 import {ModalComponent} from "../shared/modal.component"
-import {ViewManagerService} from "../shared/view-manager.service"
 import {SelectItem} from "primeng/components/common/api"
 import {ProcessorPanelComponent} from "./processor-panel.component"
+import {UIStateStore} from "../shared/ui.state.store"
 
 @Component({
   selector: "content",
@@ -32,11 +32,11 @@ export class ContentComponent {
   formatOptions: SelectItem[] = []
   selectedFormatOption: string
 
+
   private formats: Array<string> = ["raw", "csv"]
 
   constructor(private flowService: FlowService,
-              private errorService: ErrorService,
-              private viewManagerService: ViewManagerService) {
+              private errorService: ErrorService) {
     this.rowOptions = []
     this.rowOptions.push({label:"rows", value: null})
     this.rowOptions.push({label:"last 10", value:{id:1, name: "last 10", code: "last_10"}})
@@ -47,7 +47,9 @@ export class ContentComponent {
     this.formatOptions.push({label:"format", value: null})
     this.formatOptions.push({label:"csv", value:{id:1, name: "csv", code: "csv"}})
     this.formatOptions.push({label:"raw", value:{id:2, name: "raw", code: "raw"}})
+
   }
+
 
   @Input()
   set showProvenance(processorId: string) {
@@ -79,10 +81,6 @@ export class ContentComponent {
 
   hasResults(): boolean {
     return this.provenances != null && this.provenances.length > 0
-  }
-
-  selectedProcessorId(): string {
-    return this.viewManagerService.selectedProcessorId
   }
 
   showProcessorOverlay() {

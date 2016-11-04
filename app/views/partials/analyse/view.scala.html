@@ -16,6 +16,6 @@
 
 <modal #dialog="dialog"></modal>
 
-<flow-tabs class="flex-panel" [addFlowInstance]="flowInstanceToAdd"></flow-tabs>
+<flow-tabs class="flex-panel" [addFlowInstance]="uiStateStore.flowInstanceToAdd | async"></flow-tabs>
 
 

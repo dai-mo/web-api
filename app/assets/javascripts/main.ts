@@ -1,12 +1,11 @@
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic"
 import {NgModule} from "@angular/core"
-import {HttpModule, HTTP_BINDINGS} from "@angular/http"
+import {HttpModule} from "@angular/http"
 import {App} from "./app.component"
 import {ErrorService} from "./shared/util/error.service"
 import {FlowService} from "./shared/flow.service"
-import {ViewManagerService} from "./shared/view-manager.service"
 import {BrowserModule} from "@angular/platform-browser"
-import {DataTableModule,SharedModule} from "primeng/primeng"
+import {DataTableModule, SharedModule} from "primeng/primeng"
 import {OverlayPanelModule} from "primeng/components/overlaypanel/overlaypanel"
 import {MultiSelectModule} from "primeng/components/multiselect/multiselect"
 import {DropdownModule} from "primeng/components/dropdown/dropdown"
@@ -66,12 +65,13 @@ import {TooltipModule} from "primeng/components/tooltip/tooltip"
 import {TreeModule} from "primeng/components/tree/tree"
 import {TreeTableModule} from "primeng/components/treetable/treetable"
 import {KeycloakService} from "./shared/keycloak.service"
+import {UIStateStore} from "./shared/ui.state.store"
 
 @NgModule({
   declarations: [App],
   providers:[{provide: Window, useValue: window},
     FlowService,
-    ViewManagerService,
+    UIStateStore,
     KeycloakService,
     ErrorService],
   imports: [BrowserModule,

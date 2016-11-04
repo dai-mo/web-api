@@ -142,3 +142,11 @@ export class DCSError {
   httpStatusCode: number
   errorMessage: string
 }
+
+export class ProcessorUIState {
+  selectedProcessorId: string
+
+  constructor(selectedProcessorId: string = null) {
+    this.selectedProcessorId = selectedProcessorId
+  }
+}
