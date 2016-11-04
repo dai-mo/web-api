@@ -11,12 +11,11 @@ declare var vis: any
 @Injectable()
 export class FlowGraphService {
 
-
   constructor(private uiStateStore:UIStateStore) {
 
   }
 
-  addFlatGraph(el:HTMLElement, graph: FlowGraph, id: string) {
+  addFlatGraph(el:HTMLElement, graph: FlowGraph, id: string): any {
     let data = {
       nodes: graph.nodes,
       edges: graph.edges
@@ -31,6 +30,7 @@ export class FlowGraphService {
         borderWidth: 2,
         shadow:true
       },
+
       edges: {
         width: 2,
         shadow:true
@@ -46,6 +46,10 @@ export class FlowGraphService {
     let network = new vis.Network(el, data, options)
     let uiss = this.uiStateStore
 
+    network.on("resize", function (params: any) {
+      this.fit()
+    })
+
     network.on("click", function (params: any) {
       let selectedNodes = params.nodes
       if(selectedNodes.length > 0)
@@ -53,5 +57,7 @@ export class FlowGraphService {
       else
         uiss.setSelectedProcessorId(null)
     })
+
+    return network
   }
 }
