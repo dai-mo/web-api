@@ -18,7 +18,6 @@ import scala.concurrent.Future
 @Singleton
 class CSRFCheckAction @Inject()(checkToken: CSRFCheck) extends ActionBuilder[Request] {
   def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
-    // authentication code here
     block(request)
   }
   override def composeAction[A](action: Action[A]) = checkToken(action)
@@ -28,7 +27,6 @@ class CSRFCheckAction @Inject()(checkToken: CSRFCheck) extends ActionBuilder[Req
 class CSRFTokenAction @Inject()(addToken: CSRFAddToken) extends ActionBuilder[Request] {
 
   def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) = {
-    // authentication code here
     block(request)
   }
   override def composeAction[A](action: Action[A]) = addToken(action)

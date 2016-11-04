@@ -1,2 +1,2 @@
 @()
-<content class="fill flex-panel flex-panel-parent"  [showProvenance]="selectedProcessorId()"></content>
+<content class="fill flex-panel flex-panel-parent"  [showProvenance]="uiStateStore.selectedProcessorId | async"></content>

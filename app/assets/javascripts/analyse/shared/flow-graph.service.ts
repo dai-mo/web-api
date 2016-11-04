@@ -3,17 +3,16 @@
  */
 
 import {Injectable} from "@angular/core"
-
-import {FlowGraph, FlowNode} from "../flow.model"
-
-import {ViewManagerService} from "../../shared/view-manager.service"
+import {FlowGraph} from "../flow.model"
+import {UIStateStore} from "../../shared/ui.state.store"
 
 declare var vis: any
 
 @Injectable()
 export class FlowGraphService {
 
-  constructor(private vms: ViewManagerService) {
+
+  constructor(private uiStateStore:UIStateStore) {
 
   }
 
@@ -45,13 +44,14 @@ export class FlowGraphService {
       }
     }
     let network = new vis.Network(el, data, options)
+    let uiss = this.uiStateStore
 
     network.on("click", function (params: any) {
       let selectedNodes = params.nodes
       if(selectedNodes.length > 0)
-        this.vms.selectedProcessorId = selectedNodes[0]
+        uiss.setSelectedProcessorId(selectedNodes[0])
       else
-        this.vms.selectedProcessorId = null
-    }.bind(this))
+        uiss.setSelectedProcessorId(null)
+    })
   }
 }

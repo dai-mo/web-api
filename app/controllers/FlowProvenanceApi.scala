@@ -7,6 +7,9 @@ import controllers.util.{CSRFCheckAction, CSRFTokenAction}
 import org.dcs.flow.ProvenanceApi
 import play.api.mvc.{Action, EssentialAction}
 
+import global.ResultSerialiserImplicits._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+
 /**
   * Created by cmathew on 15/08/16.
   */
@@ -37,7 +40,7 @@ class FlowProvenanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAct
     NotImplemented
   }
 
-  def list(processorId: String): EssentialAction = csrfCheckAction { implicit request =>
-    serialize(ProvenanceApi.provenance(processorId, DefaultMaxResults))
+  def list(processorId: String): EssentialAction = csrfCheckAction async { implicit request =>
+    ProvenanceApi.provenance(processorId, DefaultMaxResults).map(_.toResult)
   }
 }

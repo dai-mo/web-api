@@ -9,6 +9,7 @@ import org.dcs.web.BuildInfo
 import play.api.mvc._
 import play.api.routing.Router
 import views.html.partials.modal
+import global.ResultSerialiserImplicits._
 
 /**
   * This controller creates an `Action` to handle HTTP requests to the
@@ -55,7 +56,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
   }
 
   def health = Action { implicit request =>
-    serialize(Health(BuildInfo.version))
+    Health(BuildInfo.version).toResult
   }
 
   def doc() = Action {

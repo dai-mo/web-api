@@ -1,7 +1,7 @@
 @()
 <div class="fill">
     <tabset class="flex-panel-parent">
-        <tab  class="flex-panel-parent" *ngFor="let tabz of tabs"
+        <tab  class="flex-panel-parent" *ngFor="let tabz of uiStateStore.flowTabs | async"
         [heading]="tabz.title"
         [active]="tabz.active"
         (select)="tabz.active = true"

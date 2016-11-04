@@ -16,7 +16,7 @@ function isSpecFile(path) {
 }
 
 function isBuiltFile(path) {
-    var builtPath = '/base/target/web/public/main/javascripts';
+    var builtPath = '/base/target/typescript/main/javascripts';
     return isJsFile(path) && (path.substr(0, builtPath.length) == builtPath);
 }
 

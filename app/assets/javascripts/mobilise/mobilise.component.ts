@@ -3,7 +3,7 @@
  */
 import {Component} from "@angular/core"
 import {ContentComponent} from "./content.component"
-import {ViewManagerService} from "../shared/view-manager.service"
+import {UIStateStore} from "../shared/ui.state.store"
 
 @Component({
     selector: "mobilise",
@@ -12,9 +12,7 @@ import {ViewManagerService} from "../shared/view-manager.service"
 })
 export class MobiliseComponent {
 
-  constructor(private viewManagerService: ViewManagerService) {}
-
-  selectedProcessorId(): string {
-    return this.viewManagerService.selectedProcessorId
+  constructor(private uiStateStore: UIStateStore) {
   }
+
 }
