@@ -1,6 +1,6 @@
 package controllers.util
 
-import org.dcs.api.error.{ErrorConstants, RESTException}
+import org.dcs.commons.error.{ErrorConstants, RESTException}
 import play.api.mvc.RequestHeader
 
 /**

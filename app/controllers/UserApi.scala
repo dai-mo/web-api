@@ -5,11 +5,10 @@ import javax.inject.{Inject, Singleton}
 
 import controllers.routing.ResourceRouter
 import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
-import org.dcs.api.error.{ErrorConstants, RESTException}
 import org.dcs.api.service.{User, UserApiService}
-import org.dcs.commons.JsonSerializerImplicits._
-import play.api.mvc.{Action, Cookie, EssentialAction}
-import play.api.routing.{Router, SimpleRouter}
+import org.dcs.commons.serde.JsonSerializerImplicits._
+import org.dcs.commons.error.{ErrorConstants, RESTException}
+import play.api.mvc.{Cookie, EssentialAction}
 
 /**
   * Created by cmathew on 29/06/16.

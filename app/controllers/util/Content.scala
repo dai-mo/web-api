@@ -1,6 +1,6 @@
 package controllers.util
 import global.RequestHandler
-import org.dcs.commons.JsonSerializerImplicits._
+import org.dcs.commons.serde.JsonSerializerImplicits._
 import play.api.mvc.{AnyContent, Controller, Request, Result}
 import play.mvc.Http.MimeTypes
 

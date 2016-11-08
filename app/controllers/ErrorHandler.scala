@@ -1,7 +1,7 @@
 package controllers
 
 import controllers.ModelImplicits._
-import org.dcs.api.error.{ErrorConstants, ErrorResponse, RESTException}
+import org.dcs.commons.error.{ErrorConstants, ErrorResponse, RESTException}
 import play.api.http.HttpErrorHandler
 import play.api.libs.json.Json
 import play.api.mvc.Results._

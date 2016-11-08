@@ -4,12 +4,11 @@ import javax.inject.{Inject, Singleton}
 
 import controllers.routing.ResourceRouter
 import controllers.util.{CSRFCheckAction, CSRFTokenAction}
-import org.dcs.api.error.{ErrorConstants, RESTException}
 import org.dcs.api.service.{TestApiService, TestResponse}
-import org.dcs.commons.JsonSerializerImplicits._
+import org.dcs.commons.serde.JsonSerializerImplicits._
+import org.dcs.commons.error.{ErrorConstants, RESTException}
 import org.dcs.remote.ZkRemoteService
-import play.api.mvc.{Action, EssentialAction}
-import play.filters.csrf.CSRF
+import play.api.mvc.EssentialAction
 
 /**
   * Created by cmathew on 03/06/16.

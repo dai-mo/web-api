@@ -2,10 +2,9 @@ package global
 
 import javax.inject.Inject
 
-import controllers.ModelImplicits._
 import akka.stream.Materializer
-import org.dcs.api.error.{ErrorConstants, ErrorResponse, RESTException}
-import org.dcs.commons.JsonSerializerImplicits._
+import controllers.ModelImplicits._
+import org.dcs.commons.error.{ErrorConstants, ErrorResponse, RESTException}
 import play.api.libs.json.Json
 import play.api.mvc.Results._
 import play.api.mvc._

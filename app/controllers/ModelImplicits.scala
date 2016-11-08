@@ -1,7 +1,7 @@
 package controllers
 
-import org.dcs.api.error.ErrorResponse
 import org.dcs.api.service._
+import org.dcs.commons.error.ErrorResponse
 import play.api.libs.json.{Json, Writes}
 
 /**

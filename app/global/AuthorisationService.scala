@@ -8,15 +8,14 @@ import javax.inject.Singleton
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64
 import controllers.{AuthPolicy, Permission}
 import io.jsonwebtoken.{Claims, Jws, Jwts}
-import org.dcs.api.error.{ErrorConstants, RESTException}
+import org.dcs.commons.serde.YamlSerializerImplicits._
 import org.dcs.commons.config.Configurator
-import org.dcs.commons.YamlSerializerImplicits._
+import org.dcs.commons.error.{ErrorConstants, RESTException}
 import org.keycloak.authorization.client.representation.{ResourceRepresentation, ScopeRepresentation}
 import org.keycloak.authorization.client.resource.ProtectionResource
 import org.keycloak.authorization.client.{AuthzClient, Configuration}
 import org.keycloak.representations.adapters.config.AdapterConfig
 import org.keycloak.util.JsonSerialization
-import play.api.Logger
 
 import scala.collection.JavaConverters._
 import scala.util.control.NonFatal
