@@ -1,6 +1,6 @@
 package global
 
-import org.dcs.commons.JsonSerializerImplicits._
+import org.dcs.commons.serde.JsonSerializerImplicits._
 import play.api.mvc._
 import play.mvc.Http.MimeTypes
 
