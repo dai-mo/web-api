@@ -98,22 +98,27 @@ xdescribe("Flow Service", () => {
           "processors": [
             {
               "id": "31893b7f-2b44-48d6-b07f-174edde34745",
+              "type": "some.type",
               "status": "STOPPED"
             },
             {
               "id": "623f3887-cc72-412e-82d8-e21ee0d7705f",
+              "type": "some.type",
               "status": "STOPPED"
             },
             {
               "id": "555bde07-8282-4719-aec6-6a64ce227c60",
+              "type": "some.type",
               "status": "STOPPED"
             },
             {
               "id": "9b9620fe-3c40-4263-82eb-f49853a6ef79",
+              "type": "some.type",
               "status": "STOPPED"
             },
             {
               "id": "ee25be65-4479-4528-b5f7-dc24a75eaf22",
+              "type": "some.type",
               "status": "STOPPED"
             }
           ],
@@ -179,11 +184,11 @@ xdescribe("Flow Service", () => {
 
             let expFlowGraph: FlowGraph = {
               "nodes":[
-                {"label":"","id":"555bde07-8282-4719-aec6-6a64ce227c60", "title":"id:555bde07-8282-4719-aec6-6a64ce227c60"},
-                {"label":"","id":"623f3887-cc72-412e-82d8-e21ee0d7705f", "title":"id:623f3887-cc72-412e-82d8-e21ee0d7705f"},
-                {"label":"","id":"9b9620fe-3c40-4263-82eb-f49853a6ef79", "title":"id:9b9620fe-3c40-4263-82eb-f49853a6ef79"},
-                {"label":"","id":"31893b7f-2b44-48d6-b07f-174edde34745", "title":"id:31893b7f-2b44-48d6-b07f-174edde34745"},
-                {"label":"","id":"ee25be65-4479-4528-b5f7-dc24a75eaf22", "title":"id:ee25be65-4479-4528-b5f7-dc24a75eaf22"}
+                {"label":"","type":"some.type","uuid":"some.type:555bde07-8282-4719-aec6-6a64ce227c60","id":"555bde07-8282-4719-aec6-6a64ce227c60", "title":"id:555bde07-8282-4719-aec6-6a64ce227c60"},
+                {"label":"","type":"some.type","uuid":"some.type:623f3887-cc72-412e-82d8-e21ee0d7705f","id":"623f3887-cc72-412e-82d8-e21ee0d7705f", "title":"id:623f3887-cc72-412e-82d8-e21ee0d7705f"},
+                {"label":"","type":"some.type","uuid":"some.type:9b9620fe-3c40-4263-82eb-f49853a6ef79","id":"9b9620fe-3c40-4263-82eb-f49853a6ef79", "title":"id:9b9620fe-3c40-4263-82eb-f49853a6ef79"},
+                {"label":"","type":"some.type","uuid":"some.type:31893b7f-2b44-48d6-b07f-174edde34745","id":"31893b7f-2b44-48d6-b07f-174edde34745", "title":"id:31893b7f-2b44-48d6-b07f-174edde34745"},
+                {"label":"","type":"some.type","uuid":"some.type:ee25be65-4479-4528-b5f7-dc24a75eaf22","id":"ee25be65-4479-4528-b5f7-dc24a75eaf22", "title":"id:ee25be65-4479-4528-b5f7-dc24a75eaf22"}
               ],
               "edges":[
                 {"from":"555bde07-8282-4719-aec6-6a64ce227c60","to":"623f3887-cc72-412e-82d8-e21ee0d7705f","arrows":"to"},

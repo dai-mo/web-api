@@ -70,16 +70,17 @@ export class FlowService {
 
   toFlowGraph(flowInstance: FlowInstance): FlowGraph {
     let links: FlowEdge[] = []
+    let nodes: FlowNode[] = flowInstance.processors.map(p => new FlowNode(p.id, p.type))
     flowInstance.connections.forEach(c => {
-      let sp: Processor[] = flowInstance.processors.filter(p =>  p.id === c.source.id)
-      let tp: Processor[] = flowInstance.processors.filter(p =>  p.id === c.destination.id)
-      if(sp !== null && sp.length === 1 && tp !== null && tp.length === 1)
-        links.push(new FlowEdge(sp[0].id, tp[0].id))
+      let sourceNodes: FlowNode[] = nodes.filter(p =>  p.uuid === c.source.id)
+      let targetNodes: FlowNode[] = nodes.filter(p =>  p.uuid === c.destination.id)
+      if(sourceNodes !== null && sourceNodes.length === 1 && targetNodes !== null && targetNodes.length === 1)
+        links.push(new FlowEdge(sourceNodes[0].id, targetNodes[0].id))
       else
         this.errorService.handleError("Flow Instance with id " + flowInstance.id + " is not valid")
     })
 
-    let nodes: FlowNode[] = flowInstance.processors.map(p => new FlowNode(p.id))
+
     return new FlowGraph(nodes, links)
   }
 

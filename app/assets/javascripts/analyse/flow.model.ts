@@ -14,6 +14,7 @@ export class FlowTemplate {
 
 export class Processor {
   id: string
+  type: string
   status: string
 }
 
@@ -44,14 +45,19 @@ export class FlowInstance {
 
 export class FlowNode {
   label: string
+  uuid: string
   id: string
+  type: string
   title: string
 
-  constructor(id: string,
+  constructor(uuid: string,
+              type: string,
               label: string = "") {
+    this.uuid = uuid
+    this.id = type + ":" + uuid
     this.label = label
-    this.id = id
-    this.title = "id: " + id
+    this.type = type
+    this.title = "id: " + uuid
   }
 }
 
@@ -130,6 +136,8 @@ export class FlowTab {
 export class Provenance {
   id: string
   content: string
+
+
 }
 
 export class Action {
