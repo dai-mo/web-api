@@ -176,7 +176,7 @@ html, body {
   height: 100%;
   display:-webkit-flex;
   display:flex;
-  flex-direction:column
+  flex-direction:column;
 }
 
 .flex-row-parent {
@@ -184,7 +184,11 @@ html, body {
   height: 100%;
   display:-webkit-flex;
   display:flex;
-  flex-direction:row
+  flex-direction:row;
+}
+
+.overflow {
+  overflow:auto;
 }
 
 .flex-panel {
@@ -219,6 +223,14 @@ html, body {
   min-height:0;
 }
 
+.flex-panel-99 {
+  -webkit-box-flex: .99;
+  -webkit-flex: .99;
+  -ms-flex: .99;
+  flex: .99;
+  min-height:0;
+}
+
 .flex-panel-80 {
   -webkit-box-flex: .8;
   -webkit-flex: .8;
@@ -240,7 +252,14 @@ html, body {
   -webkit-flex: .1;
   -ms-flex: .1;
   flex: .1;
-  min-height:0;
+
+}
+
+.no-flex-panel {
+  -webkit-box-flex: 0;
+  -webkit-flex: none;
+  -ms-flex: none;
+  flex: none;
 }
 
 .tab-content {
@@ -261,7 +280,7 @@ html, body {
 .table-container {
   margin: 0;
   padding: 0;
-  overflow-y: scroll;
+
 }
 
 .btn.red {
@@ -326,8 +345,8 @@ html, body {
   width:200px;
 }
 
-.modal-dialog {
-  height:90%
+.no-display {
+  display:none
 }
 
 

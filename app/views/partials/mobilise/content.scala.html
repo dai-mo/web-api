@@ -28,14 +28,14 @@
                 <p-column field="label" header="action"></p-column>
             </p-dataTable>
         </div>
-        <div class="padding" [ngClass]="{'flex-panel-70': hasActions(), 'flex-panel': !hasActions()}">
-            <p-dataTable  [value]="provenances"  scrollHeight="200px" scrollWidth="100%">
-                <p-column styleClass="info-column">
-                    <template let-provenance="rowData">
-                        <i class="fa fa-info-circle" aria-hidden="true" tooltipPlacement="right" tooltip="id: {{provenance.id}}"></i>
+        <div class="overflow padding" [ngClass]="{'flex-panel-70': hasActions(), 'flex-panel': !hasActions()}">
+            <p-dataTable   [value]="results" scrollable="true" scrollWidth="200%">
+                <p-column styleClass="info-column" [style]="{'width':'10px'}">
+                    <template let-result="rowData">
+                        <i class="fa fa-info-circle" aria-hidden="true" tooltipPlacement="right" tooltip="id: {{result.id}}"></i>
                     </template>
                 </p-column>
-                <p-column field="content" header="content" ></p-column>
+                <p-column  *ngFor="let col of columns"  [field]="col" [header]="col" [style]="{'width':'100px'}"></p-column>
             </p-dataTable>
         </div>
     </div>

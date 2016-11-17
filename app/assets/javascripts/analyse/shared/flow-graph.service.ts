@@ -2,7 +2,7 @@
  * Created by cmathew on 29/07/16.
  */
 
-import {Injectable} from "@angular/core"
+import {Injectable, ChangeDetectorRef} from "@angular/core"
 import {FlowGraph} from "../flow.model"
 import {UIStateStore} from "../../shared/ui.state.store"
 
@@ -11,7 +11,8 @@ declare var vis: any
 @Injectable()
 export class FlowGraphService {
 
-  constructor(private uiStateStore:UIStateStore) {
+  constructor(private uiStateStore:UIStateStore,
+              private cdr:ChangeDetectorRef) {
 
   }
 
@@ -45,6 +46,7 @@ export class FlowGraphService {
     }
     let network = new vis.Network(el, data, options)
     let uiss = this.uiStateStore
+    let self = this
 
     network.on("resize", function (params: any) {
       this.fit()
@@ -52,10 +54,16 @@ export class FlowGraphService {
 
     network.on("click", function (params: any) {
       let selectedNodes = params.nodes
-      if(selectedNodes.length > 0)
-        uiss.setSelectedProcessorId(selectedNodes[0])
-      else
+      if (selectedNodes.length > 0) {
+        let pid = selectedNodes[0]
+        uiss.setSelectedProcessorId(pid)
+        // FIXME: Not sure why the change detection in this case needs
+        //        to be triggered manually
+        self.cdr.detectChanges()
+      } else {
         uiss.setSelectedProcessorId(null)
+        // uiss.mobilise.detectChanges()
+      }
     })
 
     return network

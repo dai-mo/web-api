@@ -26,8 +26,8 @@ export class FlowTabsComponent implements OnInit {
               private cdr:ChangeDetectorRef,
               private uiStateStore: UIStateStore) {
     this.nifiUrl = window.location.protocol + "//" +
-      window.location.host +
-      "/nifi"
+        window.location.host +
+        "/nifi"
 
   }
 
@@ -70,86 +70,89 @@ export class FlowTabsComponent implements OnInit {
 
     KeycloakService.withRptUpdate(function (rpt: string) {
       this.flowService
-        .destroyInstance(flowTab.id, rpt)
-        .subscribe(
-          (deleteOK: boolean) => {
-            if (!deleteOK)
-              alert("Flow Instance could not be deleted")
-            else {
-              this.uiStateStore.removeFlowTab(flowTab)
-            }
-          },
-          (error: any) => this.errorService.handleError(error)
-        )
+          .destroyInstance(flowTab.id, rpt)
+          .subscribe(
+              (deleteOK: boolean) => {
+                if (!deleteOK)
+                  alert("Flow Instance could not be deleted")
+                else {
+                  this.uiStateStore.removeFlowTab(flowTab)
+                }
+                // FIXME: Not sure why the change detection in this case needs
+                //        to be triggered manually
+                this.cdr.detectChanges()
+              },
+              (error: any) => this.errorService.handleError(error)
+          )
     }.bind(this), er)
   }
 
   public startFlow(flowTab: FlowTab) {
     this.flowService
-      .startInstance(flowTab.id)
-      .subscribe(
-        startOK => {
-          if(startOK) {
-            flowTab.flowInstance.state = FlowInstance.stateRunning
-            this.uiStateStore.updateFlowTabs()
-          } else
-            alert("Flow Instance failed to start")
-        },
-        (error: any) => this.errorService.handleError(error)
-      )
+        .startInstance(flowTab.id)
+        .subscribe(
+            startOK => {
+              if(startOK) {
+                flowTab.flowInstance.state = FlowInstance.stateRunning
+                this.uiStateStore.updateFlowTabs()
+              } else
+                alert("Flow Instance failed to start")
+            },
+            (error: any) => this.errorService.handleError(error)
+        )
   }
 
   public refreshFlow(flowTab: FlowTab) {
     this.flowService
-      .instance(flowTab.id)
-      .subscribe(
-        (flowInstance: FlowInstance) => {
-          let flowTabs: Array<FlowTab> = this.uiStateStore.getFlowTabs()
-          flowTabs.filter(t => t.id === flowTab.id).forEach(t => t.flowInstance = flowInstance)
-          this.uiStateStore.updateFlowTabs()
-        },
-        (error: any) => this.errorService.handleError(error)
-      )
+        .instance(flowTab.id)
+        .subscribe(
+            (flowInstance: FlowInstance) => {
+              let flowTabs: Array<FlowTab> = this.uiStateStore.getFlowTabs()
+              flowTabs.filter(t => t.id === flowTab.id).forEach(t => t.flowInstance = flowInstance)
+              this.uiStateStore.updateFlowTabs()
+            },
+            (error: any) => this.errorService.handleError(error)
+        )
   }
 
   public stopFlow(flowTab: FlowTab) {
     this.flowService
-      .stopInstance(flowTab.id)
-      .subscribe(
-        stopOK => {
-          if(stopOK) {
-            flowTab.flowInstance.state = FlowInstance.stateStopped
-            this.uiStateStore.updateFlowTabs()
-          } else
-            alert("Flow Instance failed to stop")
-        },
-        (error: any) => this.errorService.handleError(error)
-      )
+        .stopInstance(flowTab.id)
+        .subscribe(
+            stopOK => {
+              if(stopOK) {
+                flowTab.flowInstance.state = FlowInstance.stateStopped
+                this.uiStateStore.updateFlowTabs()
+              } else
+                alert("Flow Instance failed to stop")
+            },
+            (error: any) => this.errorService.handleError(error)
+        )
   }
 
   ngOnInit() {
     KeycloakService.withRptUpdate(function (rpt: string) {
       this.flowService
-        .instances(rpt)
-        .subscribe(
-          (instances: Array<FlowInstance>) => {
-            let flowTabs: FlowTab[] = []
-            instances.map((flowInstance: FlowInstance) => {
-              let flowTab = new FlowTab("#" + (flowTabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
-              flowTabs.push(flowTab)
-            })
+          .instances(rpt)
+          .subscribe(
+              (instances: Array<FlowInstance>) => {
+                let flowTabs: FlowTab[] = []
+                instances.map((flowInstance: FlowInstance) => {
+                  let flowTab = new FlowTab("#" + (flowTabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
+                  flowTabs.push(flowTab)
+                })
 
-            if (flowTabs.length > 0)
-              flowTabs[0].active = true
+                if (flowTabs.length > 0) {
+                  flowTabs[0].active = true
+                }
+                this.uiStateStore.addFlowTabs(flowTabs)
 
-            this.uiStateStore.addFlowTabs(flowTabs)
-
-            // FIXME: Not sure why the change detection in this case needs
-            //        to be triggered manually
-            this.cdr.detectChanges()
-          },
-          (error: any) => this.errorService.handleError(error)
-        )
+                // FIXME: Not sure why the change detection in this case needs
+                //        to be triggered manually
+                this.cdr.detectChanges()
+              },
+              (error: any) => this.errorService.handleError(error)
+          )
     }.bind(this))
   }
 }

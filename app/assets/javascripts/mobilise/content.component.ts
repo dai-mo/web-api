@@ -2,15 +2,14 @@
  * Created by cmathew on 15/08/16.
  */
 
-import {FlowService} from "../shared/flow.service"
-import {ErrorService} from "../shared/util/error.service"
-import {Component, Input, ViewChild} from "@angular/core"
-import {Provenance, Action, ProcessorUIState} from "../analyse/flow.model"
-import {TOOLTIP_DIRECTIVES} from "ng2-bootstrap"
-import {ModalComponent} from "../shared/modal.component"
-import {SelectItem} from "primeng/components/common/api"
-import {ProcessorPanelComponent} from "./processor-panel.component"
-import {UIStateStore} from "../shared/ui.state.store"
+import {FlowService} from "../shared/flow.service";
+import {ErrorService} from "../shared/util/error.service";
+import {Component, Input, ViewChild} from "@angular/core";
+import {Provenance, Action} from "../analyse/flow.model";
+import {TOOLTIP_DIRECTIVES} from "ng2-bootstrap";
+import {ModalComponent} from "../shared/modal.component";
+import {SelectItem} from "primeng/components/common/api";
+import {ProcessorPanelComponent} from "./processor-panel.component";
 
 @Component({
   selector: "content",
@@ -32,6 +31,8 @@ export class ContentComponent {
   formatOptions: SelectItem[] = []
   selectedFormatOption: string
 
+  private results: Array<any> = []
+  private columns: Set<string>= new Set<string>()
 
   private formats: Array<string> = ["raw", "csv"]
 
@@ -56,21 +57,22 @@ export class ContentComponent {
     this.actions = []
     if(processorId != null)
       this.flowService
-        .provenance(processorId)
-        .subscribe(
-          provenances => {
-            this.provenances = provenances
-            // FIXME: There are two cases for which the resulting provenance list can be empty
-            // 1) the processor has just started and not registered any output
-            // 2) there are no results corresponding to the query (e.g. date range)
-            if(provenances.length === 0)
-              this.dialog.show("Processor Output", "Output is not available. Please retry later or expand the query.")
-          },
-          (error: any) => {
-            this.errorService.handleError(error)
-            this.dialog.show("Processor Output", "Output for this processor has expired or been deleted")
-          }
-        )
+          .provenance(processorId)
+          .subscribe(
+              provenances => {
+                this.provenances = provenances
+                this.toData(this.provenances)
+                // FIXME: There are two cases for which the resulting provenance list can be empty
+                // 1) the processor has just started and not registered any output
+                // 2) there are no results corresponding to the query (e.g. date range)
+                if(provenances.length === 0)
+                  this.dialog.show("Processor Output", "Output is not available. Please retry later or expand the query.")
+              },
+              (error: any) => {
+                this.errorService.handleError(error)
+                this.dialog.show("Processor Output", "Output for this processor has expired or been deleted")
+              }
+          )
     else
       this.provenances = null
   }
@@ -89,5 +91,23 @@ export class ContentComponent {
 
   hasActions(): boolean {
     return this.actions.length > 0
+  }
+
+  toData(provs: Array<Provenance>) {
+    this.results = []
+    this.columns = new Set<string>()
+    if(provs != null && provs.length > 0) {
+      this.results = provs.map(p => {
+        let content = JSON.parse(p.content)
+        let record:any = {id: ""}
+        for (let key in content) {
+          this.columns.add(key)
+          if(content[key])
+            record[key] = content[key][Object.keys(content[key])[0]]
+        }
+        record.id = p.id
+        return record
+      })
+    }
   }
 }
