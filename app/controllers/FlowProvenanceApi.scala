@@ -42,6 +42,7 @@ class FlowProvenanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAct
 
   def list(processorId: String): EssentialAction = csrfCheckAction async { implicit request =>
     val typeId = processorId.split(':')
-    ProvenanceApi.provenance(typeId(1), typeId(0), DefaultMaxResults).map(_.toResult)
+    val results = ProvenanceApi.provenance(typeId(1), typeId(0), DefaultMaxResults).map(_.toResult)
+    results
   }
 }

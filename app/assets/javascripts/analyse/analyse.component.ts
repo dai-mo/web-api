@@ -26,6 +26,7 @@ export class AnalyseComponent implements OnInit {
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
+              private cdr:ChangeDetectorRef,
               private uiStateStore: UIStateStore) {
   }
 
@@ -71,7 +72,10 @@ export class AnalyseComponent implements OnInit {
         .instantiateTemplate(flowTemplate.id, rpt)
         .subscribe(
           (flowInstance: FlowInstance) => {
-              this.uiStateStore.setFlowInstanceToAdd(flowInstance)
+            this.uiStateStore.setFlowInstanceToAdd(flowInstance)
+            // FIXME: Not sure why the change detection in this case needs
+            //        to be triggered manually
+            this.cdr.detectChanges()
           },
           (error: any) => {
             this.errorService.handleError(error)
