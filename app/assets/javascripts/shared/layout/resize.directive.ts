@@ -2,6 +2,7 @@
  * Created by cmathew on 13/07/16.
  */
 import {Directive, ElementRef, Renderer, Input} from "@angular/core"
+import {UIStateStore} from "../ui.state.store";
 
 @Directive({
   selector: "[resize]"
@@ -36,10 +37,10 @@ export class ResizeDirective {
   private nextElmPanelBody: HTMLElement
   private nextElmStartFlexBasis: number
 
-  constructor(elementRef: ElementRef, private renderer: Renderer) {
+  constructor(elementRef: ElementRef,
+              private renderer: Renderer,
+              private uiStateStore: UIStateStore) {
     this.el = elementRef.nativeElement
-
-
   }
 
   private init() {
@@ -129,6 +130,8 @@ export class ResizeDirective {
 
   private drag(event: MouseEvent) {
     if(!this.dragging) return
+
+    this.uiStateStore.setResizeView(event)
 
     let offset = 0
     switch (this.resizeType) {

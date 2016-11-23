@@ -11,7 +11,8 @@
         'primeng': 'assets/lib/primeng',
         'keycloak': 'assets/lib/keycloak-js/dist',
         'keycloak-authz': 'assets/lib/keycloak-js/dist',
-        'vis': 'lib/vis/dist'
+        'vis': 'lib/vis/dist',
+        'leaflet': 'lib/leaflet/dist'
 
     };
 
@@ -26,7 +27,8 @@
         'primeng': { defaultExtension: 'js' },
         'keycloak': { defaultExtension: 'js' },
         'keycloak-authz': { defaultExtension: 'js' },
-        'vis': { defaultExtension: 'js' }
+        'vis': { defaultExtension: 'js' },
+        'leaflet': { defaultExtension: 'js' }
 
     };
 

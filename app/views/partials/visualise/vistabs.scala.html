@@ -1,0 +1,18 @@
+@()
+<div class="fill">
+    <tabset class="flex-panel-parent">
+        <tab  class="flex-panel-parent" *ngFor="let tabz of uiStateStore.store.visTabs"
+        [heading]="'map'"
+        [active]="tabz.active"
+        (select)="tabz.active = true"
+        (deselect)="tabz.active = false"
+        [disabled]="tabz.disabled"
+        [removable]="true"
+        (removed)="removeTabHandler(tabz)">
+            <div class="flex-panel flex-panel-parent" [ngSwitch]="tabz.visType">
+                <map class="flex-panel" [reload]= "provenances | async" [resize]= "uiStateStore.resizeView | async" *ngSwitchCase="'map'"></map>
+            </div>
+        </tab>
+    </tabset>
+</div>
+
