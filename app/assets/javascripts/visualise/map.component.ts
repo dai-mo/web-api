@@ -74,9 +74,9 @@ export class MapComponent implements AfterViewInit,  OnDestroy{
 
     this.map = L.map("map", {
       zoomControl: false,
-      center: L.latLng(40.731253, -73.996139),
-      zoom: 1,
-      minZoom: 1,
+      center: L.latLng(22.966484, 14.062500),
+      zoom: 3,
+      minZoom: 3,
       maxZoom: 32,
       layers: [this.mapService.baseMaps.OpenStreetMap]
     });
@@ -109,10 +109,12 @@ export class MapComponent implements AfterViewInit,  OnDestroy{
 
   addMarker(latlong: LatLng) {
     if (latlong) {
+      let pinAnchor = new L.Point(13, 41)
       let marker = L.marker(latlong, {
         icon: L.icon({
           iconUrl: this.markerIconUrl,
-          shadowUrl: this.markerShadowUrl
+          shadowUrl: this.markerShadowUrl,
+          iconAnchor: pinAnchor
         }),
         draggable: false
       }).addTo(this.map)
