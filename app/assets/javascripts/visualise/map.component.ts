@@ -97,7 +97,7 @@ export class MapComponent implements AfterViewInit,  OnDestroy{
         .forEach(prov => {
           let content = JSON.parse(prov.content)
           if(content.decimalLatitude && content.decimalLongitude)
-            this.addMarker(L.latLng(content.decimalLatitude.double, content.decimalLongitude.double))
+            this.addMarker(content)
         })
     }
   }
@@ -107,18 +107,33 @@ export class MapComponent implements AfterViewInit,  OnDestroy{
     this.markers = []
   }
 
-  addMarker(latlong: LatLng) {
-    if (latlong) {
+  addMarker(content: any) {
+    if (content.decimalLatitude.double && content.decimalLongitude.double) {
+      let latlong = L.latLng(content.decimalLatitude.double, content.decimalLongitude.double)
       let pinAnchor = new L.Point(13, 41)
+      let popupAnchor = new L.Point(0, -45)
       let marker = L.marker(latlong, {
         icon: L.icon({
           iconUrl: this.markerIconUrl,
           shadowUrl: this.markerShadowUrl,
-          iconAnchor: pinAnchor
+          iconAnchor: pinAnchor,
+          popupAnchor: popupAnchor
         }),
         draggable: false
       }).addTo(this.map)
+
+      marker.bindPopup(this.popupContent(content))
       this.markers.push(marker)
     }
+  }
+
+  popupContent(markerObj: any): string {
+    let pc: string = ""
+    for (var key in markerObj) {
+      if (markerObj.hasOwnProperty(key)) {
+        pc = pc + "<b>" + JSON.stringify(markerObj[key][Object.keys(markerObj[key])[0]]) + "</b><br/>"
+      }
+    }
+    return pc
   }
 }
