@@ -51,6 +51,8 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
       case ("mobilise", "processorpanel.html") => Ok(views.html.partials.mobilise.processorpanel())
 
       case ("visualise", "view.html") => Ok(views.html.partials.visualise.view())
+      case ("visualise", "vistabs.html") => Ok(views.html.partials.visualise.vistabs())
+      case ("visualise", "map.html") => Ok(views.html.partials.visualise.map())
       case _ => NotFound
     }
   }

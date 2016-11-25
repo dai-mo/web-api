@@ -13,7 +13,6 @@ import {Observable} from "rxjs"
 @Component({
   selector: "flow-tabs",
   directives: [FlowGraphDirective, TAB_DIRECTIVES, CORE_DIRECTIVES, NgClass],
-  providers: [FlowService, ErrorService],
   templateUrl: "partials/analyse/flowtabs.html",
   changeDetection: ChangeDetectionStrategy.OnPush
 })

@@ -10,6 +10,7 @@ import {TOOLTIP_DIRECTIVES} from "ng2-bootstrap";
 import {ModalComponent} from "../shared/modal.component";
 import {SelectItem} from "primeng/components/common/api";
 import {ProcessorPanelComponent} from "./processor-panel.component";
+import {UIStateStore} from "../shared/ui.state.store";
 
 @Component({
   selector: "content",
@@ -37,7 +38,8 @@ export class ContentComponent {
   private formats: Array<string> = ["raw", "csv"]
 
   constructor(private flowService: FlowService,
-              private errorService: ErrorService) {
+              private errorService: ErrorService,
+              private uiStateStore:UIStateStore) {
     this.rowOptions = []
     this.rowOptions.push({label:"rows", value: null})
     this.rowOptions.push({label:"last 10", value:{id:1, name: "last 10", code: "last_10"}})
@@ -57,22 +59,23 @@ export class ContentComponent {
     this.actions = []
     if(processorId != null)
       this.flowService
-          .provenance(processorId)
-          .subscribe(
-              provenances => {
-                this.provenances = provenances
-                this.toData(this.provenances)
-                // FIXME: There are two cases for which the resulting provenance list can be empty
-                // 1) the processor has just started and not registered any output
-                // 2) there are no results corresponding to the query (e.g. date range)
-                if(provenances.length === 0)
-                  this.dialog.show("Processor Output", "Output is not available. Please retry later or expand the query.")
-              },
-              (error: any) => {
-                this.errorService.handleError(error)
-                this.dialog.show("Processor Output", "Output for this processor has expired or been deleted")
-              }
-          )
+        .provenance(processorId)
+        .subscribe(
+          provenances => {
+            this.provenances = provenances
+            this.uiStateStore.setProvenances(provenances)
+            this.toData(this.provenances)
+            // FIXME: There are two cases for which the resulting provenance list can be empty
+            // 1) the processor has just started and not registered any output
+            // 2) there are no results corresponding to the query (e.g. date range)
+            if(provenances.length === 0)
+              this.dialog.show("Processor Output", "Output is not available. Please retry later or expand the query.")
+          },
+          (error: any) => {
+            this.errorService.handleError(error)
+            this.dialog.show("Processor Output", "Output for this processor has expired or been deleted")
+          }
+        )
     else
       this.provenances = null
   }

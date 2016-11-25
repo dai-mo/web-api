@@ -133,6 +133,17 @@ export class FlowTab {
   }
 }
 
+export class VisTab {
+  visType: string
+  active: boolean
+
+  constructor(visType: string,
+              active: boolean = false) {
+    this.visType = visType
+    this.active = active
+  }
+}
+
 export class Provenance {
   id: string
   content: string
@@ -158,3 +169,4 @@ export class ProcessorUIState {
     this.selectedProcessorId = selectedProcessorId
   }
 }
+
