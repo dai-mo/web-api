@@ -10,9 +10,7 @@
         'ng2-bootstrap': 'assets/lib/ng2-bootstrap',
         'primeng': 'assets/lib/primeng',
         'keycloak': 'assets/lib/keycloak-js/dist',
-        'keycloak-authz': 'assets/lib/keycloak-js/dist',
-        'vis': 'lib/vis/dist',
-        'leaflet': 'lib/leaflet/dist'
+        'keycloak-authz': 'assets/lib/keycloak-js/dist'
 
     };
 
@@ -26,9 +24,7 @@
         'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
         'primeng': { defaultExtension: 'js' },
         'keycloak': { defaultExtension: 'js' },
-        'keycloak-authz': { defaultExtension: 'js' },
-        'vis': { defaultExtension: 'js' },
-        'leaflet': { defaultExtension: 'js' }
+        'keycloak-authz': { defaultExtension: 'js' }
 
     };
 

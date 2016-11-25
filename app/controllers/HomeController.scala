@@ -53,6 +53,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
       case ("visualise", "view.html") => Ok(views.html.partials.visualise.view())
       case ("visualise", "vistabs.html") => Ok(views.html.partials.visualise.vistabs())
       case ("visualise", "map.html") => Ok(views.html.partials.visualise.map())
+      case ("visualise", "chart.html") => Ok(views.html.partials.visualise.chart())
       case _ => NotFound
     }
   }

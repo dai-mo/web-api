@@ -23,6 +23,7 @@ export class VisualiseComponent {
               private errorService: ErrorService,
               private cdr:ChangeDetectorRef,) {
     this.visTypes.push("map")
+    this.visTypes.push("chart")
   }
 
   public selectVisType(event: MouseEvent, visType: string): void {
