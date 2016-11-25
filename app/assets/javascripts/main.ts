@@ -66,7 +66,7 @@ import {TreeModule} from "primeng/components/tree/tree"
 import {TreeTableModule} from "primeng/components/treetable/treetable"
 import {KeycloakService} from "./shared/keycloak.service"
 import {UIStateStore} from "./shared/ui.state.store"
-import {MapService} from "./visualise/map.service";
+import {MapService} from "./visualise/map/map.service";
 
 @NgModule({
   declarations: [App],

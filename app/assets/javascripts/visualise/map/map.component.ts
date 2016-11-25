@@ -5,10 +5,10 @@
 import {MapService} from "./map.service";
 import {Component, OnInit, AfterViewInit, ElementRef, Renderer, Input, ViewChild, OnDestroy} from "@angular/core";
 import {Map} from "leaflet"
-import {UIStateStore} from "../shared/ui.state.store";
+import {UIStateStore} from "../../shared/ui.state.store";
 import LatLng = L.LatLng;
 import Marker = L.Marker;
-import {Provenance} from "../analyse/flow.model";
+import {Provenance} from "../../analyse/flow.model";
 
 declare let L: any
 
@@ -16,7 +16,7 @@ declare let L: any
   selector: "map",
   templateUrl: "partials/visualise/map.html"
 })
-export class MapComponent implements AfterViewInit,  OnDestroy{
+export class MapComponent implements AfterViewInit,  OnDestroy {
 
   // @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
 
