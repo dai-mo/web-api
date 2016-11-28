@@ -15,6 +15,7 @@ export class FlowTemplate {
 export class Processor {
   id: string
   type: string
+  processorType: string
   status: string
 }
 
@@ -48,16 +49,42 @@ export class FlowNode {
   uuid: string
   id: string
   type: string
+  ptype: string
   title: string
+  image: string
+  shape: string = "image"
+  color: {background: string}  = {background: "white"}
+  highlight: {background: string}  = {background: "blue"}
 
+
+  private baseUrl: string = window.location.protocol + "//" +
+  window.location.host
   constructor(uuid: string,
               type: string,
+              ptype: string,
               label: string = "") {
     this.uuid = uuid
     this.id = type + ":" + uuid
     this.label = label
     this.type = type
-    this.title = "id: " + uuid
+    this.ptype = ptype
+    this.title = type.split(".").pop()
+    this.image = this.pTypeImage(ptype)
+  }
+
+  pTypeImage(ptype: string): string {
+
+
+    switch (ptype) {
+      case "data-ingestion":
+        return this.baseUrl + "/assets/images/ingestion_processor.svg"
+      case "worker":
+        return this.baseUrl + "/assets/images/worker_processor.svg"
+      case "sink":
+        return this.baseUrl + "/assets/images/sink_processor.svg"
+      default:
+        return this.baseUrl + "/assets/images/worker_processor.svg"
+    }
   }
 }
 
