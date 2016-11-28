@@ -11,6 +11,8 @@ declare var vis: any
 @Injectable()
 export class FlowGraphService {
 
+
+
   constructor(private uiStateStore:UIStateStore,
               private cdr:ChangeDetectorRef) {
 
@@ -23,13 +25,19 @@ export class FlowGraphService {
     }
     let options = {
       nodes: {
-        shape: "dot",
-        size: 20,
-        font: {
-          size: 32
+        // shape: "dot",
+        // size: 20,
+        // font: {
+        //   size: 32
+        // },
+        shadow:true,
+        color: {
+          background: "white"
         },
-        borderWidth: 2,
-        shadow:true
+        borderWidth:0,
+        shapeProperties: {
+          useBorderWithImage:true
+        }
       },
 
       edges: {
