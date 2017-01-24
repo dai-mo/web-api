@@ -65,7 +65,7 @@ export class ChartComponent implements AfterViewInit,  OnDestroy {
           if(count !== undefined)
             xyData.set(x, count + 1)
           else
-            xyData.set(x, 0)
+            xyData.set(x, 1)
         })
       xyData.forEach(this.mapToData.bind(this))
       //this.data = [{x : this.xData, y : this.yData, type : "bar"}]
