@@ -18,7 +18,7 @@ class FlowProvenanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAct
   extends ResourceRouter[String] {
 
   val DefaultUserId = "root"
-  val DefaultMaxResults = 200
+  val DefaultMaxResults = 400
 
   override def list: EssentialAction = Action {
     NotImplemented
