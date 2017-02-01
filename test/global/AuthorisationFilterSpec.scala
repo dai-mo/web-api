@@ -16,7 +16,7 @@ import scala.collection.mutable
 
 object AuthorisationFilterSpec {
 
-  val DefaultIssuer = "http://keycloak.alambeek/auth/realms/alambeek"
+  val DefaultIssuer = "http://keycloak:8080/auth/realms/alambeek"
   val DefaultAudience = "alambeek-webapp"
 
   val DefaultPermissions = List(

@@ -8,8 +8,6 @@ import javax.inject.Inject
 import play.api.http.DefaultHttpFilters
 
 
-class Filters @Inject() (
-                          auth: AuthorisationFilter
-                        ) extends DefaultHttpFilters(auth)
+class Filters @Inject() () extends DefaultHttpFilters
 
 

@@ -11,7 +11,7 @@ import io.jsonwebtoken.{Claims, Jws, Jwts}
 import org.dcs.commons.serde.YamlSerializerImplicits._
 import org.dcs.commons.config.Configurator
 import org.dcs.commons.error.{ErrorConstants, RESTException}
-import org.keycloak.authorization.client.representation.{ResourceRepresentation, ScopeRepresentation}
+import org.keycloak.authorization.client.representation.{EntitlementRequest, PermissionRequest, ResourceRepresentation, ScopeRepresentation}
 import org.keycloak.authorization.client.resource.ProtectionResource
 import org.keycloak.authorization.client.{AuthzClient, Configuration}
 import org.keycloak.representations.adapters.config.AdapterConfig
@@ -35,7 +35,7 @@ class AuthorisationService {
   val authzClient: AuthzClient = initAuthzClient()
 
   def authConfig =
-    new Configurator(None, Some("authConfig")).config()
+    new Configurator(Some("/auth-config.json"), Some("authConfig")).config()
 
   def authPolicyConfig =
     new Configurator(Some("/auth-policy.yaml"), Some("authPolicyConfig")).config().toObject[AuthPolicy]
@@ -48,42 +48,65 @@ class AuthorisationService {
           keycloakConfig.getResource,
           keycloakConfig.getCredentials, null)
       AuthzClient.create(configuration)
+
     } catch {
       case NonFatal(t) =>
         throw new RESTException(ErrorConstants.DCS503.withErrorMessage(t.getMessage))
     }
   }
 
-  def claims(tokenHeader: Option[String]): Claims = {
-    tokenHeader match {
+  def claims(accessTokenHeader: Option[String], permissionRequests: List[PermissionRequest]): Claims = {
+    accessTokenHeader match {
       case Some(token) if token.split(" ").head == "Bearer" => {
         val bearerToken = token.split(" ").tail.head
+        val entitlementResource = authzClient.entitlement(bearerToken)
 
-        try {
-          val stringKey = keycloakConfig.getRealmKey
-          val x509publicKey: X509EncodedKeySpec = new X509EncodedKeySpec(Base64.decode(stringKey))
-          val kf: KeyFactory = KeyFactory.getInstance("RSA")
-          val publicKey: PublicKey = kf.generatePublic(x509publicKey)
-          val parsedJwt: Jws[Claims] = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(bearerToken)
-          val claims: Claims = parsedJwt.getBody
-
-          if(claims.getExpiration.before(new Date()))
-            throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Token has expired"))
-
-          if(!authPolicy.clients.contains(claims.getAudience))
-            throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Client '" + claims.getAudience + "' not recognised"))
-
-          if(claims.getIssuer != keycloakConfig.getAuthServerUrl + "/realms/" + keycloakConfig.getRealm)
-            throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Token issuer is not valid"))
-
-          claims
-
-        } catch {
-          case re: RESTException => throw re
-          case NonFatal(t) => throw new RESTException(ErrorConstants.DCS502.withErrorMessage(t.getMessage))
+        val entitlementResponse = if(permissionRequests.nonEmpty) {
+          val entitlementRequest = new EntitlementRequest
+          entitlementRequest.setPermissions(permissionRequests.asJava)
+          entitlementResource.get(keycloakConfig.getResource, entitlementRequest)
+        } else {
+          entitlementResource.getAll(keycloakConfig.getResource)
         }
+        claims(entitlementResponse.getRpt)
       }
       case _ => throw new RESTException(ErrorConstants.DCS501)
+    }
+  }
+
+  def claims(rptHeader: Option[String]): Claims = {
+    rptHeader match {
+      case Some(token) if token.split(" ").head == "Bearer" => {
+        val bearerToken = token.split(" ").tail.head
+        claims(bearerToken)
+      }
+      case _ => throw new RESTException(ErrorConstants.DCS501)
+    }
+  }
+
+  def claims(bearerToken: String): Claims = {
+    try {
+      val stringKey = keycloakConfig.getRealmKey
+      val x509publicKey: X509EncodedKeySpec = new X509EncodedKeySpec(Base64.decode(stringKey))
+      val kf: KeyFactory = KeyFactory.getInstance("RSA")
+      val publicKey: PublicKey = kf.generatePublic(x509publicKey)
+      val parsedJwt: Jws[Claims] = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(bearerToken)
+      val claims: Claims = parsedJwt.getBody
+
+      if(claims.getExpiration.before(new Date()))
+        throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Token has expired"))
+
+      if(!authPolicy.clients.contains(claims.getAudience))
+        throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Client '" + claims.getAudience + "' not recognised"))
+
+      if(claims.getIssuer != keycloakConfig.getAuthServerUrl + "/realms/" + keycloakConfig.getRealm)
+        throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Token issuer is not valid"))
+
+      claims
+
+    } catch {
+      case re: RESTException => throw re
+      case NonFatal(t) => throw new RESTException(ErrorConstants.DCS502.withErrorMessage(t.getMessage))
     }
   }
 

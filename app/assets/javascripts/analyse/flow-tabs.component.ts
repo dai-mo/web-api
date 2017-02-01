@@ -61,13 +61,8 @@ export class FlowTabsComponent implements OnInit {
   }
 
   public deleteTab(flowTab: FlowTab) {
-    let er:any = {}
-    let pr:any  = {}
 
-    pr.resource_set_name = "flow-instance:" + flowTab.id
-    er.permissions = [pr]
-
-    KeycloakService.withRptUpdate(function (rpt: string) {
+    KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
           .destroyInstance(flowTab.id, rpt)
           .subscribe(
@@ -83,7 +78,7 @@ export class FlowTabsComponent implements OnInit {
               },
               (error: any) => this.errorService.handleError(error)
           )
-    }.bind(this), er)
+    }.bind(this))
   }
 
   public startFlow(flowTab: FlowTab) {
@@ -130,7 +125,7 @@ export class FlowTabsComponent implements OnInit {
   }
 
   ngOnInit() {
-    KeycloakService.withRptUpdate(function (rpt: string) {
+    KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
           .instances(rpt)
           .subscribe(

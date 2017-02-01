@@ -34,7 +34,9 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
   val ResourceNameSeparator = ":"
   val Type = "http://alambeek.org/resource/instance"
 
-  override def list: EssentialAction =  csrfCheckAction andThen authorisationAction async { implicit request =>
+  override def list: EssentialAction =  csrfCheckAction andThen
+    RptAction(Nil) andThen
+    authorisationAction async { implicit request =>
     val ids = flowInstanceIds(authService.permissions(request.claims))
     if(ids.isEmpty)
       Future.successful(Nil.toResult)
@@ -51,7 +53,9 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
     NotImplemented
   }
 
-  override def destroy(id: String): EssentialAction = csrfCheckAction andThen authorisationAction async { implicit request =>
+  override def destroy(id: String): EssentialAction = csrfCheckAction andThen
+    RptAction(Nil) andThen
+    authorisationAction async { implicit request =>
     FlowApi.remove(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey))
       .map { response =>
         if(response)
@@ -68,7 +72,9 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
     NotImplemented
   }
 
-  def create(flowTemplateId: String): EssentialAction = csrfCheckAction andThen authorisationAction async { implicit request =>
+  def create(flowTemplateId: String): EssentialAction = csrfCheckAction andThen
+    RptAction(List("flow-instance")) andThen
+    authorisationAction async { implicit request =>
     FlowApi.instantiate(flowTemplateId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey))
       .map { flowInstance =>
         authService.createProtectedResource(

@@ -1,7 +1,7 @@
 {
   "realm": "alambeek",
-  "realm-public-key": "",
-  "auth-server-url": "http://keycloak.alambeek/auth",
+  "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAonNjulL8kaF8KKenB1cNoLrh9M0GMHza3z2dri30r30PMYKPn1H4BF1Y6yFevNHDDBJTtl1WIx1T0Q/SZHecPdRswV61WYrfwu9a8DeHqkI1Fblj7/L6OtucMRC7xOiHAp0tPPCEtxc0iz7N2zNk86FVV3PUzWewWuwernPKExQfU3n03ZKLIQWE5pd+Gt3KSsiWR/p1O0qT15YYNRSGWP+TWMZijOWxfmz3LeIrmziZgo8Ffw0fPgiTgDEFjCv4OtqF2jPW0HU560/g5PKKTbmQWyWFEUjCN8vbc3UOfUQ6lHxrff2U3vAxdisqySsXR9jSUjBLinaP9dK2DsFx+QIDAQAB",
+  "auth-server-url": "http://keycloak:8080/auth",
   "ssl-required": "external",
   "resource": "alambeek-api",
   "credentials": {
@@ -9,3 +9,4 @@
   },
   "policy-enforcer": {}
 }
+

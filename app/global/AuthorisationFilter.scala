@@ -14,8 +14,14 @@ import scala.concurrent.Future
 import scala.util.control.NonFatal
 
 /**
+  *
   * Created by cmathew on 13.10.16.
   */
+
+// FIXME: Not really sure if we need a filter which checks every
+// api call for permissions or if it is more efficient to
+// have the check for specific api endpoints (RptAction)
+// Currently, this filter is not used
 
 object AuthorisationFilter {
   def permit(requestHeader: RequestHeader,

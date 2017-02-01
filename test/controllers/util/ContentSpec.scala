@@ -18,7 +18,7 @@ class ContentSpec extends WebBaseSpec with OneAppPerSuite {
 
   override implicit lazy val app: Application =
     new GuiceApplicationBuilder()
-      .overrides(bind[AuthorisationService].to[MockAuthorisationService])
+      .overrides(bind[AuthorisationService].to(new MockAuthorisationService))
       .build
 
   "Default serialized response content type" should {
