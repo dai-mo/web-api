@@ -1,0 +1,2 @@
+zookeeperServers: zookeeper:2181
+nifiBaseUrl: http://dcs-flow:8090/nifi-api

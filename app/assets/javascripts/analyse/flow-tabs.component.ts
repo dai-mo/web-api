@@ -61,11 +61,6 @@ export class FlowTabsComponent implements OnInit {
   }
 
   public deleteTab(flowTab: FlowTab) {
-    let er:any = {}
-    let pr:any  = {}
-
-    pr.resource_set_name = "flow-instance:" + flowTab.id
-    er.permissions = [pr]
 
     KeycloakService.withRptUpdate(function (rpt: string) {
       this.flowService

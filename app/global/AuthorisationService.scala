@@ -35,7 +35,7 @@ class AuthorisationService {
   val authzClient: AuthzClient = initAuthzClient()
 
   def authConfig =
-    new Configurator(None, Some("authConfig")).config()
+    new Configurator(Some("/auth-config.json"), Some("authConfig")).config()
 
   def authPolicyConfig =
     new Configurator(Some("/auth-policy.yaml"), Some("authPolicyConfig")).config().toObject[AuthPolicy]

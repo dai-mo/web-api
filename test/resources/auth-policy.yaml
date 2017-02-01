@@ -3,13 +3,13 @@ clients:
   - "alambeek-api"
 paths:
   - name: "flow-instance"
-    path: "/api/flow/instances/create/.*"
+    path: "/api/flow/instances/create/[^\\/]*"
     methods:
     - method: "POST"
       scopes:
       - "urn:alambeek:scopes:flow-instance:create"
   - name: "flow-instance\\:.*"
-    path: "/api/flow/instances/*"
+    path: "/api/flow/instances/[^\\/]*"
     methods:
     - method: "GET"
       scopes:
