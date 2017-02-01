@@ -62,7 +62,7 @@ export class AnalyseComponent implements OnInit {
 
   private instantiateTemplate(flowTemplate: FlowTemplate): void {
 
-    KeycloakService.withRptUpdate(function (rpt: string) {
+    KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
         .instantiateTemplate(flowTemplate.id, rpt)
         .subscribe(

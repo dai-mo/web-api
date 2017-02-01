@@ -53,8 +53,7 @@ export class KeycloakService {
     window.location.href = KeycloakService.authConfig.logoutUrl
   }
 
-
-  static withRptUpdate(apiCall: (rpt: string) => void): void {
+  static withTokenUpdate(apiCall: (rpt: string) => void): void {
     console.log("Access Token: " +  KeycloakService.authConfig.token)
 
     KeycloakService.authConfig.updateToken(5)

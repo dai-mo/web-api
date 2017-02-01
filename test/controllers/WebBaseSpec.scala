@@ -30,11 +30,12 @@ object WebBaseSpec {
 }
 class WebBaseSpec extends PlaySpec with MockitoSugar {
 
-  val authService = new AuthorisationService()
+  var authService: AuthorisationService = _
   var xsrfToken: Option[Cookie] = None
   var authToken: Option[Cookie] = None
 
   def init(app: Application): Unit = {
+    authService = new AuthorisationService()
     val home = route(app, FakeRequest(GET, "/")).get
     status(home) mustBe OK
 
