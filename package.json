@@ -46,7 +46,7 @@
   "devDependencies": {
     "concurrently": "^2.0.0",
     "jasmine-core": "2.4.1",
-    "typescript": "2.0.0-dev.20160707",
+    "typescript": "2.0.8",
     "typings": "^1.0.4",
     "karma": "0.13.22",
     "karma-chrome-launcher": "0.2.2",

@@ -54,20 +54,11 @@ export class KeycloakService {
   }
 
 
-  static withRptUpdate(apiCall: (rpt: string) => void, entitlementRequest: any = null): void {
+  static withRptUpdate(apiCall: (rpt: string) => void): void {
+    console.log("Access Token: " +  KeycloakService.authConfig.token)
+
     KeycloakService.authConfig.updateToken(5)
-      .success(() => {
-        let apiRpt: any
-        if(entitlementRequest === null)
-          apiRpt = KeycloakService.authz.entitlement(KeycloakService.ApiResourceId)
-        else {
-          entitlementRequest.rpt = KeycloakService.authz.rpt
-          apiRpt = KeycloakService.authz.entitlement(KeycloakService.ApiResourceId, entitlementRequest)
-        }
-        apiRpt.then(function (rpt: string) {
-          apiCall(rpt)
-        })
-      })
+      .success(() => apiCall(KeycloakService.authConfig.token))
       .error(() => {
         console.log("Failed to refresh token")
       })

@@ -83,7 +83,7 @@ export class FlowTabsComponent implements OnInit {
               },
               (error: any) => this.errorService.handleError(error)
           )
-    }.bind(this), er)
+    }.bind(this))
   }
 
   public startFlow(flowTab: FlowTab) {

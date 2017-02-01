@@ -1,5 +1,6 @@
 clients:
   - "alambeek-webapp"
+  - "alambeek-api"
 paths:
   - name: "flow-instance"
     path: "/api/flow/instances/create/.*"
