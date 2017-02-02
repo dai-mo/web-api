@@ -1,10 +1,9 @@
-/// <reference path="../../../../typings/globals/jasmine/index.d.ts" />
 
 import {ResponseOptions, Response, Http, BaseRequestOptions, ConnectionBackend, HttpModule} from "@angular/http"
 import {inject, fakeAsync, tick} from "@angular/core/testing"
 import {MockBackend, MockConnection} from "@angular/http/testing"
 import {FlowService} from "./flow.service"
-import {FlowTemplate, FlowInstance, FlowGraph} from "../analyse/flow.model"
+import {FlowTemplate, FlowInstance, FlowGraph, FlowNode} from "../analyse/flow.model"
 import {ErrorService} from "./util/error.service"
 import {TestBed} from "@angular/core/testing/test_bed"
 import {platformBrowserDynamicTesting, BrowserDynamicTestingModule} from "@angular/platform-browser-dynamic/testing"
@@ -99,27 +98,32 @@ xdescribe("Flow Service", () => {
             {
               "id": "31893b7f-2b44-48d6-b07f-174edde34745",
               "type": "some.type",
-              "status": "STOPPED"
+              "status": "STOPPED",
+              "processorType": "type"
             },
             {
               "id": "623f3887-cc72-412e-82d8-e21ee0d7705f",
               "type": "some.type",
-              "status": "STOPPED"
+              "status": "STOPPED",
+              "processorType": "type"
             },
             {
               "id": "555bde07-8282-4719-aec6-6a64ce227c60",
               "type": "some.type",
-              "status": "STOPPED"
+              "status": "STOPPED",
+              "processorType": "type"
             },
             {
               "id": "9b9620fe-3c40-4263-82eb-f49853a6ef79",
               "type": "some.type",
-              "status": "STOPPED"
+              "status": "STOPPED",
+              "processorType": "type"
             },
             {
               "id": "ee25be65-4479-4528-b5f7-dc24a75eaf22",
               "type": "some.type",
-              "status": "STOPPED"
+              "status": "STOPPED",
+              "processorType": "type"
             }
           ],
           "connections": [
@@ -182,14 +186,29 @@ xdescribe("Flow Service", () => {
             expect(instance.processors.length).toBe(5)
             expect(instance.connections.length).toBe(4)
 
+            let nodes: FlowNode[] = []
+            nodes.push(new FlowNode("555bde07-8282-4719-aec6-6a64ce227c60",
+              "some.type",
+              "ptype",
+              "label"))
+            nodes.push(new FlowNode("623f3887-cc72-412e-82d8-e21ee0d7705f",
+              "some.type",
+              "ptype",
+              "label"))
+            nodes.push(new FlowNode("9b9620fe-3c40-4263-82eb-f49853a6ef79",
+              "some.type",
+              "ptype",
+              "label"))
+            nodes.push(new FlowNode("31893b7f-2b44-48d6-b07f-174edde34745",
+              "some.type",
+              "ptype",
+              "label"))
+            nodes.push(new FlowNode("ee25be65-4479-4528-b5f7-dc24a75eaf22",
+              "some.type",
+              "ptype",
+              "label"))
             let expFlowGraph: FlowGraph = {
-              "nodes":[
-                {"label":"","type":"some.type","uuid":"some.type:555bde07-8282-4719-aec6-6a64ce227c60","id":"555bde07-8282-4719-aec6-6a64ce227c60", "title":"id:555bde07-8282-4719-aec6-6a64ce227c60"},
-                {"label":"","type":"some.type","uuid":"some.type:623f3887-cc72-412e-82d8-e21ee0d7705f","id":"623f3887-cc72-412e-82d8-e21ee0d7705f", "title":"id:623f3887-cc72-412e-82d8-e21ee0d7705f"},
-                {"label":"","type":"some.type","uuid":"some.type:9b9620fe-3c40-4263-82eb-f49853a6ef79","id":"9b9620fe-3c40-4263-82eb-f49853a6ef79", "title":"id:9b9620fe-3c40-4263-82eb-f49853a6ef79"},
-                {"label":"","type":"some.type","uuid":"some.type:31893b7f-2b44-48d6-b07f-174edde34745","id":"31893b7f-2b44-48d6-b07f-174edde34745", "title":"id:31893b7f-2b44-48d6-b07f-174edde34745"},
-                {"label":"","type":"some.type","uuid":"some.type:ee25be65-4479-4528-b5f7-dc24a75eaf22","id":"ee25be65-4479-4528-b5f7-dc24a75eaf22", "title":"id:ee25be65-4479-4528-b5f7-dc24a75eaf22"}
-              ],
+              "nodes": nodes,
               "edges":[
                 {"from":"555bde07-8282-4719-aec6-6a64ce227c60","to":"623f3887-cc72-412e-82d8-e21ee0d7705f","arrows":"to"},
                 {"from":"623f3887-cc72-412e-82d8-e21ee0d7705f","to":"9b9620fe-3c40-4263-82eb-f49853a6ef79","arrows":"to"},

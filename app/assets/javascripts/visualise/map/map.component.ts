@@ -1,16 +1,14 @@
 /**
  * Created by cmathew on 22.11.16.
  */
-
-import {MapService} from "./map.service";
-import {Component, OnInit, AfterViewInit, ElementRef, Renderer, Input, ViewChild, OnDestroy} from "@angular/core";
+import {MapService} from "./map.service"
+import {Component, AfterViewInit, ElementRef, Renderer, Input, ViewChild, OnDestroy} from "@angular/core"
 import {Map} from "leaflet"
-import {UIStateStore} from "../../shared/ui.state.store";
-import LatLng = L.LatLng;
-import Marker = L.Marker;
-import {Provenance} from "../../analyse/flow.model";
+import {UIStateStore} from "../../shared/ui.state.store"
+import {Provenance} from "../../analyse/flow.model"
+import LatLng = L.LatLng
+import Marker = L.Marker
 
-declare let L: any
 
 @Component({
   selector: "map",
@@ -18,9 +16,7 @@ declare let L: any
 })
 export class MapComponent implements AfterViewInit,  OnDestroy {
 
-  // @ViewChild(MarkerComponent) markerComponent: MarkerComponent;
-
-  @ViewChild('map') mapElementRef: ElementRef
+  @ViewChild("map") mapElementRef: ElementRef
 
   private el:HTMLElement
   private mapEl:HTMLElement
@@ -79,7 +75,7 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
       minZoom: 3,
       maxZoom: 32,
       layers: [this.mapService.baseMaps.OpenStreetMap]
-    });
+    })
     L.control.zoom({position: "topright"}).addTo(this.map)
     L.control.layers(this.mapService.baseMaps).addTo(this.map)
     L.control.scale().addTo(this.map)
@@ -110,8 +106,8 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
   addMarker(content: any) {
     if (content.decimalLatitude.double && content.decimalLongitude.double) {
       let latlong = L.latLng(content.decimalLatitude.double, content.decimalLongitude.double)
-      let pinAnchor = new L.Point(13, 41)
-      let popupAnchor = new L.Point(0, -45)
+      let pinAnchor = L.point(13, 41)
+      let popupAnchor = L.point(0, -45)
       let marker = L.marker(latlong, {
         icon: L.icon({
           iconUrl: this.markerIconUrl,
@@ -129,7 +125,7 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
 
   popupContent(markerObj: any): string {
     let pc: string = ""
-    for (var key in markerObj) {
+    for (let key in markerObj) {
       if (markerObj.hasOwnProperty(key)) {
         pc = pc + "<b>" + JSON.stringify(markerObj[key][Object.keys(markerObj[key])[0]]) + "</b><br/>"
       }
