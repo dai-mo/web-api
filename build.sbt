@@ -66,6 +66,11 @@ npmClean := {
   s.log.success("Node modules delete successful!")
 }
 
+// NOTE: To setup typings for a particular npm package run,
+// npm install --save-dev @types/<package>
+// This will add the typings in the node_modules dir and
+// to the 'devDependencies' section of package.json
+
 lazy val npmInstall = TaskKey[Unit]("install","Install node modules as specified in package.json").
   in(Npm)
 

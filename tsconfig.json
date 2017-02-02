@@ -18,9 +18,6 @@
   "exclude": [
     "node_modules",
     "project/target",
-    "typings/main",
-    "typings/main.d.ts",
-    "typings/browser",
     "target/web",
     "target/classes"
   ]
