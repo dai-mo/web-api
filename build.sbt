@@ -39,15 +39,18 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   filters,
-  "org.dcs" % "org.dcs.commons" % "0.2.0-SNAPSHOT",
-  "org.dcs" % "org.dcs.api" % "0.3.0-SNAPSHOT",
-  "org.dcs" % "org.dcs.remote" % "0.3.0-SNAPSHOT",
-  "org.dcs" % "org.dcs.flow" % "0.3.0-SNAPSHOT",
-  "org.webjars" %% "webjars-play" % "2.5.0",
-  "io.jsonwebtoken" % "jjwt" % "0.7.0",
-  "org.keycloak" % "keycloak-authz-client" % "2.2.1.Final",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.1" % Test,
-  "org.mockito" % "mockito-core" % "2.2.1" % Test
+  "org.dcs"                  % "org.dcs.commons"          % "0.2.0-SNAPSHOT",
+  "org.dcs"                  % "org.dcs.api"              % "0.3.0-SNAPSHOT",
+  "org.dcs"                  % "org.dcs.remote"           % "0.3.0-SNAPSHOT",
+  "org.dcs"                  % "org.dcs.flow"             % "0.3.0-SNAPSHOT",
+  "org.dcs"                  % "org.dcs.data.postgres"    % "0.2.0-SNAPSHOT",
+
+  "org.webjars"             %% "webjars-play"             % "2.5.0",
+  "io.jsonwebtoken"          % "jjwt"                     % "0.7.0",
+  "org.keycloak"             % "keycloak-authz-client"    % "2.4.0.Final",
+
+  "org.scalatestplus.play"  %% "scalatestplus-play"       % "1.5.1" % Test,
+  "org.mockito"              % "mockito-core"             % "2.2.1" % Test
 )
 
 
