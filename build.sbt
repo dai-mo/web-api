@@ -43,7 +43,6 @@ libraryDependencies ++= Seq(
   "org.dcs"                  % "org.dcs.api"              % "0.3.0-SNAPSHOT",
   "org.dcs"                  % "org.dcs.remote"           % "0.3.0-SNAPSHOT",
   "org.dcs"                  % "org.dcs.flow"             % "0.3.0-SNAPSHOT",
-  "org.dcs"                  % "org.dcs.data.postgres"    % "0.2.0-SNAPSHOT",
 
   "org.webjars"             %% "webjars-play"             % "2.5.0",
   "io.jsonwebtoken"          % "jjwt"                     % "0.7.0",
