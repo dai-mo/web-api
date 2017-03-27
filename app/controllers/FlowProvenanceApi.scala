@@ -65,7 +65,7 @@ class FlowProvenanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAct
         response.
           filter(prov => prov.relationship != RelationshipType.FailureRelationship).
           map(prov => {
-            val content = prov.raw.deSerToJsonString(schema._2, schema._2)
+            val content = prov.raw.deSerToJsonString(schema, schema)
             prov.setRaw(null)
             prov.setContent(content)
             prov
