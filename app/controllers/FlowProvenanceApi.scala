@@ -63,7 +63,7 @@ class FlowProvenanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAct
       map(schema => {
         val response = flowDataService.provenanceByComponentId(pid, DefaultMaxResults).asScala
         response.
-          filter(prov => prov.relationship != RelationshipType.FailureRelationship).
+          filter(prov => prov.relationship != RelationshipType.Failure.id).
           map(prov => {
             val content = prov.raw.deSerToJsonString(schema, schema)
             prov.setRaw(null)
