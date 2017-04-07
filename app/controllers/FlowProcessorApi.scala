@@ -15,9 +15,10 @@ import play.api.mvc.{Action, EssentialAction}
 class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAction: CSRFTokenAction)
   extends ResourceRouter[String] {
 
-  ZkRemoteService.loadServiceCaches()
+
 
   override def list: EssentialAction = csrfCheckAction { implicit request =>
+    ZkRemoteService.loadServiceCaches()
     ZkRemoteService.services().toResult
   }
   override def create: EssentialAction =  Action {
@@ -37,6 +38,7 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActi
   }
 
   def list(property: String, regex: String): EssentialAction = csrfCheckAction { implicit request =>
+    ZkRemoteService.loadServiceCaches()
     ZkRemoteService.filterServiceByProperty(property, regex).toResult
   }
 }
