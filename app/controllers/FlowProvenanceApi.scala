@@ -23,9 +23,6 @@ import scala.collection.JavaConverters._
 class FlowProvenanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAction: CSRFTokenAction)
   extends ResourceRouter[String] {
 
-
-  val errorSchema = Some(AvroSchemaStore.errorResponseSchema())
-
   val DefaultUserId = "root"
   val DefaultMaxResults = 400
 
