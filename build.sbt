@@ -41,7 +41,7 @@ libraryDependencies ++= Seq(
   filters,
   "org.dcs"                  % "org.dcs.commons"          % "0.3.0-SNAPSHOT",
   "org.dcs"                  % "org.dcs.api"              % "0.4.0-SNAPSHOT",
-  "org.dcs"                  % "org.dcs.remote"           % "0.3.0",
+  "org.dcs"                  % "org.dcs.remote"           % "0.4.0-SNAPSHOT",
   "org.dcs"                  % "org.dcs.flow"             % "0.4.0-SNAPSHOT",
 
   "org.webjars"             %% "webjars-play"             % "2.5.0",
