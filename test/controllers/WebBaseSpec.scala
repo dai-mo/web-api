@@ -59,6 +59,10 @@ class WebBaseSpec extends PlaySpec with MockitoSugar {
     fr.withHeaders((XsrfTokenHeaderName, xsrfToken.get.value),
       (AuthorizationHeaderName, "Bearer " + accessToken))
   }
+
+  def withBody[A](body: A)(fr: FakeRequest[A]): FakeRequest[A] = {
+    fr.withBody(body)
+  }
 }
 
 

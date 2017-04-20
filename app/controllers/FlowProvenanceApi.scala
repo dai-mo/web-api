@@ -50,7 +50,7 @@ class FlowProvenanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAct
     val flowDataService = ZkRemoteService.loadService[IFlowDataService]
     val typeId = processorId.split(':')
     val pid = typeId(1)
-    ProcessorApi.instance(pid, DefaultUserId).
+    ProcessorApi.instance(pid).
       map(pi => {
         val cp = CoreProperties(pi.properties)
         cp.readSchemaId.foreach(AvroSchemaStore.add)

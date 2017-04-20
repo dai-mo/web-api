@@ -1,10 +1,14 @@
 package controllers
 
+import java.util.UUID
+
+import controllers.util.Req
+import org.dcs.api.processor.RemoteProcessor
 import org.dcs.api.service.ProcessorServiceDefinition
 import org.dcs.commons.serde.JsonSerializerImplicits._
 import org.scalatest.Ignore
 import org.scalatestplus.play.OneAppPerTest
-import play.api.libs.json.JsArray
+import play.api.libs.json.{JsArray, JsObject}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, route, _}
 
@@ -17,6 +21,7 @@ import play.api.test.Helpers.{GET, route, _}
 //       test environment is setup.
 @Ignore
 class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
+
 
   "Flow Processor Api" should {
     "return list of available processor services" taggedAs IT in {
@@ -59,6 +64,51 @@ class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
       assert(typeFilteredProcessorServices.exists(_.processorServiceClassName == "org.dcs.core.service.TestProcessorService"))
       assert(typeFilteredProcessorServices.exists(_.processorServiceClassName == "org.dcs.core.service.StatefulTestProcessorService"))
 
+    }
+
+    "manage processor lifecycle correctly" taggedAs IT in {
+      init(app)
+
+      val clientId = UUID.randomUUID().toString
+      val flowInstance = route(app,
+        withDcsCookiesHeaders(FakeRequest(POST, "/api/flow/instances/create/test"))
+          .withHeaders((Req.FlowClientId, clientId))).get
+
+      status(flowInstance) mustBe OK
+
+      val createInstanceResponse = contentAsJson(flowInstance).as[JsObject]
+
+      val flowInstanceId = (createInstanceResponse \ "id").as[String]
+
+      val psd = ProcessorServiceDefinition("org.dcs.core.service.TestProcessorService", RemoteProcessor.WorkerProcessorType, false)
+
+      val processor =  route(app,
+        withDcsCookiesHeaders(FakeRequest(POST, "/api/flow/processor/create/" + flowInstanceId))
+          .withTextBody(psd.toJson)
+          .withHeaders((Req.FlowClientId, clientId))).get
+
+      status(processor) mustBe OK
+
+      val createProcessorResponse = contentAsJson(processor).as[JsObject]
+
+      val processorInstanceId = (createProcessorResponse \ "id").as[String]
+      val processorInstanceVersion = (createProcessorResponse \ "version").as[Long]
+
+      val removeProcessorResponse =  route(app,
+        withDcsCookiesHeaders(FakeRequest(DELETE, "/api/flow/processor/" + processorInstanceId))
+          .withHeaders((Req.FlowClientId, clientId),
+            (Req.FlowComponentVersion, processorInstanceVersion.toString))
+      ).get
+
+      status(removeProcessorResponse) mustBe OK
+
+      val deleteInstance = route(app,
+        withDcsCookiesHeaders(FakeRequest(DELETE, "/api/flow/instances/" + flowInstanceId))
+          .withHeaders((Req.FlowClientId, clientId),
+            (Req.FlowComponentVersion, processorInstanceVersion.toString))
+      ).get
+
+      status(deleteInstance) mustBe OK
     }
   }
 

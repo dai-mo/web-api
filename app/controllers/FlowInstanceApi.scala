@@ -5,11 +5,11 @@ import javax.inject.{Inject, Singleton}
 import controllers.routing.ResourceRouter
 import controllers.util._
 import global.AuthorisationService
-import org.dcs.api.service.FlowInstance
-import org.dcs.flow.FlowApi
-import play.api.mvc.{Action, EssentialAction}
 import global.ResultSerialiserImplicits._
+import io.jsonwebtoken.Claims
+import org.dcs.flow.FlowApi
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.mvc.EssentialAction
 
 import scala.concurrent.Future
 
@@ -24,7 +24,7 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
                                 authService: AuthorisationService)
   extends ResourceRouter[String] {
 
-  val DefaultUserId = "root"
+  val DefaultFlowParentId = "root"
 
   val ScopeFlowInstanceView = "urn:alambeek:scopes:flow-instance:view"
   val ScopeFlowInstanceUpdate = "urn:alambeek:scopes:flow-instance:update"
@@ -42,7 +42,7 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
       Future.successful(Nil.toResult)
     else
       Future.sequence(ids.map { id =>
-        FlowApi.instance(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey))
+        FlowApi.instance(id)
           .map { flowInstance =>
             flowInstance
           }
@@ -56,7 +56,7 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
   override def destroy(id: String): EssentialAction = csrfCheckAction andThen
     RptAction(Nil) andThen
     authorisationAction async { implicit request =>
-    FlowApi.remove(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey))
+    FlowApi.remove(id, Req.version, Req.clientId)
       .map { response =>
         if(response)
           authService.deleteProtectedResource(BaseUrl + "/" + id)
@@ -65,36 +65,39 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
   }
 
   override def find(id: String): EssentialAction = csrfCheckAction async { implicit request =>
-    FlowApi.instance(id, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)).map(_.toResult)
+    FlowApi.instance(id).map(_.toResult)
   }
 
   override def create: EssentialAction = csrfCheckAction {
     NotImplemented
   }
 
-  def create(flowTemplateId: String): EssentialAction = csrfCheckAction andThen
+  def instantiate(flowTemplateId: String): EssentialAction = csrfCheckAction andThen
     RptAction(List("flow-instance")) andThen
     authorisationAction async { implicit request =>
-    FlowApi.instantiate(flowTemplateId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey))
+    FlowApi.instantiate(flowTemplateId, Req.clientId)
       .map { flowInstance =>
-        authService.createProtectedResource(
-          ScopeFlowInstanceView :: ScopeFlowInstanceUpdate :: ScopeFlowInstanceDelete :: Nil,
-          ResourceNamePrefix + ResourceNameSeparator + flowInstance.id,
-          BaseUrl + "/" + flowInstance.id,
-          Type,
-          authService.userId(request.claims)
-        )
+        createProtectedResource(flowInstance.id, request.claims)
         flowInstance.toResult
       }
   }
 
+  def create(name: String): EssentialAction = csrfCheckAction andThen
+    RptAction(List("flow-instance")) andThen
+    authorisationAction async { implicit request =>
+    FlowApi.create(name, Req.clientId)
+      .map { flowInstance =>
+        createProtectedResource(flowInstance.id, request.claims)
+        flowInstance.toResult
+      }
+  }
 
   def start(flowInstanceId: String): EssentialAction = csrfCheckAction async { implicit request =>
-    FlowApi.start(flowInstanceId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)).map(_.toResult)
+    FlowApi.start(flowInstanceId).map(_.toResult)
   }
 
   def stop(flowInstanceId: String): EssentialAction = csrfCheckAction async { implicit request =>
-    FlowApi.stop(flowInstanceId, DefaultUserId, Req.tokenOrError(Req.AuthTokenKey)).map(_.toResult)
+    FlowApi.stop(flowInstanceId).map(_.toResult)
   }
 
   private def flowInstanceIds(permissions: List[Permission]): List[String] = {
@@ -104,5 +107,12 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
       .filter(p => p.resourceName.startsWith(ResourceNamePrefix + ResourceNameSeparator))
       .map(p => p.resourceName.split(ResourceNameSeparator).tail.head)
   }
+
+  private def createProtectedResource(flowInstanceId: String, claims: Claims): Unit =
+    authService.createProtectedResource(ScopeFlowInstanceView :: ScopeFlowInstanceUpdate :: ScopeFlowInstanceDelete :: Nil,
+      ResourceNamePrefix + ResourceNameSeparator + flowInstanceId,
+      BaseUrl + "/" + flowInstanceId,
+      Type,
+      authService.userId(claims))
 }
 
