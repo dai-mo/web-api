@@ -22,7 +22,7 @@ class FlowTemplateApi @Inject()(csrfCheckAction: CSRFCheckAction,
 
 
   override def list: EssentialAction = csrfCheckAction async { implicit request =>
-    FlowApi.templates(Req.tokenOrError(Req.AuthTokenKey)).map(_.toResult)
+    FlowApi.templates.map(_.toResult)
   }
 
   override def update(id: Long): EssentialAction = csrfCheckAction {

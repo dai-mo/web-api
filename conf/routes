@@ -26,15 +26,19 @@ GET     /api/users/:id/auth              controllers.UserApi.auth(id: Long)
 ## - Templates Api
 ->      /api/flow/templates              controllers.FlowTemplateApi
 ## - Instance Api
-->      /api/flow/instances              controllers.FlowInstanceApi
-POST    /api/flow/instances/create/:tid  controllers.FlowInstanceApi.create(tid: String)
-PUT     /api/flow/instances/start/:fid   controllers.FlowInstanceApi.start(fid: String)
-PUT     /api/flow/instances/stop/:fid    controllers.FlowInstanceApi.stop(fid: String)
+->      /api/flow/instances                         controllers.FlowInstanceApi
+POST    /api/flow/instances/instantiate/:tid        controllers.FlowInstanceApi.instantiate(tid: String)
+POST    /api/flow/instances/create/:name            controllers.FlowInstanceApi.create(name: String)
+PUT     /api/flow/instances/start/:fid              controllers.FlowInstanceApi.start(fid: String)
+PUT     /api/flow/instances/stop/:fid               controllers.FlowInstanceApi.stop(fid: String)
 ##- Provenance Api
 ->      /api/flow/provenance             controllers.FlowProvenanceApi
 GET     /api/flow/provenance/list/:pid   controllers.FlowProvenanceApi.list(pid: String)
 ##- Processor Api
 ->      /api/flow/processor              controllers.FlowProcessorApi
+POST    /api/flow/processor/create/:fid  controllers.FlowProcessorApi.create(fid: String)
+PUT     /api/flow/processor/start/:pid   controllers.FlowProcessorApi.start(pid: String)
+PUT     /api/flow/processor/stop/:pid    controllers.FlowProcessorApi.stop(pid: String)
 GET     /api/flow/processor/list/:property/:regex    controllers.FlowProcessorApi.list(property: String, regex: String)
 
 # Map static resources from the /public folder to the /assets URL path
