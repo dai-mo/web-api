@@ -79,6 +79,7 @@ class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
       val createInstanceResponse = contentAsJson(flowInstance).as[JsObject]
 
       val flowInstanceId = (createInstanceResponse \ "id").as[String]
+      val flowInstanceVersion = (createInstanceResponse \ "version").as[Long]
 
       val psd = ProcessorServiceDefinition("org.dcs.core.service.TestProcessorService", RemoteProcessor.WorkerProcessorType, false)
 
@@ -105,7 +106,7 @@ class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
       val deleteInstance = route(app,
         withDcsCookiesHeaders(FakeRequest(DELETE, "/api/flow/instances/" + flowInstanceId))
           .withHeaders((Req.FlowClientId, clientId),
-            (Req.FlowComponentVersion, processorInstanceVersion.toString))
+            (Req.FlowComponentVersion, flowInstanceVersion.toString))
       ).get
 
       status(deleteInstance) mustBe OK
