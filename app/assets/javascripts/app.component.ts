@@ -11,7 +11,6 @@ import {ResizeDirective} from "./shared/layout/resize.directive"
 
 @Component({
     selector    : "app",
-    directives  : [WsViewComponent, ResizeDirective],
     templateUrl : "partials/layout.html"
 })
 export class App{

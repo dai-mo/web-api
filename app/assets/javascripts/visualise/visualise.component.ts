@@ -11,8 +11,7 @@ import {VisTab} from "../analyse/flow.model";
 
 @Component({
   selector: "visualise",
-  templateUrl: "partials/visualise/view.html",
-  directives: [VisTabsComponent, DROPDOWN_DIRECTIVES]
+  templateUrl: "partials/visualise/view.html"
 })
 export class VisualiseComponent {
 

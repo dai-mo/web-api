@@ -67,21 +67,52 @@ import {TreeTableModule} from "primeng/components/treetable/treetable"
 import {KeycloakService} from "./shared/keycloak.service"
 import {UIStateStore} from "./shared/ui.state.store"
 import {MapService} from "./visualise/map/map.service";
+import {ResizeDirective} from "./shared/layout/resize.directive"
+import {WsViewComponent} from "./shared/layout/ws-view.component"
+import {FlowTabsComponent} from "./analyse/flow-tabs.component"
+import {ModalComponent} from "./shared/modal.component"
+import {FlowGraphDirective} from "./analyse/flow-graph.directive"
+import {NgClass} from "@angular/common"
+import {ProcessorPanelComponent} from "./mobilise/processor-panel.component"
+import {ContentComponent} from "./mobilise/content.component"
+import {ConfigureProcessorComponent} from "./shared/configure-processor.component"
+import {VisualiseComponent} from "./visualise/visualise.component"
+import {MobiliseComponent} from "./mobilise/mobilise.component"
+import {AnalyseComponent} from "./analyse/analyse.component"
+import {MapComponent} from "./visualise/map/map.component"
+import {ChartComponent} from "./visualise/chart/chart.component"
+import {VisTabsComponent} from "./visualise/vis-tabs.component"
 
 @NgModule({
-  declarations: [App],
+  declarations: [
+    App,
+    WsViewComponent,
+    ResizeDirective,
+    FlowTabsComponent,
+    ModalComponent,
+    ProcessorPanelComponent,
+    ContentComponent,
+    ConfigureProcessorComponent,
+    VisualiseComponent,
+    MobiliseComponent,
+    AnalyseComponent,
+    MapComponent,
+    ChartComponent,
+    VisTabsComponent,
+    NgClass
+  ],
   providers:[{provide: Window, useValue: window},
     FlowService,
     UIStateStore,
     KeycloakService,
     ErrorService,
-    MapService],
+    MapService,
+    FlowGraphDirective],
   imports: [BrowserModule,
     HttpModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpModule,
     AccordionModule,
     AutoCompleteModule,
     BreadcrumbModule,

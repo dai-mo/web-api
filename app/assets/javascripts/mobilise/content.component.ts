@@ -14,7 +14,6 @@ import {UIStateStore} from "../shared/ui.state.store";
 
 @Component({
   selector: "content",
-  directives: [TOOLTIP_DIRECTIVES, ModalComponent, ProcessorPanelComponent],
   templateUrl: "partials/mobilise/content.html"
 })
 export class ContentComponent {

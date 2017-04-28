@@ -7,8 +7,7 @@ import {UIStateStore} from "../shared/ui.state.store"
 
 @Component({
     selector: "mobilise",
-    templateUrl: "partials/mobilise/view.html",
-    directives: [ContentComponent]
+    templateUrl: "partials/mobilise/view.html"
 })
 export class MobiliseComponent {
 

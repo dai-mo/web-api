@@ -1,18 +1,14 @@
 import {TAB_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap"
-import {CORE_DIRECTIVES, NgClass} from "@angular/common"
-import {Component, OnInit, Input, ChangeDetectorRef, NgZone, ChangeDetectionStrategy} from "@angular/core"
-import {FlowTab, FlowInstance} from "./flow.model"
-import {FlowGraphDirective} from "./flow-graph.directive"
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from "@angular/core"
+import {FlowInstance, FlowTab} from "./flow.model"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
-import {Observable} from "rxjs"
 
 
 @Component({
   selector: "flow-tabs",
-  directives: [FlowGraphDirective, TAB_DIRECTIVES, CORE_DIRECTIVES, NgClass],
   templateUrl: "partials/analyse/flowtabs.html",
   changeDetection: ChangeDetectionStrategy.OnPush
 })

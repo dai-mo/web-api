@@ -2,7 +2,7 @@
  * Created by cmathew on 22.11.16.
  */
 import {MapService} from "./map.service"
-import {Component, AfterViewInit, ElementRef, Renderer, Input, ViewChild, OnDestroy} from "@angular/core"
+import {Component, AfterViewInit, ElementRef, Input, ViewChild, OnDestroy, Renderer2} from "@angular/core"
 import {Map} from "leaflet"
 import {UIStateStore} from "../../shared/ui.state.store"
 import {Provenance} from "../../analyse/flow.model"
@@ -33,7 +33,7 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
 
   constructor(private mapService: MapService,
               private elementRef: ElementRef,
-              private renderer: Renderer,
+              private renderer: Renderer2,
               private uiStateStore: UIStateStore) {
     this.el = elementRef.nativeElement
   }
@@ -46,8 +46,8 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
       let elWidth = parseInt(elStyle.width)
       let elHeight = parseInt(elStyle.height)
 
-      this.renderer.setElementStyle(this.mapEl, "height", elHeight + "px")
-      this.renderer.setElementStyle(this.mapEl, "width", elWidth + "px")
+      this.renderer.setStyle(this.mapEl, "height", elHeight + "px")
+      this.renderer.setStyle(this.mapEl, "width", elWidth + "px")
       this.map.invalidateSize(true)
     }
 

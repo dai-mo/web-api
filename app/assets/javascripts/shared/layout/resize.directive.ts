@@ -1,8 +1,8 @@
 /**
  * Created by cmathew on 13/07/16.
  */
-import {Directive, ElementRef, Renderer, Input} from "@angular/core"
-import {UIStateStore} from "../ui.state.store";
+import {Directive, ElementRef, Input, Renderer2} from "@angular/core"
+import {UIStateStore} from "../ui.state.store"
 
 @Directive({
   selector: "[resize]"
@@ -38,7 +38,7 @@ export class ResizeDirective {
   private nextElmStartFlexBasis: number
 
   constructor(elementRef: ElementRef,
-              private renderer: Renderer,
+              private renderer: Renderer2,
               private uiStateStore: UIStateStore) {
     this.el = elementRef.nativeElement
   }
@@ -89,11 +89,11 @@ export class ResizeDirective {
   }
 
   private updatePanelProperties(prevHeight: number, nextHeight: number) {
-    this.renderer.setElementStyle(this.prevElmPanelBody, "height", prevHeight + "px")
-    this.renderer.setElementStyle(this.prevElmPanelBody, "min-height", prevHeight + "px")
+    this.renderer.setStyle(this.prevElmPanelBody, "height", prevHeight + "px")
+    this.renderer.setStyle(this.prevElmPanelBody, "min-height", prevHeight + "px")
 
-    this.renderer.setElementStyle(this.nextElmPanelBody, "height", nextHeight + "px")
-    this.renderer.setElementStyle(this.nextElmPanelBody, "min-height", nextHeight + "px")
+    this.renderer.setStyle(this.nextElmPanelBody, "height", nextHeight + "px")
+    this.renderer.setStyle(this.nextElmPanelBody, "min-height", nextHeight + "px")
   }
 
   private endDrag() {
@@ -117,8 +117,8 @@ export class ResizeDirective {
         break
     }
 
-    this.renderer.setElementStyle(this.prevElm, "flex-basis", prevFlexBasis + "px")
-    this.renderer.setElementStyle(this.nextElm, "flex-basis", nextFlexBasis + "px")
+    this.renderer.setStyle(this.prevElm, "flex-basis", prevFlexBasis + "px")
+    this.renderer.setStyle(this.nextElm, "flex-basis", nextFlexBasis + "px")
 
     if (this.resizeType === "column" &&
       this.nextElmPanelHeadingHeight < nextFlexBasis &&
@@ -168,11 +168,11 @@ export class ResizeDirective {
     this.initProperties()
 
     let self = this
-    this.dragFunction = this.renderer.listenGlobal("document", "mousemove", (event: MouseEvent) => {
+    this.dragFunction = this.renderer.listen("document", "mousemove", (event: MouseEvent) => {
       self.drag(event)
     })
 
-    this.endDragFunction = this.renderer.listenGlobal("document", "mouseup", (event: MouseEvent) => {
+    this.endDragFunction = this.renderer.listen("document", "mouseup", (event: MouseEvent) => {
       self.endDrag()
     })
   }

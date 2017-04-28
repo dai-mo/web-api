@@ -1,71 +1,48 @@
 
 (function(global) {
-
-    var map = {
-        'app': '/assets/javascripts',
-        '@angular':'assets/lib/@angular',
-        'rxjs':'assets/lib/rxjs',
-        'symbol-observable': 'assets/lib/rxjs/node_modules/symbol-observable',
-        'moment': 'assets/lib/moment',
-        'ng2-bootstrap': 'assets/lib/ng2-bootstrap',
-        'primeng': 'assets/lib/primeng',
-        'keycloak': 'assets/lib/keycloak-js/dist',
-        'keycloak-authz': 'assets/lib/keycloak-js/dist'
-
-    };
-
-    var packages = {
-        'app': {main: 'main.js', defaultExtension: 'js'},
-        'rxjs': {defaultExtension: 'js'},
-        'assets/lib': {defaultExtension: 'js'},
-        'symbol-observable': {defaultExtension: 'js', main: 'index.js'},
-        'moment': {defaultExtension: 'js', main: 'moment.js'},
-        'ng2-bootstrap': {defaultExtension: 'js', main: 'ng2-bootstrap.js'},
-        'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
-        'primeng': { defaultExtension: 'js' },
-        'keycloak': { defaultExtension: 'js' },
-        'keycloak-authz': { defaultExtension: 'js' }
-
-    };
-
-    var ngPackageNames = [
-        'common',
-        'compiler',
-        'core',
-        'platform-browser',
-        'platform-browser-dynamic',
-        'router',
-        'forms'
-    ];
-
-    var ngIndexPackageNames = [
-        'http'
-    ];
-
-    function packIndex(pkgName) {
-        packages['@angular/'+pkgName] = { main: 'index.js', defaultExtension: 'js' };
-    }
-    function packUmd(pkgName) {
-        packages['@angular/'+pkgName] = { main: '/bundles/' + pkgName + '.umd.js', defaultExtension: 'js' };
-    }
-    // Most environments should use UMD; some (Karma) need the individual index files
-    function addAngularModulesToMap(pkgName) {
-        map['@angular/'+pkgName] = 'assets/lib/angular__' + pkgName;
-    }
-
-    // Add package entries for angular packages
-    var setPackageConfig = System.packageWithIndex ? packIndex : packUmd;
-    ngPackageNames.forEach(setPackageConfig);
-    ngIndexPackageNames.forEach(packIndex);
-
-    // Add map entries for angular packages
-    // ngPackageNames.forEach(function(pkgName){
-    //     addAngularModulesToMap(pkgName);
-    // });
-
     System.config({
-        map : map,
-        packages: packages,
-    });
+        map: {
+            'app': '/assets/javascripts',
+            '@angular':'assets/lib/@angular',
+            // angular bundles
+            '@angular/core': 'assets/lib/@angular/core/bundles/core.umd.js',
+            '@angular/common': 'assets/lib/@angular/common/bundles/common.umd.js',
+            '@angular/compiler': 'assets/lib/@angular/compiler/bundles/compiler.umd.js',
+            '@angular/platform-browser': 'assets/lib/@angular/platform-browser/bundles/platform-browser.umd.js',
+            '@angular/platform-browser-dynamic': 'assets/lib/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.js',
+            '@angular/http': 'assets/lib/@angular/http/bundles/http.umd.js',
+            '@angular/router': 'assets/lib/@angular/router/bundles/router.umd.js',
+            '@angular/forms': 'assets/lib/@angular/forms/bundles/forms.umd.js',
 
+            // angular testing umd bundles
+            '@angular/core/testing': 'assets/lib/@angular/core/bundles/core-testing.umd.js',
+            '@angular/common/testing': 'assets/lib/@angular/common/bundles/common-testing.umd.js',
+            '@angular/compiler/testing': 'assets/lib/@angular/compiler/bundles/compiler-testing.umd.js',
+            '@angular/platform-browser/testing': 'assets/lib/@angular/platform-browser/bundles/platform-browser-testing.umd.js',
+            '@angular/platform-browser-dynamic/testing': 'assets/lib/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic-testing.umd.js',
+            '@angular/http/testing': 'assets/lib/@angular/http/bundles/http-testing.umd.js',
+            '@angular/router/testing': 'assets/lib/@angular/router/bundles/router-testing.umd.js',
+            '@angular/forms/testing': 'assets/lib/@angular/forms/bundles/forms-testing.umd.js',
+
+            'rxjs':'assets/lib/rxjs',
+            'symbol-observable': 'assets/lib/rxjs/node_modules/symbol-observable',
+            'moment': 'assets/lib/moment',
+            'primeng': 'assets/lib/primeng',
+            'keycloak': 'assets/lib/keycloak-js/dist',
+            'keycloak-authz': 'assets/lib/keycloak-js/dist'
+
+        },
+        packages: {
+            'app': {main: 'main.js',defaultExtension: 'js'},
+            'rxjs': {defaultExtension: 'js'},
+            'assets/lib': {defaultExtension: 'js'},
+            'symbol-observable': {defaultExtension: 'js', main: 'index.js'},
+            'moment': {defaultExtension: 'js', main: 'moment.js'},
+            'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
+            'primeng': { defaultExtension: 'js' },
+            'keycloak': { defaultExtension: 'js' },
+            'keycloak-authz': { defaultExtension: 'js' }
+
+        }
+    });
 })(this);

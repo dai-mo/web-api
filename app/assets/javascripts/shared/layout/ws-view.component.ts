@@ -8,7 +8,6 @@ import {AnalyseComponent} from "../../analyse/analyse.component"
 
 @Component({
     selector: "ws-view",
-    directives: [VisualiseComponent, MobiliseComponent, AnalyseComponent],
     templateUrl: "partials/wsview.html"
 })
 export class WsViewComponent {

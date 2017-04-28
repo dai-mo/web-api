@@ -2,13 +2,11 @@
  * Created by cmathew on 20/08/16.
  */
 
-import {CORE_DIRECTIVES} from "@angular/common"
-import {MODAL_DIRECTIVES, BS_VIEW_PROVIDERS, ModalDirective} from "ng2-bootstrap"
-import {Component, ViewChild, Injectable} from "@angular/core"
+import {BS_VIEW_PROVIDERS, MODAL_DIRECTIVES, ModalDirective} from "ng2-bootstrap"
+import {Component, ViewChild} from "@angular/core"
 
 @Component({
   selector: "modal",
-  directives: [MODAL_DIRECTIVES, CORE_DIRECTIVES],
   viewProviders:[BS_VIEW_PROVIDERS],
   exportAs: "dialog",
   templateUrl: "partials/modal.html"
