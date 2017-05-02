@@ -13,7 +13,6 @@ import {UIStateStore} from "../shared/ui.state.store"
 
 @Component({
   selector: "analyse",
-  providers: [FlowService, ErrorService],
   templateUrl: "partials/analyse/view.html"
 })
 export class AnalyseComponent implements OnInit {

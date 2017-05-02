@@ -82,6 +82,7 @@ import {AnalyseComponent} from "./analyse/analyse.component"
 import {MapComponent} from "./visualise/map/map.component"
 import {ChartComponent} from "./visualise/chart/chart.component"
 import {VisTabsComponent} from "./visualise/vis-tabs.component"
+import {FlowGraphService} from "./analyse/shared/flow-graph.service"
 
 @NgModule({
   declarations: [
@@ -99,6 +100,7 @@ import {VisTabsComponent} from "./visualise/vis-tabs.component"
     MapComponent,
     ChartComponent,
     VisTabsComponent,
+    FlowGraphDirective,
     NgClass
   ],
   providers:[{provide: Window, useValue: window},
@@ -107,7 +109,7 @@ import {VisTabsComponent} from "./visualise/vis-tabs.component"
     KeycloakService,
     ErrorService,
     MapService,
-    FlowGraphDirective],
+    FlowGraphService],
   imports: [BrowserModule,
     HttpModule,
     BrowserModule,

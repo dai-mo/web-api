@@ -10,8 +10,7 @@ declare let cola: any
 
 
 @Directive({
-  selector: "[flow-graph]",
-  providers: [FlowGraphService, FlowService, ErrorService]
+  selector: "[flow-graph]"
 })
 
 export class FlowGraphDirective {
