@@ -1,13 +1,11 @@
 
 import {ResponseOptions, Response, Http, BaseRequestOptions, ConnectionBackend, HttpModule} from "@angular/http"
-import {inject, fakeAsync, tick} from "@angular/core/testing"
+import {inject, fakeAsync, tick, TestBed, async} from "@angular/core/testing"
 import {MockBackend, MockConnection} from "@angular/http/testing"
 import {FlowService} from "./flow.service"
 import {FlowTemplate, FlowInstance, FlowGraph, FlowNode} from "../analyse/flow.model"
 import {ErrorService} from "./util/error.service"
-import {TestBed} from "@angular/core/testing/test_bed"
 import {platformBrowserDynamicTesting, BrowserDynamicTestingModule} from "@angular/platform-browser-dynamic/testing"
-import {async} from "@angular/core/testing/async"
 
 TestBed.initTestEnvironment(
   BrowserDynamicTestingModule,

@@ -1,10 +1,9 @@
 /**
  * Created by cmathew on 13/07/16.
  */
-import {Component, Input} from "@angular/core"
-import {MobiliseComponent} from "../../mobilise/mobilise.component"
-import {VisualiseComponent} from "../../visualise/visualise.component"
-import {AnalyseComponent} from "../../analyse/analyse.component"
+import {Component, Input, OnInit} from "@angular/core"
+import {MenuItem, OverlayPanel} from "primeng/primeng"
+import {ContextStore} from "../context.store"
 
 @Component({
     selector: "ws-view",
@@ -12,4 +11,6 @@ import {AnalyseComponent} from "../../analyse/analyse.component"
 })
 export class WsViewComponent {
     @Input()  name: String
+
+    constructor(private contextStore: ContextStore) {}
 }

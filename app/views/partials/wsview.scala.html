@@ -1,19 +1,39 @@
 @()
-<div class="card-header"
-unselectable="yes"
-onselectstart="return false"
-onmousedown="return false">
-{{name}}
-    <div class="btn-group btn-group-sm pull-right">
-        <button type="button" class="btn" ><span class="fa fa-arrows-alt"></span></button>
-    </div>
-    <div class="btn-group btn-group-sm pull-right">
-        <button type="button" class="btn" ><span class="fa fa-expand"></span></button>
-    </div>
-</div>
+@*<div class="card-header"*@
+@*unselectable="yes"*@
+@*onselectstart="return false"*@
+@*onmousedown="return false">*@
+    @*{{name}}*@
+    @*<p-slideMenu #menu [model]="items" [popup]="true"></p-slideMenu>*@
+    @*<button #btn type="button" pButton icon="fa fa-list"  (click)="menu.toggle($event)"></button>*@
 
-<div class="card-block flex-panel" [ngSwitch]="name">
-    <visualise class="flex-panel-parent" *ngSwitchCase="'visualise'"></visualise>
-    <mobilise class="flex-panel-parent" *ngSwitchCase="'mobilise'"></mobilise>
-    <analyse class="flex-panel-parent" *ngSwitchCase="'analyse'"></analyse>
-</div>
+    @*<div class="btn-group btn-group-sm pull-right">*@
+        @*<button type="button" class="btn" ><span class="fa fa-arrows-alt"></span></button>*@
+    @*</div>*@
+    @*<div class="btn-group btn-group-sm pull-right">*@
+        @*<button type="button" class="btn" ><span class="fa fa-expand"></span></button>*@
+    @*</div>*@
+@*</div>*@
+
+@*<div class="card-block flex-panel" [ngSwitch]="name">*@
+    @*<visualise class="flex-panel-parent" *ngSwitchCase="'visualise'"></visualise>*@
+    @*<mobilise class="flex-panel-parent" *ngSwitchCase="'mobilise'"></mobilise>*@
+    @*<analyse class="flex-panel-parent" *ngSwitchCase="'analyse'"></analyse>*@
+@*</div>*@
+
+<p-panel >
+    <p-header >
+        <div >
+            <span class="ui-panel-title">{{name}}</span>
+            <div class="btn-group btn-group-sm pull-right" *ngIf="contextStore.obs(name) | async as contextMenu">
+                <p-menu #menu  appendTo="body" popup="popup" [model]="contextMenu.mcItems()"></p-menu>
+                <button type="button" class="btn"  (click)="menu.toggle($event)"><span class="fa fa-bars"></span></button>
+            </div>
+        </div>
+    </p-header>
+    <div class="flex-panel" [ngSwitch]="name">
+        <visualise class="flex-panel-parent" *ngSwitchCase="'visualise'"></visualise>
+        <mobilise class="flex-panel-parent" *ngSwitchCase="'mobilise'"></mobilise>
+        <analyse  *ngSwitchCase="'analyse'"></analyse>
+    </div>
+</p-panel>

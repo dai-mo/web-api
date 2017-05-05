@@ -2,29 +2,34 @@
  * Created by cmathew on 14/07/16.
  */
 import {ChangeDetectorRef, Component, OnInit, ViewChild} from "@angular/core"
-import {DROPDOWN_DIRECTIVES} from "ng2-bootstrap"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {DCSError, FlowInstance, FlowTemplate} from "./flow.model"
-import {ModalComponent} from "../shared/modal.component"
 import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
+import {MenuItem, OverlayPanel} from "primeng/primeng"
+import {ContextMenu} from "../shared/ui.models"
+import {ContextStore} from "../shared/context.store"
+import {FlowTabsComponent} from "./flow-tabs.component"
 
 
 @Component({
   selector: "analyse",
   templateUrl: "partials/analyse/view.html"
 })
-export class AnalyseComponent implements OnInit {
-  @ViewChild("dialog") public dialog: ModalComponent
+export class AnalyseComponent  implements ContextMenu, OnInit {
+
+  private display: boolean = false
 
   public status: { isopen:boolean } = { isopen: false }
   public templates: Array<any>
+  private items: MenuItem[]
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
               private cdr:ChangeDetectorRef,
-              private uiStateStore: UIStateStore) {
+              private uiStateStore: UIStateStore,
+              private contextStore: ContextStore) {
   }
 
   getTemplates() {
@@ -42,6 +47,14 @@ export class AnalyseComponent implements OnInit {
 
   ngOnInit() {
     this.getTemplates()
+    this.items = [
+      {label: "Instantiate Flow", command: (event) => {
+        this.showDialog()
+        // this.templateSearchPanel.toggle(event, this.flowTabbedPanel)
+      }},
+      {label: "Create Flow"}
+    ]
+    this.contextStore.addContext("analyse", this)
   }
 
   public toggleDropdown(event:MouseEvent):void {
@@ -55,6 +68,11 @@ export class AnalyseComponent implements OnInit {
     event.stopPropagation()
     this.status.isopen = !this.status.isopen
     this.instantiateTemplate(flowTemplate)
+  }
+
+
+  showDialog() {
+    this.display = true
   }
 
   private instantiateTemplate(flowTemplate: FlowTemplate): void {
@@ -77,5 +95,17 @@ export class AnalyseComponent implements OnInit {
         )
     }.bind(this))
 
+  }
+
+  onTrigger(mcItem: MenuItem): void {
+    // test
+  }
+
+  mcItems(): MenuItem[] {
+    return this.items
+  }
+
+  addCMItem(mcItem: MenuItem): void {
+    this.items.push(mcItem)
   }
 }

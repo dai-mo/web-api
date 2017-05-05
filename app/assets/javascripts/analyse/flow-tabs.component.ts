@@ -1,4 +1,3 @@
-import {TAB_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap"
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit} from "@angular/core"
 import {FlowInstance, FlowTab} from "./flow.model"
 import {FlowService} from "../shared/flow.service"

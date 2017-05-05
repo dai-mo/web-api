@@ -96,7 +96,7 @@ html, body {
 }
 
 
-.fill {
+.fill  {
   width: 100%;
   height: 100%;
 }
@@ -171,7 +171,7 @@ html, body {
   height:100%;
 }
 
-.flex-panel-parent {
+.flex-panel-parent, .ui-panel, .ui-panel-content-wrapper, .ui-panel-content, .ui-tabview-panels, .ui-tabview {
   width: 100%;
   height: 100%;
   display:-webkit-flex;
@@ -191,7 +191,7 @@ html, body {
   overflow:auto;
 }
 
-.flex-panel {
+.flex-panel, .ui-panel, .ui-panel-content-wrapper, .ui-panel-content, .ui-tabview-panels, .ui-tabview  {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
@@ -365,6 +365,33 @@ html, body {
 #chart {
   width: 100%;
   height: 400px;
+}
+
+split-gutter {
+  background: white;
+}
+
+.overlay {
+  left: 0;
+  position: fixed;
+  top: 0;
+}
+
+.modal-content {
+  width:80%;
+  height:80%;
+  margin: 10% auto;
+}
+
+.entity-tab-view {
+  width: 500px;
+  height: 100%;
+  overflow-x: auto;
+}
+
+.ui-tabview {
+  width: 1000px;
+
 }
 
 

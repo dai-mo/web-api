@@ -6,6 +6,9 @@
             '@angular':'assets/lib/@angular',
             // angular bundles
             '@angular/core': 'assets/lib/@angular/core/bundles/core.umd.js',
+            '@angular/animations': 'assets/lib/@angular/animations/bundles/animations.umd.js',
+            '@angular/animations/browser': 'assets/lib/@angular/animations/bundles/animations-browser.umd.js',
+            '@angular/platform-browser/animations': 'assets/lib/@angular/platform-browser/bundles/platform-browser-animations.umd.js',
             '@angular/common': 'assets/lib/@angular/common/bundles/common.umd.js',
             '@angular/compiler': 'assets/lib/@angular/compiler/bundles/compiler.umd.js',
             '@angular/platform-browser': 'assets/lib/@angular/platform-browser/bundles/platform-browser.umd.js',
@@ -24,12 +27,15 @@
             '@angular/router/testing': 'assets/lib/@angular/router/bundles/router-testing.umd.js',
             '@angular/forms/testing': 'assets/lib/@angular/forms/bundles/forms-testing.umd.js',
 
+            // third party dependencies
             'rxjs':'assets/lib/rxjs',
             'symbol-observable': 'assets/lib/rxjs/node_modules/symbol-observable',
             'moment': 'assets/lib/moment',
             'primeng': 'assets/lib/primeng',
+            'angular-split': 'assets/lib/angular-split/dist/index.js',
             'keycloak': 'assets/lib/keycloak-js/dist',
-            'keycloak-authz': 'assets/lib/keycloak-js/dist'
+            'keycloak-authz': 'assets/lib/keycloak-js/dist',
+            'traceur' : 'assets/lib/traceur/bin/traceur.js'
 
         },
         packages: {
@@ -40,8 +46,10 @@
             'moment': {defaultExtension: 'js', main: 'moment.js'},
             'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
             'primeng': { defaultExtension: 'js' },
+            'angular-split': {defaultExtension: 'js'},
             'keycloak': { defaultExtension: 'js' },
-            'keycloak-authz': { defaultExtension: 'js' }
+            'keycloak-authz': { defaultExtension: 'js' },
+            'traceur': { defaultExtension: 'js' }
 
         }
     });

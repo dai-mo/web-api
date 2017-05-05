@@ -1,5 +1,5 @@
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic"
-import {NgModule} from "@angular/core"
+import {ModuleWithProviders, NgModule} from "@angular/core"
 import {HttpModule} from "@angular/http"
 import {App} from "./app.component"
 import {ErrorService} from "./shared/util/error.service"
@@ -32,7 +32,7 @@ import {CalendarModule} from "primeng/components/calendar/calendar"
 import {BreadcrumbModule} from "primeng/components/breadcrumb/breadcrumb"
 import {AutoCompleteModule} from "primeng/components/autocomplete/autocomplete"
 import {AccordionModule} from "primeng/components/accordion/accordion"
-import {ReactiveFormsModule, FormsModule} from "@angular/forms"
+import {FormsModule, ReactiveFormsModule} from "@angular/forms"
 import {DataListModule} from "primeng/components/datalist/datalist"
 import {DataScrollerModule} from "primeng/components/datascroller/datascroller"
 import {DialogModule} from "primeng/components/dialog/dialog"
@@ -66,13 +66,11 @@ import {TreeModule} from "primeng/components/tree/tree"
 import {TreeTableModule} from "primeng/components/treetable/treetable"
 import {KeycloakService} from "./shared/keycloak.service"
 import {UIStateStore} from "./shared/ui.state.store"
-import {MapService} from "./visualise/map/map.service";
+import {MapService} from "./visualise/map/map.service"
 import {ResizeDirective} from "./shared/layout/resize.directive"
 import {WsViewComponent} from "./shared/layout/ws-view.component"
 import {FlowTabsComponent} from "./analyse/flow-tabs.component"
-import {ModalComponent} from "./shared/modal.component"
 import {FlowGraphDirective} from "./analyse/flow-graph.directive"
-import {NgClass} from "@angular/common"
 import {ProcessorPanelComponent} from "./mobilise/processor-panel.component"
 import {ContentComponent} from "./mobilise/content.component"
 import {ConfigureProcessorComponent} from "./shared/configure-processor.component"
@@ -83,14 +81,24 @@ import {MapComponent} from "./visualise/map/map.component"
 import {ChartComponent} from "./visualise/chart/chart.component"
 import {VisTabsComponent} from "./visualise/vis-tabs.component"
 import {FlowGraphService} from "./analyse/shared/flow-graph.service"
+import {RouterModule, Routes} from "@angular/router"
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations"
+import {AngularSplitModule} from "angular-split"
+import {LayoutComponent} from "./layout.component"
+import {ContextStore} from "./shared/context.store"
+import {FlowEntityComponent} from "./shared/flow-entity.component"
+
+export const routes: Routes = [ {path: "", component: LayoutComponent}]
+
+export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
 
 @NgModule({
   declarations: [
     App,
+    LayoutComponent,
     WsViewComponent,
     ResizeDirective,
     FlowTabsComponent,
-    ModalComponent,
     ProcessorPanelComponent,
     ContentComponent,
     ConfigureProcessorComponent,
@@ -101,20 +109,24 @@ import {FlowGraphService} from "./analyse/shared/flow-graph.service"
     ChartComponent,
     VisTabsComponent,
     FlowGraphDirective,
-    NgClass
+    FlowEntityComponent
   ],
   providers:[{provide: Window, useValue: window},
     FlowService,
     UIStateStore,
+    ContextStore,
     KeycloakService,
     ErrorService,
     MapService,
     FlowGraphService],
-  imports: [BrowserModule,
+  imports: [// Angular Imports follow ...
+    BrowserAnimationsModule,
     HttpModule,
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
+    AppRoutes,
+    // PrimeNG Imports follow
     AccordionModule,
     AutoCompleteModule,
     BreadcrumbModule,
@@ -173,13 +185,17 @@ import {FlowGraphService} from "./analyse/shared/flow-graph.service"
     ToolbarModule,
     TooltipModule,
     TreeModule,
-    TreeTableModule],
+    TreeTableModule,
+    // Third Party import follow ...
+    AngularSplitModule],
   bootstrap: [App]
 
 })
 export class AppModule {
 
 }
+
+
 
 KeycloakService.init()
   .subscribe(

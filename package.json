@@ -11,6 +11,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "@angular/animations": "4.0.2",
     "@angular/common": "4.0.2",
     "@angular/compiler": "4.0.2",
     "@angular/core": "4.0.2",
@@ -20,6 +21,7 @@
     "@angular/platform-browser-dynamic": "4.0.2",
     "@angular/router": "4.0.2",
     "angular-in-memory-web-api": "^0.3.1",
+    "angular-split": "^0.2.0",
     "bootstrap": "4.0.0-alpha.2",
     "codelyzer": "0.0.19",
     "core-js": "^2.4.1",
@@ -36,6 +38,7 @@
     "rxjs": "5.0.1",
     "systemjs": "0.19.40",
     "todomvc-common": "1.0.2",
+    "traceur": "0.0.111",
     "tslint-eslint-rules": "1.2.0",
     "vis": "4.16.1",
     "zone.js": "^0.8.4"

@@ -1,14 +1,17 @@
 @()
-<div class="flex-box container-row">
-    <div class="flex-item flex-box container-column">
-        <ws-view name="visualise" class="flex-item card visualise flex-panel-parent"></ws-view>
-        <div resize [type]="'column'">
-            <div class="grabber column" ></div>
-        </div>
-        <ws-view name="mobilise" class="flex-item card mobilise flex-panel-parent"></ws-view>
-    </div>
-    <div resize [type]="'row'">
-        <div class="grabber row"></div>
-    </div>
-    <ws-view name="analyse" class="flex-item card flex-panel-parent"></ws-view>
-</div>
+<split direction="horizontal">
+    <split-area>
+        <split direction="vertical">
+            <split-area>
+                <p>Lorem ipsum dolor sit amet...</p>
+            </split-area>
+            <split-area>
+                <p>... consectetur adipiscing elit, sed do eiusmod tiam, ...</p>
+            </split-area>
+        </split>
+    </split-area>
+    <split-area>
+        <ws-view name="analyse" ></ws-view>
+    </split-area>
+</split>
+

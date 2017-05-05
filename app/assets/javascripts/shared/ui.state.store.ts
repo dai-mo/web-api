@@ -19,7 +19,7 @@ export class UIStateStore {
 
 
   private store: {
-    flowTabs : FlowTab[],
+    flowTabs: FlowTab[],
     visTabs: VisTab[]
   }
 

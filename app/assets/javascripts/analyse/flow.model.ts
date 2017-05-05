@@ -1,4 +1,3 @@
-
 /**
  * Created by cmathew on 14/07/16.
  */
@@ -196,4 +195,3 @@ export class ProcessorUIState {
     this.selectedProcessorId = selectedProcessorId
   }
 }
-

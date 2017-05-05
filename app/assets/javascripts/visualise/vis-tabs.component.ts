@@ -4,7 +4,6 @@
 
 import {Component} from "@angular/core"
 import {UIStateStore} from "../shared/ui.state.store"
-import {TAB_DIRECTIVES} from "ng2-bootstrap"
 import {Provenance} from "../analyse/flow.model"
 import {Observable} from "rxjs"
 
