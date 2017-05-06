@@ -8,7 +8,7 @@ import {DCSError, FlowInstance, FlowTemplate} from "./flow.model"
 import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
 import {MenuItem, OverlayPanel} from "primeng/primeng"
-import {ContextMenu} from "../shared/ui.models"
+import {ContextMenu, FlowEntityInfo, TemplateInfo} from "../shared/ui.models"
 import {ContextStore} from "../shared/context.store"
 import {FlowTabsComponent} from "./flow-tabs.component"
 
@@ -23,6 +23,7 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
 
   public status: { isopen:boolean } = { isopen: false }
   public templates: Array<any>
+  public templateEntityInfo: FlowEntityInfo
   private items: MenuItem[]
 
   constructor(private flowService: FlowService,
@@ -38,6 +39,7 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
       .subscribe(
         templates => {
           this.templates = templates
+          this.templateEntityInfo = new TemplateInfo(templates)
         },
         (error: any) =>  {
           this.errorService.handleError(error)
@@ -46,7 +48,7 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
   }
 
   ngOnInit() {
-    this.getTemplates()
+
     this.items = [
       {label: "Instantiate Flow", command: (event) => {
         this.showDialog()

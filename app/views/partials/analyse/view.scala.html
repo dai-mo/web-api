@@ -19,6 +19,11 @@
 <flow-tabs #flowTabbedPanel class="flex-panel" [addFlowInstance]="uiStateStore.flowInstanceToAdd | async"></flow-tabs>
 
 
-<p-dialog header="Templates"  width="800" [(visible)]="display">
-    <flow-entity></flow-entity>
+<p-dialog
+header="Templates"
+width="900"
+(onShow)="getTemplates()"
+[(visible)]="display"
+*ngIf="display">
+    <flow-entity [entityInfo]="templateEntityInfo"></flow-entity>
 </p-dialog>
