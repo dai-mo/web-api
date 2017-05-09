@@ -4,7 +4,7 @@
 
 import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core"
 import {SelectItem} from "primeng/primeng"
-import {FlowEntityInfo} from "./ui.models"
+import {FieldGroup, FlowEntityInfo} from "./ui.models"
 
 @Component({
   selector: "flow-entity",
@@ -22,12 +22,19 @@ import {FlowEntityInfo} from "./ui.models"
 export class FlowEntityComponent implements OnInit {
 
   @Input() entityInfo: FlowEntityInfo
+  @Input() finaliseLabel: string
   entities: SelectItem[]
-  selectedEntity: string
+  selectedEntityId: string
+  selectedEntityFieldGroups: FieldGroup[]
 
   ngOnInit() {
     this.entities = []
     if(this.entityInfo)
       this.entityInfo.list().forEach(fe => this.entities.push({label:fe.name, value:fe.id}))
+
+  }
+
+  select(flowEntityId: string) {
+    this.selectedEntityFieldGroups = this.entityInfo.info(this.selectedEntityId)
   }
 }

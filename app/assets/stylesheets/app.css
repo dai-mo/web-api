@@ -388,16 +388,22 @@ split-gutter {
   height: 100%;
   overflow-x: auto;
 }
-
 .entity-list-box {
   width:250px;
   height:400px;
   max-height:400px;
 }
 
-.ui-tabview {
-  width: 1000px;
+.entity-info-view {
+  height:300px;
+  overflow-y: auto
 }
+
+.ui-tabview {
+  width: 500px;
+}
+
+
 
 
 

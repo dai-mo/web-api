@@ -1,4 +1,4 @@
-import {MenuItem} from "primeng/primeng"
+import {MenuItem, SelectItem} from "primeng/primeng"
 import {FlowTemplate} from "../analyse/flow.model"
 import {defaultKeyValueDiffers} from "@angular/core/src/change_detection/change_detection"
 /**
@@ -6,10 +6,12 @@ import {defaultKeyValueDiffers} from "@angular/core/src/change_detection/change_
  */
 
 
+export interface ContextMenuItem extends MenuItem {}
+
 export interface ContextMenu {
-  mcItems(): MenuItem[]
-  onTrigger(mcItem: MenuItem): void
-  addCMItem(mcItem: MenuItem): void
+  mcItems(): ContextMenuItem[]
+  onTrigger(mcItem: ContextMenuItem): void
+  addCMItem(mcItem: ContextMenuItem): void
 }
 
 export class FlowEntity {
@@ -26,26 +28,63 @@ export class FlowEntity {
   }
 }
 
-enum FieldType {
+export enum FieldType {
   STRING,
   BOOLEAN
 }
+
+export enum FieldUIType {
+  UNKNOWN,
+  TEXT_NOT_EDITABLE,
+  TEXT_EDITABLE,
+  BOOLEAN,
+  VALUE_LIST
+}
+
 export class Field {
   label: string
   defaultValue: string | boolean
   type: FieldType
   possibleValues: string[]
   value: string | boolean
+  isEditable: boolean
+  selectItems: SelectItem[]
 
   constructor(label: string,
               defaultValue: string | boolean = "",
               type: FieldType = FieldType.STRING,
-              possibleValues: string[] = []) {
+              possibleValues: string[] = [],
+              isEditable: boolean = false) {
     this.label = label
     this.type = type
     this.defaultValue = defaultValue
     this.possibleValues = possibleValues
-    this.value = defaultValue
+    this.isEditable = isEditable
+    if(possibleValues.length > 0) {
+      this.value = possibleValues[0]
+      this.selectItems = []
+      this.possibleValues.forEach(v => this.selectItems.push({label:v, value:v}))
+    }
+    else
+      this.value = defaultValue
+  }
+
+  updateValue(value: string | boolean) {
+    this.value = value
+  }
+
+  fieldUIType(): FieldUIType {
+    if(typeof this.value === "string") {
+      if(this.possibleValues.length > 0)
+        return FieldUIType.VALUE_LIST
+      if(!this.isEditable)
+        return FieldUIType.TEXT_NOT_EDITABLE
+      return FieldUIType.TEXT_EDITABLE
+    }
+    if(typeof this.value === "boolean") {
+      return FieldUIType.BOOLEAN
+    }
+    return FieldUIType.UNKNOWN
   }
 }
 

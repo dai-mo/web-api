@@ -43,6 +43,7 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
       case ("", "modal.html") => Ok(views.html.partials.modal())
       case ("", "configureprocessor.html") => Ok(views.html.partials.configureprocessor())
       case ("", "flowentity.html") => Ok(views.html.partials.flowentity())
+      case ("", "flowentityinfo.html") => Ok(views.html.partials.flowentityinfo())
 
       case ("analyse", "view.html") => Ok(views.html.partials.analyse.view())
       case ("analyse", "flowtabs.html") => Ok(views.html.partials.analyse.flowtabs())

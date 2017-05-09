@@ -1,16 +1,15 @@
 /**
  * Created by cmathew on 14/07/16.
  */
-import {ChangeDetectorRef, Component, OnInit, ViewChild} from "@angular/core"
+import {ChangeDetectorRef, Component, OnInit} from "@angular/core"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {DCSError, FlowInstance, FlowTemplate} from "./flow.model"
 import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
-import {MenuItem, OverlayPanel} from "primeng/primeng"
-import {ContextMenu, FlowEntityInfo, TemplateInfo} from "../shared/ui.models"
+import {MenuItem} from "primeng/primeng"
+import {ContextMenu, ContextMenuItem, FlowEntityInfo, TemplateInfo} from "../shared/ui.models"
 import {ContextStore} from "../shared/context.store"
-import {FlowTabsComponent} from "./flow-tabs.component"
 
 
 @Component({
@@ -19,12 +18,12 @@ import {FlowTabsComponent} from "./flow-tabs.component"
 })
 export class AnalyseComponent  implements ContextMenu, OnInit {
 
-  private display: boolean = false
+  private templatePanelDisplay: boolean = false
 
   public status: { isopen:boolean } = { isopen: false }
   public templates: Array<any>
   public templateEntityInfo: FlowEntityInfo
-  private items: MenuItem[]
+  private items: ContextMenuItem[]
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
@@ -40,6 +39,7 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
         templates => {
           this.templates = templates
           this.templateEntityInfo = new TemplateInfo(templates)
+          this.templatePanelDisplay = true
         },
         (error: any) =>  {
           this.errorService.handleError(error)
@@ -48,15 +48,17 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
   }
 
   ngOnInit() {
-
     this.items = [
       {label: "Instantiate Flow", command: (event) => {
         this.showDialog()
-        // this.templateSearchPanel.toggle(event, this.flowTabbedPanel)
       }},
       {label: "Create Flow"}
     ]
     this.contextStore.addContext("analyse", this)
+  }
+
+  showDialog() {
+    this.getTemplates()
   }
 
   public toggleDropdown(event:MouseEvent):void {
@@ -70,11 +72,6 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
     event.stopPropagation()
     this.status.isopen = !this.status.isopen
     this.instantiateTemplate(flowTemplate)
-  }
-
-
-  showDialog() {
-    this.display = true
   }
 
   private instantiateTemplate(flowTemplate: FlowTemplate): void {
@@ -99,15 +96,15 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
 
   }
 
-  onTrigger(mcItem: MenuItem): void {
-    // test
+  onTrigger(mcItem: ContextMenuItem): void {
+    // do nothing
   }
 
-  mcItems(): MenuItem[] {
+  mcItems(): ContextMenuItem[] {
     return this.items
   }
 
-  addCMItem(mcItem: MenuItem): void {
+  addCMItem(mcItem: ContextMenuItem): void {
     this.items.push(mcItem)
   }
 }

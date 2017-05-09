@@ -1,7 +1,6 @@
 import {Injectable} from "@angular/core"
 import {BehaviorSubject, Observable} from "rxjs/Rx"
-import {ContextMenu} from "./ui.models"
-import {MenuItem} from "primeng/primeng"
+import {ContextMenu, ContextMenuItem} from "./ui.models"
 
 /**
  * Created by cmathew on 04.05.17.
@@ -33,7 +32,7 @@ export class ContextStore {
     _context.next(context)
   }
 
-  addContextMenuItem(key: String, mcItem: MenuItem) {
+  addContextMenuItem(key: String, mcItem: ContextMenuItem) {
     let _context = this.contextObsMap.get(key)
     _context.getValue().addCMItem(mcItem)
     _context.next(_context.getValue())
@@ -42,15 +41,15 @@ export class ContextStore {
 }
 
 export class EmptyContextMenu implements ContextMenu {
-  mcItems(): MenuItem[] {
+  mcItems(): ContextMenuItem[] {
     return []
   }
 
-  onTrigger(mcItem: MenuItem): void {
+  onTrigger(mcItem: ContextMenuItem): void {
     // do nothing
   }
 
-  addCMItem(mcItem: MenuItem): void {
+  addCMItem(mcItem: ContextMenuItem): void {
     // do nothing
   }
 

@@ -2,28 +2,22 @@
 
 <div class="flex-row-parent" >
     <div class="flex-panel-30">
-        <p-listbox [options]="entities" [(ngModel)]="selectedEntity"  filter="filter" [style]="{'width':'250px','height':'400px','max-height':'400px'}"></p-listbox>
+        <p-listbox
+        [options]="entities"
+        [(ngModel)]="selectedEntityId"
+        (onChange)="select($event.value)"
+        filter="filter"
+        [style]="{'width':'250px','height':'400px','max-height':'400px'}">
+        </p-listbox>
     </div>
-    <div class="flex-panel-70">
+    <div class="flex-panel-70 ">
         <div class="entity-tab-view">
-            <p-tabView class="fill">
-                <p-tabPanel  header="Description">
-                    Content 1
-                </p-tabPanel>
-                <p-tabPanel  header="Header 2">
-                    Content 2
-                </p-tabPanel>
-                <p-tabPanel  header="Header 3">
-                    Content 3
-                </p-tabPanel>
-                <p-tabPanel  header="Header 1">
-                    Content 1
-                </p-tabPanel>
-                <p-tabPanel  header="Header 2">
-                    Content 2
-                </p-tabPanel>
-                <p-tabPanel  header="Header 3">
-                    Content 3
+            <p-tabView>
+                <p-tabPanel
+                *ngFor="let fieldGroup of selectedEntityFieldGroups; let select = first"
+                [header]="fieldGroup.label"
+                [selected]="select">
+                    <flow-entity-info [entityFieldGroup]="fieldGroup"></flow-entity-info>
                 </p-tabPanel>
             </p-tabView>
         </div>
@@ -32,7 +26,7 @@
 
 <p-footer>
     <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-        <button pButton type="button" label="Add"></button>
+        <button pButton type="button" label="{{finaliseLabel}}"></button>
     </div>
 </p-footer>
 

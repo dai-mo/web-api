@@ -1,29 +1,15 @@
 @()
-@*<nav class="navbar navbar-light bg-faded main-header">*@
-@*<ul class="nav navbar-nav">*@
-@*<li class="nav-item active">*@
-@*<span dropdown>*@
-@*<a href id="simple-dropdown" dropdownToggle >flow</a>*@
-@*<ul class="dropdown-menu" dropdownMenu aria-labelledby="simple-dropdown">*@
-@*<li *ngFor="let choice of templates" (click)="selectTemplate($event, choice)">*@
-@*<a class="dropdown-item" href="#">{{choice.name}}</a>*@
-@*</li>*@
-@*</ul>*@
-@*</span>*@
-@*</li>*@
-@*</ul>*@
-@*</nav>*@
 
-@*<modal #dialog="dialog"></modal>*@
-
-<flow-tabs #flowTabbedPanel class="flex-panel" [addFlowInstance]="uiStateStore.flowInstanceToAdd | async"></flow-tabs>
-
+<flow-tabs
+class="flex-panel"
+[addFlowInstance]="uiStateStore.flowInstanceToAdd | async">
+</flow-tabs>
 
 <p-dialog
 header="Templates"
 width="900"
-(onShow)="getTemplates()"
-[(visible)]="display"
-*ngIf="display">
-    <flow-entity [entityInfo]="templateEntityInfo"></flow-entity>
+[resizable]="false"
+[(visible)]="templatePanelDisplay"
+*ngIf="templatePanelDisplay">
+    <flow-entity  [entityInfo]="templateEntityInfo" finaliseLabel="Instantiate Flow"></flow-entity>
 </p-dialog>

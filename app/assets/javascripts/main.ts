@@ -87,6 +87,7 @@ import {AngularSplitModule} from "angular-split"
 import {LayoutComponent} from "./layout.component"
 import {ContextStore} from "./shared/context.store"
 import {FlowEntityComponent} from "./shared/flow-entity.component"
+import {FlowEntityInfoComponent} from "./shared/flow-entity-info.component"
 
 export const routes: Routes = [ {path: "", component: LayoutComponent}]
 
@@ -109,7 +110,8 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
     ChartComponent,
     VisTabsComponent,
     FlowGraphDirective,
-    FlowEntityComponent
+    FlowEntityComponent,
+    FlowEntityInfoComponent
   ],
   providers:[{provide: Window, useValue: window},
     FlowService,
