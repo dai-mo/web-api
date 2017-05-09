@@ -13,18 +13,25 @@ export interface ContextMenu {
   onTrigger(mcItem: ContextMenuItem): void
   addCMItem(mcItem: ContextMenuItem): void
 }
+export enum FlowEntityStatus {
+  OK,
+  WARNING
+}
 
 export class FlowEntity {
   id: string
   name: string
   description: string
+  status: FlowEntityStatus
 
   constructor(id: string,
               name: string,
-              description: string) {
+              description: string,
+              status: FlowEntityStatus = FlowEntityStatus.OK) {
     this.id = id
     this.name = name
     this.description = description
+    this.status = status
   }
 }
 
@@ -98,6 +105,8 @@ export class FieldGroup {
     this.fields = fields
   }
 }
+
+
 
 export interface FlowEntityInfo {
   list(): FlowEntity[]

@@ -5,9 +5,15 @@
         <p-listbox
         [options]="entities"
         [(ngModel)]="selectedEntityId"
-        (onChange)="select($event.value)"
+        (onChange)="select($event.value.id)"
         filter="filter"
         [style]="{'width':'250px','height':'400px','max-height':'400px'}">
+            <ng-template let-entity pTemplate="item">
+                <div class="ui-helper-clearfix">
+                    <span>{{entity.label}}</span>
+                    <i *ngIf="entity.value.status === flowEntityStatus.WARNING" class="fa fa-exclamation-circle"></i>
+                </div>
+            </ng-template>
         </p-listbox>
     </div>
     <div class="flex-panel-70 ">

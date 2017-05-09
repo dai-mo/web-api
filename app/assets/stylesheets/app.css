@@ -367,10 +367,6 @@ html, body {
   height: 400px;
 }
 
-split-gutter {
-  color: white;
-}
-
 .overlay {
   left: 0;
   position: fixed;
@@ -403,6 +399,9 @@ split-gutter {
   width: 500px;
 }
 
+.fa-exclamation-circle {
+  color:red;
+}
 
 
 
