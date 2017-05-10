@@ -38,28 +38,29 @@
     @*</tabset>*@
 @*</div>*@
 
-@*<div class="fill">*@
-    @*<p-tabView class="flex-panel-parent">*@
-        @*<p-tabPanel class="flex-panel" *ngFor="let tabz of uiStateStore.flowTabs | async"*@
-        @*header="tabz.title"*@
-        @*[selected]="tabz.active"*@
-        @*[closeable]="tabz.removable"*@
-        @*[disabled]="tabz.disabled">*@
-            @*<div  class="flex-panel flex-panel-parent" flow-graph [showFlowInstance]="tabz.flowInstance"></div>*@
-        @*</p-tabPanel>*@
-    @*</p-tabView>*@
-@*</div>*@
-
 <div class="fill">
-    <p-tabView class="flex-panel-parent">
-        <p-tabPanel class="flex-panel" header="Header 1">
-            Content 1
-        </p-tabPanel>
-        <p-tabPanel class="flex-panel" header="Header 2">
-            Content 2
-        </p-tabPanel>
-        <p-tabPanel class="flex-panel" header="Header 3">
-            Content 3
+    <p-tabView class="flex-panel-parent" (onClose)="deleteTab($event.index)">
+        <p-tabPanel class="flex-panel" *ngFor="let tabz of uiStateStore.flowTabs | async"
+        [header]="tabz.title"
+        [selected]="tabz.active"
+        closable="true"
+        [disabled]="tabz.disabled"
+        >
+            <div  class="flex-panel flex-panel-parent" flow-graph [showFlowInstance]="tabz.flowInstance"></div>
         </p-tabPanel>
     </p-tabView>
 </div>
+
+@*<div class="fill">*@
+    @*<p-tabView class="flex-panel-parent">*@
+        @*<p-tabPanel class="flex-panel" header="Header 1">*@
+            @*Content 1*@
+        @*</p-tabPanel>*@
+        @*<p-tabPanel class="flex-panel" header="Header 2">*@
+            @*Content 2*@
+        @*</p-tabPanel>*@
+        @*<p-tabPanel class="flex-panel" header="Header 3">*@
+            @*Content 3*@
+        @*</p-tabPanel>*@
+    @*</p-tabView>*@
+@*</div>*@

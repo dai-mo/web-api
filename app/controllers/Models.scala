@@ -30,3 +30,5 @@ case class AuthPolicyPath(var name: String,
 
 case class AuthPolicyMethod(var method: String,
                             var scopes: List[String])
+
+case class ClientId(var clientId: String)

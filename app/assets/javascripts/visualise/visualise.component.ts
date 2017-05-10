@@ -1,7 +1,7 @@
 /**
  * Created by cmathew on 14/07/16.
  */
-import {ChangeDetectorRef, Component} from "@angular/core"
+import {Component} from "@angular/core"
 import {ErrorService} from "../shared/util/error.service"
 import {UIStateStore} from "../shared/ui.state.store"
 import {FlowService} from "../shared/flow.service"
@@ -17,8 +17,7 @@ export class VisualiseComponent {
 
   constructor(private flowService: FlowService,
               private uiStateStore: UIStateStore,
-              private errorService: ErrorService,
-              private cdr:ChangeDetectorRef,) {
+              private errorService: ErrorService) {
     this.visTypes.push("map")
     this.visTypes.push("chart")
   }
@@ -33,7 +32,7 @@ export class VisualiseComponent {
       this.uiStateStore.addVisTab(visTab)
       // FIXME: Not sure why the change detection in this case needs
       //        to be triggered manually
-      this.cdr.detectChanges()
+      // this.cdr.detectChanges()
     }
 
   }

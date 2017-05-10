@@ -14,7 +14,6 @@ export class FlowEntityInfoComponent implements OnInit {
   @Input() entityFieldGroup: FieldGroup
   fields: Field[]
   private fieldUIType = FieldUIType
-  selectItemsMap: Map<string, SelectItem[]> = new Map<string, SelectItem[]>()
 
   ngOnInit() {
     this.fields = this.entityFieldGroup.fields

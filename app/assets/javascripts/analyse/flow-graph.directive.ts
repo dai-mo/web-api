@@ -1,6 +1,5 @@
-
-import {ElementRef, Input, OnInit, Directive, ChangeDetectionStrategy} from "@angular/core"
-import {FlowGraph, FlowTab, FlowInstance} from "./flow.model"
+import {Directive, ElementRef, Input} from "@angular/core"
+import {FlowInstance} from "./flow.model"
 import {FlowGraphService} from "./shared/flow-graph.service"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"

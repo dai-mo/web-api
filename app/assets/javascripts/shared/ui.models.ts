@@ -1,6 +1,7 @@
 import {MenuItem, SelectItem} from "primeng/primeng"
 import {FlowTemplate} from "../analyse/flow.model"
 import {defaultKeyValueDiffers} from "@angular/core/src/change_detection/change_detection"
+import {UIStateStore} from "./ui.state.store"
 /**
  * Created by cmathew on 04.05.17.
  */
@@ -13,27 +14,7 @@ export interface ContextMenu {
   onTrigger(mcItem: ContextMenuItem): void
   addCMItem(mcItem: ContextMenuItem): void
 }
-export enum FlowEntityStatus {
-  OK,
-  WARNING
-}
 
-export class FlowEntity {
-  id: string
-  name: string
-  description: string
-  status: FlowEntityStatus
-
-  constructor(id: string,
-              name: string,
-              description: string,
-              status: FlowEntityStatus = FlowEntityStatus.OK) {
-    this.id = id
-    this.name = name
-    this.description = description
-    this.status = status
-  }
-}
 
 export enum FieldType {
   STRING,
@@ -106,15 +87,39 @@ export class FieldGroup {
   }
 }
 
+export enum FlowEntityStatus {
+  OK,
+  WARNING
+}
 
+export class FlowEntity {
+  id: string
+  name: string
+  description: string
+  status: FlowEntityStatus
+
+  constructor(id: string,
+              name: string,
+              description: string,
+              status: FlowEntityStatus = FlowEntityStatus.OK) {
+    this.id = id
+    this.name = name
+    this.description = description
+    this.status = status
+  }
+}
 
 export interface FlowEntityInfo {
+  selectedFlowEntityId: string
   list(): FlowEntity[]
   info(flowEntityId: string): FieldGroup[]
+  finalise(uiStateStore: UIStateStore): void
 }
 
 export class TemplateInfo implements FlowEntityInfo {
 
+
+  selectedFlowEntityId: string
   flowEntityInfoMap: Map<string, FieldGroup[]> = new Map<string, FieldGroup[]>()
   flowEntities: FlowEntity[] = []
 
@@ -140,4 +145,12 @@ export class TemplateInfo implements FlowEntityInfo {
     return this.flowEntityInfoMap.get(flowEntityId)
   }
 
+  finalise(uiStateStore: UIStateStore): void {
+    uiStateStore.updateFlowInstantiationId(this.selectedFlowEntityId)
+    uiStateStore.dialogDisplay(DialogType.TEMPLATE_INFO, false)
+  }
+}
+
+export enum DialogType {
+  TEMPLATE_INFO
 }

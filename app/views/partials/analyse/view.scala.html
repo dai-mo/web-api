@@ -2,14 +2,14 @@
 
 <flow-tabs
 class="flex-panel"
-[addFlowInstance]="uiStateStore.flowInstanceToAdd | async">
+[instantiateFlow]="uiStateStore.flowInstantiationIdObs | async">
 </flow-tabs>
 
 <p-dialog
 header="Templates"
 width="900"
 [resizable]="false"
-[(visible)]="templatePanelDisplay"
-*ngIf="templatePanelDisplay">
+[visible]="templateDialogObs() | async"
+*ngIf="templateDialogObs() | async">
     <flow-entity  [entityInfo]="templateEntityInfo" finaliseLabel="Instantiate Flow"></flow-entity>
 </p-dialog>

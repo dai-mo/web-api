@@ -6,6 +6,7 @@
  */
 
 import {Component} from "@angular/core"
+import {FlowService} from "./shared/flow.service"
 
 @Component({
     selector    : "app",
@@ -15,4 +16,7 @@ import {Component} from "@angular/core"
 })
 export class App {
 
+    constructor(private flowService: FlowService) {
+        this.flowService.genClientId()
+    }
 }

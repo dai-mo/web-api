@@ -87,4 +87,8 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
   override def create: EssentialAction = Action {
     NotImplemented
   }
+
+  def randomClientId: EssentialAction = Action { implicit request =>
+    UUID.randomUUID().toString.toResult
+  }
 }

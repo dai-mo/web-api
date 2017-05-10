@@ -1,15 +1,14 @@
 /**
  * Created by cmathew on 14/07/16.
  */
-import {ChangeDetectorRef, Component, OnInit} from "@angular/core"
+import {Component, OnInit} from "@angular/core"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
-import {DCSError, FlowInstance, FlowTemplate} from "./flow.model"
-import {KeycloakService} from "../shared/keycloak.service"
+import {FlowTemplate} from "./flow.model"
 import {UIStateStore} from "../shared/ui.state.store"
-import {MenuItem} from "primeng/primeng"
-import {ContextMenu, ContextMenuItem, FlowEntityInfo, TemplateInfo} from "../shared/ui.models"
+import {ContextMenu, ContextMenuItem, DialogType, FlowEntityInfo, TemplateInfo} from "../shared/ui.models"
 import {ContextStore} from "../shared/context.store"
+import {Observable} from "rxjs"
 
 
 @Component({
@@ -18,8 +17,6 @@ import {ContextStore} from "../shared/context.store"
 })
 export class AnalyseComponent  implements ContextMenu, OnInit {
 
-  private templatePanelDisplay: boolean = false
-
   public status: { isopen:boolean } = { isopen: false }
   public templates: Array<any>
   public templateEntityInfo: FlowEntityInfo
@@ -27,9 +24,12 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
-              private cdr:ChangeDetectorRef,
               private uiStateStore: UIStateStore,
               private contextStore: ContextStore) {
+  }
+
+  templateDialogObs(): Observable<boolean> {
+    return this.uiStateStore.dialogObs(DialogType.TEMPLATE_INFO)
   }
 
   getTemplates() {
@@ -39,7 +39,7 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
         templates => {
           this.templates = templates
           this.templateEntityInfo = new TemplateInfo(templates)
-          this.templatePanelDisplay = true
+          this.uiStateStore.dialogDisplay(DialogType.TEMPLATE_INFO, true)
         },
         (error: any) =>  {
           this.errorService.handleError(error)
@@ -71,30 +71,8 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
     event.preventDefault()
     event.stopPropagation()
     this.status.isopen = !this.status.isopen
-    this.instantiateTemplate(flowTemplate)
   }
 
-  private instantiateTemplate(flowTemplate: FlowTemplate): void {
-
-    KeycloakService.withTokenUpdate(function (rpt: string) {
-      this.flowService
-        .instantiateTemplate(flowTemplate.id, rpt)
-        .subscribe(
-          (flowInstance: FlowInstance) => {
-            this.uiStateStore.setFlowInstanceToAdd(flowInstance)
-            // FIXME: Not sure why the change detection in this case needs
-            //        to be triggered manually
-            this.cdr.detectChanges()
-          },
-          (error: any) => {
-            this.errorService.handleError(error)
-            let dcsError: DCSError = error.json()
-            this.dialog.show(dcsError.message, dcsError.errorMessage)
-          }
-        )
-    }.bind(this))
-
-  }
 
   onTrigger(mcItem: ContextMenuItem): void {
     // do nothing

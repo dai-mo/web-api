@@ -4,14 +4,14 @@
     <div class="flex-panel-30">
         <p-listbox
         [options]="entities"
-        [(ngModel)]="selectedEntityId"
+        [(ngModel)]="selectedEntityValue"
         (onChange)="select($event.value.id)"
         filter="filter"
         [style]="{'width':'250px','height':'400px','max-height':'400px'}">
             <ng-template let-entity pTemplate="item">
                 <div class="ui-helper-clearfix">
                     <span>{{entity.label}}</span>
-                    <i *ngIf="entity.value.status === flowEntityStatus.WARNING" class="fa fa-exclamation-circle"></i>
+                    <i *ngIf="entity.value.status === flowEntityStatus.WARNING" class="fa fa-exclamation-circle pull-right"></i>
                 </div>
             </ng-template>
         </p-listbox>
@@ -32,7 +32,11 @@
 
 <p-footer>
     <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
-        <button pButton type="button" label="{{finaliseLabel}}"></button>
+        <button pButton
+        type="button"
+        (click)="finalise()"
+        [disabled]="entityInfo.selectedFlowEntityId === undefined"
+        label="{{finaliseLabel}}"></button>
     </div>
 </p-footer>
 
