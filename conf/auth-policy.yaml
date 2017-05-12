@@ -1,6 +1,7 @@
 clients:
   - "alambeek-webapp"
   - "alambeek-api"
+# Currently the resource name regex should be unique
 paths:
   - name: "flow-instance"
     path: "/api/flow/instances/create/[^\\/]*"
@@ -9,7 +10,7 @@ paths:
       scopes:
       - "urn:alambeek:scopes:flow-instance:create"
   - name: "flow-instance\\:.*"
-    path: "/api/flow/instances/[^\\/]*"
+    path: "/api/flow/instances/[^\\/]+"
     methods:
     - method: "GET"
       scopes:
@@ -20,3 +21,9 @@ paths:
     - method: "DELETE"
       scopes:
       - "urn:alambeek:scopes:flow-instance:delete"
+  - name: "flow-instance"
+    path: "/api/flow/instances/"
+    methods:
+    - method: "GET"
+      scopes:
+      - "urn:alambeek:scopes:flow-instance:create"

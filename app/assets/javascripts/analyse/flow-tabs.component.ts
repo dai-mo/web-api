@@ -1,9 +1,11 @@
-import {ChangeDetectorRef, Component, Input, OnInit} from "@angular/core"
-import {DCSError, FlowInstance, FlowTab} from "./flow.model"
+import {Component, Input, OnInit} from "@angular/core"
+import {DCSError, FlowCreation, FlowInstance, FlowTab} from "./flow.model"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
+import {ContextStore} from "../shared/context.store"
+import {ContextMenuItem, UiId} from "../shared/ui.models"
 
 
 @Component({
@@ -13,21 +15,34 @@ import {UIStateStore} from "../shared/ui.state.store"
 export class FlowTabsComponent implements OnInit {
 
   public nifiUrl: string
+  flowCMItems: ContextMenuItem[]
+
+  emptyTab: FlowTab
+
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
-              private uiStateStore: UIStateStore) {
+              private uiStateStore: UIStateStore,
+              private contextStore: ContextStore) {
     this.nifiUrl = window.location.protocol + "//" +
       window.location.host +
       "/nifi"
 
+    this.flowCMItems =  [
+      {label: "Start Flow"},
+      {label: "Stop Flow"},
+      {label: "Delete Flow"}
+    ]
+  }
+
+  public noTabs() {
+    this.uiStateStore.getFlowTabs().length === 0
   }
 
   public setActiveTab(flowTab: FlowTab):void {
+    flowTab.active = true
     this.uiStateStore.getFlowTabs().forEach(t => {
-      if(t === flowTab)
-        t.active = true
-      else
+      if(t !== flowTab)
         t.active = false
     })
   }
@@ -44,30 +59,31 @@ export class FlowTabsComponent implements OnInit {
   }
 
   private addFlowInstance(flowInstance: FlowInstance) {
-    if(flowInstance != null) {
+    if (flowInstance) {
       let flowTabs: Array<FlowTab> = this.uiStateStore.getFlowTabs()
       let tab = new FlowTab("#" + (flowTabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
-      this.uiStateStore.addFlowTab(tab)
       this.setActiveTab(tab)
+      this.uiStateStore.addFlowTab(tab)
     }
   }
 
+
   @Input()
-  set instantiateFlow(flowInstantiationId: string) {
-    if(flowInstantiationId !== undefined) {
-      if(flowInstantiationId === ""){
+  set instantiateFlow(flowCreation: FlowCreation) {
+    if(flowCreation.instantiationId) {
+      if(flowCreation.instantiationId === ""){
         // do nothing
       }
       else {
-        this.instantiateTemplate(flowInstantiationId)
+        this.instantiateTemplate(flowCreation)
       }
     }
   }
 
-  private instantiateTemplate(flowTemplateId: string): void {
+  private instantiateTemplate(flowCreation: FlowCreation): void {
     KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
-        .instantiateTemplate(flowTemplateId, rpt)
+        .instantiateTemplate(flowCreation.instantiationId, rpt)
         .subscribe(
           (flowInstance: FlowInstance) => {
             this.addFlowInstance(flowInstance)
@@ -82,12 +98,11 @@ export class FlowTabsComponent implements OnInit {
 
   }
 
-
   public deleteTab(flowTabIndex: number) {
     let flowTab: FlowTab = this.uiStateStore.getFlowTabs()[flowTabIndex]
     KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
-        .destroyInstance(flowTab.id, rpt)
+        .destroyInstance(flowTab.id, rpt, flowTab.flowInstance.version)
         .subscribe(
           (deleteOK: boolean) => {
             if (!deleteOK)
@@ -158,7 +173,11 @@ export class FlowTabsComponent implements OnInit {
 
             if (flowTabs.length > 0) {
               flowTabs[0].active = true
+              this.emptyTab = undefined
+            } else {
+              this.emptyTab = new FlowTab("...")
             }
+
             this.uiStateStore.addFlowTabs(flowTabs)
           },
           (error: any) => this.errorService.handleError(error)

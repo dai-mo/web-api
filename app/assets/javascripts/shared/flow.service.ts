@@ -18,6 +18,7 @@ export class FlowService {
 
   private clientIdUrl = "api/cid"
   private templatesUrl = "api/flow/templates"
+  private instantiateFlowBaseUrl: string = "api/flow/instances/instantiate/"
   private createInstanceBaseUrl: string = "api/flow/instances/create/"
   private instancesBaseUrl: string = "api/flow/instances/"
   private instancesStartUrl = this.instancesBaseUrl + "start/"
@@ -28,15 +29,16 @@ export class FlowService {
   constructor(private http: Http,
               private errorService: ErrorService) {}
 
-  updateHeaders(options: RequestOptions, rpt: string): RequestOptions  {
+  updateHeaders(options: RequestOptions, rpt: string, version: string = ""): RequestOptions  {
     if(options.headers == null)
       options.headers = new Headers()
     options.headers.append("Authorization", "Bearer " + rpt)
     if(this.flowClientId)
       options.headers.append("flow-client-id", this.flowClientId)
+    if(version !== "")
+      options.headers.append("flow-component-version", version)
     return options
   }
-
 
   genClientId(): void {
     this.http.get(this.clientIdUrl)
@@ -51,7 +53,7 @@ export class FlowService {
   }
 
   instantiateTemplate(templateId: string, rpt: string): Observable<FlowInstance> {
-    return this.http.post(this.createInstanceBaseUrl + templateId,
+    return this.http.post(this.instantiateFlowBaseUrl + templateId,
       {},
       this.updateHeaders(new RequestOptions(), rpt)).map(response => response.json())
   }
@@ -72,9 +74,9 @@ export class FlowService {
     return this.http.put(this.instancesStopUrl + flowInstanceId, {}).map(response => response.json())
   }
 
-  destroyInstance(flowInstanceId: string, rpt: string): Observable<boolean> {
+  destroyInstance(flowInstanceId: string, rpt: string, version: string): Observable<boolean> {
     return this.http.delete(this.instancesBaseUrl + flowInstanceId,
-      this.updateHeaders(new RequestOptions(), rpt)).map(response => response.json())
+      this.updateHeaders(new RequestOptions(), rpt, version)).map(response => response.json())
   }
 
   provenance(processorId: string): Observable<Array<Provenance>> {

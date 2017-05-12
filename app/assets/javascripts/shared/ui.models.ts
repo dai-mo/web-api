@@ -6,15 +6,19 @@ import {UIStateStore} from "./ui.state.store"
  * Created by cmathew on 04.05.17.
  */
 
+export class UiId {
+  static ANALYSE: string = "analyse"
+  static MOBILISE: string = "mobilise"
+  static VISUALISE: string = "visualise"
+}
 
 export interface ContextMenuItem extends MenuItem {}
 
-export interface ContextMenu {
-  mcItems(): ContextMenuItem[]
-  onTrigger(mcItem: ContextMenuItem): void
-  addCMItem(mcItem: ContextMenuItem): void
+export class ContextBarItem {
+  iconClass: string = ""
+  enabled: boolean = false
+  command: (event: any) => void
 }
-
 
 export enum FieldType {
   STRING,
@@ -147,7 +151,7 @@ export class TemplateInfo implements FlowEntityInfo {
 
   finalise(uiStateStore: UIStateStore): void {
     uiStateStore.updateFlowInstantiationId(this.selectedFlowEntityId)
-    uiStateStore.dialogDisplay(DialogType.TEMPLATE_INFO, false)
+    uiStateStore.isTemplateInfoDialogVisible = false
   }
 }
 

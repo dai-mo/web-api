@@ -1,66 +1,36 @@
 @()
-@*<div class="fill">*@
-    @*<tabset class="flex-panel-parent">*@
-        @*<tab  class="flex-panel-parent" *ngFor="let tabz of uiStateStore.flowTabs | async"*@
-        @*[heading]="tabz.title"*@
-        @*[active]="tabz.active"*@
-        @*(select)="tabz.active = true"*@
-        @*(deselect)="tabz.active = false"*@
-        @*[disabled]="tabz.disabled"*@
-        @*[removable]="tabz.removable"*@
-        @*(removed)="removeTabHandler(tabz)">*@
-            @*<nav class="navbar">*@
-                @*<button*@
-                @*class="btn btn-secondary"*@
-                @*[ngClass]="{green: tabz.isRunning(), red: tabz.isStopped(), black: tabz.isNotStarted()}"*@
-                @*(click)="toggleTabLabel(tabz)">{{tabLabel(tabz)}}*@
-                @*</button>*@
-                @*<div class="pull-xs-right">*@
-                    @*<a class="btn btn-secondary" href="{{nifiUrl}}" target="_NiFi Flow">*@
-                        @*<img src="assets/images/bgNifiLogo.png" alt="nifi" height="24" width="20">*@
-                    @*</a>*@
-                    @*<button class="btn btn-secondary" (click)="refreshFlow(tabz)">*@
-                        @*<i class="fa fa-refresh" aria-hidden="true"></i>*@
-                    @*</button>*@
-                    @*<button class="btn btn-secondary" (click)="startFlow(tabz)" [disabled]="tabz.isRunning()">*@
-                        @*<i class="fa fa-play" aria-hidden="true"></i>*@
-                    @*</button>*@
-                    @*<button class="btn btn-secondary" (click)="stopFlow(tabz)" [disabled]="tabz.isStopped() || tabz.isNotStarted()">*@
-                        @*<i class="fa fa-stop" aria-hidden="true"></i>*@
-                    @*</button>*@
-                    @*<button class="btn btn-secondary" (click)="deleteTab(tabz)" [disabled]="tabz.isRunning()">*@
-                        @*<i class="fa fa-trash" aria-hidden="true"></i>*@
-                    @*</button>*@
-                @*</div>*@
-            @*</nav>*@
-            @*<div  class="flex-panel flex-panel-parent" flow-graph [showFlowInstance]="tabz.flowInstance"></div>*@
-        @*</tab>*@
-    @*</tabset>*@
-@*</div>*@
 
 <div class="fill">
-    <p-tabView class="flex-panel-parent" (onClose)="deleteTab($event.index)">
-        <p-tabPanel class="flex-panel" *ngFor="let tabz of uiStateStore.flowTabs | async"
+    <p-tabView class="fill" (onClose)="deleteTab($event.index)">
+        @*Workaround for https://github.com/primefaces/primeng/issues/2000*@
+        <p-tabPanel class="fill" *ngIf="uiStateStore.hasNoTabs"
+        header="..."
+        selected="true">
+            Instantiate flow from template or create a new flow
+        </p-tabPanel>
+        <p-tabPanel class="fill" *ngFor="let tabz of uiStateStore.flowTabs | async"
         [header]="tabz.title"
         [selected]="tabz.active"
         closable="true"
-        [disabled]="tabz.disabled"
-        >
-            <div  class="flex-panel flex-panel-parent" flow-graph [showFlowInstance]="tabz.flowInstance"></div>
+        [disabled]="tabz.disabled">
+            <div class="pull-xs-right">
+                <a class="btn btn-secondary" href="{{nifiUrl}}" target="_NiFi Flow">
+                    <img src="assets/images/bgNifiLogo.png" alt="nifi" height="24" width="20">
+                </a>
+                <button class="btn btn-secondary" (click)="refreshFlow(tabz)">
+                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-secondary" (click)="startFlow(tabz)" [disabled]="tabz.isRunning()">
+                    <i class="fa fa-play" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-secondary" (click)="stopFlow(tabz)" [disabled]="tabz.isStopped() || tabz.isNotStarted()">
+                    <i class="fa fa-stop" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-secondary" (click)="deleteTab(tabz)" [disabled]="tabz.isRunning()">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div  class="flex-panel flex-panel-parent" flow-graph [showFlowInstance]="tabz.flowInstance">Content</div>
         </p-tabPanel>
     </p-tabView>
 </div>
-
-@*<div class="fill">*@
-    @*<p-tabView class="flex-panel-parent">*@
-        @*<p-tabPanel class="flex-panel" header="Header 1">*@
-            @*Content 1*@
-        @*</p-tabPanel>*@
-        @*<p-tabPanel class="flex-panel" header="Header 2">*@
-            @*Content 2*@
-        @*</p-tabPanel>*@
-        @*<p-tabPanel class="flex-panel" header="Header 3">*@
-            @*Content 3*@
-        @*</p-tabPanel>*@
-    @*</p-tabView>*@
-@*</div>*@

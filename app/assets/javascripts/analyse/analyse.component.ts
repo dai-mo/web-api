@@ -6,7 +6,7 @@ import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {FlowTemplate} from "./flow.model"
 import {UIStateStore} from "../shared/ui.state.store"
-import {ContextMenu, ContextMenuItem, DialogType, FlowEntityInfo, TemplateInfo} from "../shared/ui.models"
+import {ContextMenu, ContextMenuItem, DialogType, FlowEntityInfo, TemplateInfo, UiId} from "../shared/ui.models"
 import {ContextStore} from "../shared/context.store"
 import {Observable} from "rxjs"
 
@@ -15,21 +15,16 @@ import {Observable} from "rxjs"
   selector: "analyse",
   templateUrl: "partials/analyse/view.html"
 })
-export class AnalyseComponent  implements ContextMenu, OnInit {
+export class AnalyseComponent  implements OnInit {
 
   public status: { isopen:boolean } = { isopen: false }
   public templates: Array<any>
   public templateEntityInfo: FlowEntityInfo
-  private items: ContextMenuItem[]
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
               private uiStateStore: UIStateStore,
               private contextStore: ContextStore) {
-  }
-
-  templateDialogObs(): Observable<boolean> {
-    return this.uiStateStore.dialogObs(DialogType.TEMPLATE_INFO)
   }
 
   getTemplates() {
@@ -39,7 +34,7 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
         templates => {
           this.templates = templates
           this.templateEntityInfo = new TemplateInfo(templates)
-          this.uiStateStore.dialogDisplay(DialogType.TEMPLATE_INFO, true)
+          this.uiStateStore.isTemplateInfoDialogVisible = true
         },
         (error: any) =>  {
           this.errorService.handleError(error)
@@ -48,13 +43,13 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
   }
 
   ngOnInit() {
-    this.items = [
+    let items: ContextMenuItem[] = [
       {label: "Instantiate Flow", command: (event) => {
         this.showDialog()
       }},
       {label: "Create Flow"}
     ]
-    this.contextStore.addContext("analyse", this)
+    this.contextStore.addContextMenu(UiId.ANALYSE, items)
   }
 
   showDialog() {
@@ -73,16 +68,4 @@ export class AnalyseComponent  implements ContextMenu, OnInit {
     this.status.isopen = !this.status.isopen
   }
 
-
-  onTrigger(mcItem: ContextMenuItem): void {
-    // do nothing
-  }
-
-  mcItems(): ContextMenuItem[] {
-    return this.items
-  }
-
-  addCMItem(mcItem: ContextMenuItem): void {
-    this.items.push(mcItem)
-  }
 }

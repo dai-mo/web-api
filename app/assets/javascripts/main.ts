@@ -1,5 +1,5 @@
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic"
-import {ChangeDetectorRef, ModuleWithProviders, NgModule} from "@angular/core"
+import {ModuleWithProviders, NgModule} from "@angular/core"
 import {HttpModule} from "@angular/http"
 import {App} from "./app.component"
 import {ErrorService} from "./shared/util/error.service"

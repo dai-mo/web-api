@@ -18,11 +18,12 @@ export class FlowGraphDirective {
 
   @Input()
   set showFlowInstance(flowInstance: FlowInstance) {
-    if (flowInstance != null) {
+    if (flowInstance) {
       this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(flowInstance), flowInstance.id)
-    } else {
-      this.errorService.handleError("No Flow Instance to display")
     }
+    // } else {
+    //   this.errorService.handleError("No Flow Instance to display")
+    // }
   }
 
   constructor(el:ElementRef,

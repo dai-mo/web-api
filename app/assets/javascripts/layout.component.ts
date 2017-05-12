@@ -2,6 +2,7 @@
  * Created by cmathew on 03.05.17.
  */
 import {Component} from "@angular/core"
+import {UiId} from "./shared/ui.models"
 
 @Component({
   selector    : "app",
@@ -9,4 +10,5 @@ import {Component} from "@angular/core"
 })
 export class LayoutComponent {
 
+  uiId = UiId
 }

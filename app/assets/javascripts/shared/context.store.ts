@@ -1,6 +1,6 @@
-import {Injectable} from "@angular/core"
+import {Injectable, NgZone} from "@angular/core"
 import {BehaviorSubject, Observable} from "rxjs/Rx"
-import {ContextMenu, ContextMenuItem} from "./ui.models"
+import {ContextBarItem, ContextMenuItem} from "./ui.models"
 
 /**
  * Created by cmathew on 04.05.17.
@@ -9,48 +9,53 @@ import {ContextMenu, ContextMenuItem} from "./ui.models"
 @Injectable()
 export class ContextStore {
 
-  private contextObsMap: Map<String, BehaviorSubject<ContextMenu>> = new Map<String, BehaviorSubject<ContextMenu>>()
+  private contextMenuItemsObsMap: Map<string, BehaviorSubject<ContextMenuItem[]>> =
+    new Map<string, BehaviorSubject<ContextMenuItem[]>>()
 
+  private contextBarItemsObsMap: Map<string, BehaviorSubject<ContextBarItem[]>> =
+    new Map<string, BehaviorSubject<ContextBarItem[]>>()
 
-  obs(key: string): Observable<ContextMenu> {
-    if(!this.contextObsMap.has(key)) {
-      this.addContext(key, new EmptyContextMenu())
+  constructor(private ngZone: NgZone) {}
+
+  obs(key: string, obsMap: Map<string, BehaviorSubject<any[]>>): Observable<ContextMenuItem[]> {
+    if(!obsMap.has(key)) {
+      this.addContextMenu(key, [])
     }
-    return this.contextObsMap.get(key).asObservable()
+    return obsMap.get(key).asObservable()
   }
 
-  addContext(key: String, context: ContextMenu) {
-    let _context: BehaviorSubject<ContextMenu>
+  contextMenuObs(key: string): Observable<ContextMenuItem[]> {
+    return this.obs(key, this.contextMenuItemsObsMap)
+  }
 
-    if(this.contextObsMap.has(key)) {
-     _context = this.contextObsMap.get(key)
+  addContextMenu(key: string, cmItems: ContextMenuItem[]) {
+    let _context: BehaviorSubject<ContextMenuItem[]>
+
+    if(this.contextMenuItemsObsMap.has(key)) {
+      _context = this.contextMenuItemsObsMap.get(key)
     } else {
-      _context = new BehaviorSubject(context)
-      this.contextObsMap.set(key, _context)
+      _context = new BehaviorSubject(cmItems)
+      this.contextMenuItemsObsMap.set(key, _context)
     }
 
-    _context.next(context)
+    this.ngZone.run(() => _context.next(cmItems))
   }
 
-  addContextMenuItem(key: String, mcItem: ContextMenuItem) {
-    let _context = this.contextObsMap.get(key)
-    _context.getValue().addCMItem(mcItem)
-    _context.next(_context.getValue())
+  addContextMenuItems(key: string, mcItems: ContextMenuItem[]) {
+    let _context = this.contextMenuItemsObsMap.get(key)
+    let currentCMItems = _context.getValue()
+    mcItems.forEach(mci => currentCMItems.push(mci))
+    this.ngZone.run(() => _context.next(_context.getValue()))
   }
 
-}
-
-export class EmptyContextMenu implements ContextMenu {
-  mcItems(): ContextMenuItem[] {
-    return []
-  }
-
-  onTrigger(mcItem: ContextMenuItem): void {
-    // do nothing
-  }
-
-  addCMItem(mcItem: ContextMenuItem): void {
-    // do nothing
+  removeContextMenuItems(key: string, mcItems: ContextMenuItem[]) {
+    let _context = this.contextMenuItemsObsMap.get(key)
+    let currentCMItems = _context.getValue()
+    mcItems.forEach(mci => {
+      let index = currentCMItems.indexOf(mci)
+      currentCMItems.splice(index, 1)
+    })
+    this.ngZone.run(() => _context.next(_context.getValue()))
   }
 
 }

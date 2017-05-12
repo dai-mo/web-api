@@ -1,23 +1,9 @@
 import {Injectable, NgZone} from "@angular/core"
 import {BehaviorSubject, Observable} from "rxjs/Rx"
-import {FlowInstance, FlowTab, Provenance, VisTab} from "../analyse/flow.model"
+import {FlowInstance, FlowCreation, FlowTab, Provenance, VisTab} from "../analyse/flow.model"
 
 @Injectable()
 export class UIStateStore {
-
-  private _resizeView: BehaviorSubject<MouseEvent> = new BehaviorSubject(null)
-
-  private _selectedProcessorId: BehaviorSubject<string> = new BehaviorSubject(null)
-
-  private _flowInstanceToAdd: BehaviorSubject<FlowInstance> = new BehaviorSubject(null)
-  private _flowTabs:BehaviorSubject<FlowTab[]> = new BehaviorSubject([])
-
-  private _provenances: BehaviorSubject<Provenance[]> = new BehaviorSubject([])
-  private _provenancesUpdated: BehaviorSubject<boolean> = new BehaviorSubject(false)
-
-  private _selectedVisType: BehaviorSubject<string> = new BehaviorSubject(null)
-
-  private _flowInstantiationId: BehaviorSubject<string> = new BehaviorSubject("")
 
   private store: {
     flowTabs: FlowTab[],
@@ -31,11 +17,15 @@ export class UIStateStore {
     }
   }
 
+  private _resizeView: BehaviorSubject<MouseEvent> = new BehaviorSubject(null)
+
   resizeView: Observable<MouseEvent> = this._resizeView.asObservable()
 
   setResizeView(event: MouseEvent) {
     this._resizeView.next(event)
   }
+
+  private _selectedProcessorId: BehaviorSubject<string> = new BehaviorSubject(null)
 
   selectedProcessorId: Observable<string> = this._selectedProcessorId.asObservable()
 
@@ -43,26 +33,39 @@ export class UIStateStore {
     this._selectedProcessorId.next(processorId)
   }
 
+  private _flowInstanceToAdd: BehaviorSubject<FlowInstance> = new BehaviorSubject(null)
+
   flowInstanceToAdd: Observable<FlowInstance> = this._flowInstanceToAdd.asObservable()
 
   setFlowInstanceToAdd(flowInstance: FlowInstance) {
     this._flowInstanceToAdd.next(flowInstance)
   }
 
+  private _flowTabs:BehaviorSubject<FlowTab[]> = new BehaviorSubject([])
+  hasNoTabs: boolean = true
   flowTabs: Observable<FlowTab[]> = this._flowTabs.asObservable()
 
   getFlowTabs(): Array<FlowTab> {
     return this._flowTabs.getValue()
   }
 
+  private updateHasNoTabs() {
+    if(this.store.flowTabs.length > 0)
+      this.hasNoTabs = false
+    else
+      this.hasNoTabs = true
+  }
+
   addFlowTab(flowTab: FlowTab) {
     this.store.flowTabs.push(flowTab)
+    this.updateHasNoTabs()
     this.ngZone.run(() => this._flowTabs.next(this.store.flowTabs))
   }
 
   removeFlowTab(flowTab: FlowTab) {
     this.store.flowTabs.filter((t: FlowTab) => t.id === flowTab.id)
       .forEach((t: FlowTab) => this.store.flowTabs.splice(this.store.flowTabs.indexOf(flowTab), 1))
+    this.updateHasNoTabs()
     this.ngZone.run(() => this._flowTabs.next(this.store.flowTabs))
   }
 
@@ -72,8 +75,13 @@ export class UIStateStore {
 
   addFlowTabs(flowTabs: FlowTab[]) {
     this.store.flowTabs = flowTabs
+    this.updateHasNoTabs()
     this.ngZone.run(() => this._flowTabs.next(this.store.flowTabs))
   }
+
+  private _provenances: BehaviorSubject<Provenance[]> = new BehaviorSubject([])
+
+  private _provenancesUpdated: BehaviorSubject<boolean> = new BehaviorSubject(false)
 
   provenancesUpdated: Observable<boolean> = this._provenancesUpdated.asObservable()
 
@@ -87,15 +95,17 @@ export class UIStateStore {
 
   setProvenances(provenances: Provenance[]) {
 
-    this._provenances.next(provenances)
+    this.ngZone.run(() => this._provenances.next(provenances))
     let p = this.hasProvenances()
-    this._provenancesUpdated.next(p)
+    this.ngZone.run(() => this._provenancesUpdated.next(p))
   }
+
+  private _selectedVisType: BehaviorSubject<string> = new BehaviorSubject(null)
 
   selectedVisType: Observable<string> = this._selectedVisType.asObservable()
 
   setSelectedVisType(visType: string) {
-    this._selectedVisType.next(visType)
+    this.ngZone.run(() => this._selectedVisType.next(visType))
   }
 
   addVisTab(visTab: VisTab) {
@@ -107,33 +117,14 @@ export class UIStateStore {
       .forEach((t: VisTab) => this.store.visTabs.splice(this.store.visTabs.indexOf(visTab), 1))
   }
 
-  flowInstantiationIdObs: Observable<string> = this._flowInstantiationId.asObservable()
-
+  private _flowInstantiation: BehaviorSubject<FlowCreation> = new BehaviorSubject({instantiationId: undefined})
+  flowInstantiationObs: Observable<FlowCreation> = this._flowInstantiation.asObservable()
   updateFlowInstantiationId(flowInstantiationId: string) {
-    this._flowInstantiationId.next(flowInstantiationId)
+    this.ngZone.run(() => this._flowInstantiation.next({instantiationId: flowInstantiationId}))
   }
 
-  private dialogDisplayMap: Map<number, BehaviorSubject<boolean>> = new Map<number, BehaviorSubject<boolean>>()
-
-
-  dialogObs(key: number): Observable<boolean> {
-    if(!this.dialogDisplayMap.has(key)) {
-      this.dialogDisplay(key, false)
-    }
-    return this.dialogDisplayMap.get(key).asObservable()
-  }
-
-  dialogDisplay(key: number, display: boolean) {
-    let _dialogDisplay: BehaviorSubject<boolean>
-
-    if(this.dialogDisplayMap.has(key)) {
-      _dialogDisplay = this.dialogDisplayMap.get(key)
-    } else {
-      _dialogDisplay = new BehaviorSubject(false)
-      this.dialogDisplayMap.set(key, _dialogDisplay)
-    }
-
-    _dialogDisplay.next(display)
-  }
+  // ---- Dialog Flags Start ----
+  public isTemplateInfoDialogVisible: boolean = false
+  // ---- Dialog Flags End   ----
 
 }

@@ -125,9 +125,9 @@ export class FlowTab {
 
 
   constructor(title: string,
-              id: string,
-              name: string,
-              flowInstance: FlowInstance,
+              id: string = undefined,
+              name: string = "",
+              flowInstance: FlowInstance = undefined,
               labelToggle: boolean = false,
               active: boolean = false,
               disabled: boolean = false,
@@ -194,4 +194,8 @@ export class ProcessorUIState {
   constructor(selectedProcessorId: string = null) {
     this.selectedProcessorId = selectedProcessorId
   }
+}
+
+export class FlowCreation {
+  instantiationId: string
 }
