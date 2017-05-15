@@ -6,9 +6,8 @@ import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {FlowTemplate} from "./flow.model"
 import {UIStateStore} from "../shared/ui.state.store"
-import {ContextMenu, ContextMenuItem, DialogType, FlowEntityInfo, TemplateInfo, UiId} from "../shared/ui.models"
+import {ContextBarItem, ContextMenuItem, FlowEntityInfo, TemplateInfo, UiId} from "../shared/ui.models"
 import {ContextStore} from "../shared/context.store"
-import {Observable} from "rxjs"
 
 
 @Component({
@@ -43,13 +42,13 @@ export class AnalyseComponent  implements OnInit {
   }
 
   ngOnInit() {
-    let items: ContextMenuItem[] = [
+    let cmItems: ContextMenuItem[] = [
       {label: "Instantiate Flow", command: (event) => {
         this.showDialog()
       }},
       {label: "Create Flow"}
     ]
-    this.contextStore.addContextMenu(UiId.ANALYSE, items)
+    this.contextStore.addContextMenu(UiId.ANALYSE, cmItems)
   }
 
   showDialog() {

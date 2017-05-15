@@ -1,36 +1,23 @@
 @()
 
 <div class="fill">
-    <p-tabView class="fill" (onClose)="deleteTab($event.index)">
+    <p-tabView class="fill" (onChange)="selectActiveTab($event.index)">
         @*Workaround for https://github.com/primefaces/primeng/issues/2000*@
         <p-tabPanel class="fill" *ngIf="uiStateStore.hasNoTabs"
         header="..."
         selected="true">
             Instantiate flow from template or create a new flow
         </p-tabPanel>
-        <p-tabPanel class="fill" *ngFor="let tabz of uiStateStore.flowTabs | async"
+
+        <p-tabPanel class="fill"  *ngFor="let tabz of uiStateStore.flowTabs | async"
         [header]="tabz.title"
         [selected]="tabz.active"
-        closable="true"
         [disabled]="tabz.disabled">
-            <div class="pull-xs-right">
-                <a class="btn btn-secondary" href="{{nifiUrl}}" target="_NiFi Flow">
-                    <img src="assets/images/bgNifiLogo.png" alt="nifi" height="24" width="20">
-                </a>
-                <button class="btn btn-secondary" (click)="refreshFlow(tabz)">
-                    <i class="fa fa-refresh" aria-hidden="true"></i>
-                </button>
-                <button class="btn btn-secondary" (click)="startFlow(tabz)" [disabled]="tabz.isRunning()">
-                    <i class="fa fa-play" aria-hidden="true"></i>
-                </button>
-                <button class="btn btn-secondary" (click)="stopFlow(tabz)" [disabled]="tabz.isStopped() || tabz.isNotStarted()">
-                    <i class="fa fa-stop" aria-hidden="true"></i>
-                </button>
-                <button class="btn btn-secondary" (click)="deleteTab(tabz)" [disabled]="tabz.isRunning()">
-                    <i class="fa fa-trash" aria-hidden="true"></i>
-                </button>
-            </div>
-            <div  class="flex-panel flex-panel-parent" flow-graph [showFlowInstance]="tabz.flowInstance">Content</div>
+            <div pTooltip="{{tabz.id}}"
+            tooltipPosition="top"
+            class="pull-left"
+            [ngClass]="{green: tabz.isRunning(), red: tabz.isStopped(), black: tabz.isNotStarted()}">{{tabz.name}}</div>
+            <div class="flex-panel fill"  flow-graph [showFlowInstance]="tabz.flowInstance">Content</div>
         </p-tabPanel>
     </p-tabView>
 </div>

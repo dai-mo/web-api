@@ -5,7 +5,7 @@ import {ErrorService} from "../shared/util/error.service"
 import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
 import {ContextStore} from "../shared/context.store"
-import {ContextMenuItem, UiId} from "../shared/ui.models"
+import {ContextBarItem, ContextMenuItem, UiId} from "../shared/ui.models"
 
 
 @Component({
@@ -19,6 +19,8 @@ export class FlowTabsComponent implements OnInit {
 
   emptyTab: FlowTab
 
+  private stopFlowBarItem: ContextBarItem
+  private startFlowBarItem: ContextBarItem
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
@@ -35,8 +37,14 @@ export class FlowTabsComponent implements OnInit {
     ]
   }
 
-  public noTabs() {
-    this.uiStateStore.getFlowTabs().length === 0
+  public activeTab(): FlowTab {
+    return this.uiStateStore.getFlowTabs().find(ft => ft.active)
+  }
+
+
+  public selectActiveTab(index: number): void {
+    let at = this.uiStateStore.getFlowTabs()[index]
+    if(at) this.setActiveTab(at)
   }
 
   public setActiveTab(flowTab: FlowTab):void {
@@ -45,6 +53,12 @@ export class FlowTabsComponent implements OnInit {
       if(t !== flowTab)
         t.active = false
     })
+    this.updateContextBarItems(flowTab)
+  }
+
+  updateContextBarItems(flowTab: FlowTab) {
+    this.stopFlowBarItem.enabled = flowTab.isRunning()
+    this.startFlowBarItem.enabled = !flowTab.isRunning()
   }
 
   public toggleTabLabel(flowTab: FlowTab) {
@@ -98,8 +112,7 @@ export class FlowTabsComponent implements OnInit {
 
   }
 
-  public deleteTab(flowTabIndex: number) {
-    let flowTab: FlowTab = this.uiStateStore.getFlowTabs()[flowTabIndex]
+  public deleteTab(flowTab: FlowTab) {
     KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
         .destroyInstance(flowTab.id, rpt, flowTab.flowInstance.version)
@@ -108,6 +121,13 @@ export class FlowTabsComponent implements OnInit {
             if (!deleteOK)
               alert("Flow Instance could not be deleted")
             else {
+              let flowTabs = this.uiStateStore.getFlowTabs()
+              let flowTabIndex = flowTabs.indexOf(flowTab)
+              if(flowTabs.length > 1)
+                if(flowTabIndex === 0 )
+                  this.selectActiveTab(1)
+                else
+                  this.selectActiveTab(flowTabIndex - 1)
               this.uiStateStore.removeFlowTab(flowTab)
             }
           },
@@ -117,46 +137,55 @@ export class FlowTabsComponent implements OnInit {
   }
 
   public startFlow(flowTab: FlowTab) {
-    this.flowService
-      .startInstance(flowTab.id)
-      .subscribe(
-        startOK => {
-          if(startOK) {
-            flowTab.flowInstance.state = FlowInstance.stateRunning
-            this.uiStateStore.updateFlowTabs()
-          } else
-            alert("Flow Instance failed to start")
-        },
-        (error: any) => this.errorService.handleError(error)
-      )
+    if(flowTab) {
+      this.flowService
+        .startInstance(flowTab.id)
+        .subscribe(
+          startOK => {
+            if (startOK) {
+              flowTab.flowInstance.state = FlowInstance.stateRunning
+              this.uiStateStore.updateFlowTabs()
+              this.updateContextBarItems(flowTab)
+            } else
+              alert("Flow Instance failed to start")
+          },
+          (error: any) => this.errorService.handleError(error)
+        )
+    }
   }
 
   public refreshFlow(flowTab: FlowTab) {
-    this.flowService
-      .instance(flowTab.id)
-      .subscribe(
-        (flowInstance: FlowInstance) => {
-          let flowTabs: Array<FlowTab> = this.uiStateStore.getFlowTabs()
-          flowTabs.filter(t => t.id === flowTab.id).forEach(t => t.flowInstance = flowInstance)
-          this.uiStateStore.updateFlowTabs()
-        },
-        (error: any) => this.errorService.handleError(error)
-      )
+    if(flowTab) {
+      this.flowService
+        .instance(flowTab.id)
+        .subscribe(
+          (flowInstance: FlowInstance) => {
+            let flowTabs: Array<FlowTab> = this.uiStateStore.getFlowTabs()
+            flowTabs.filter(t => t.id === flowTab.id).forEach(t => t.flowInstance = flowInstance)
+            this.uiStateStore.updateFlowTabs()
+            this.updateContextBarItems(flowTab)
+          },
+          (error: any) => this.errorService.handleError(error)
+        )
+    }
   }
 
   public stopFlow(flowTab: FlowTab) {
-    this.flowService
-      .stopInstance(flowTab.id)
-      .subscribe(
-        stopOK => {
-          if(stopOK) {
-            flowTab.flowInstance.state = FlowInstance.stateStopped
-            this.uiStateStore.updateFlowTabs()
-          } else
-            alert("Flow Instance failed to stop")
-        },
-        (error: any) => this.errorService.handleError(error)
-      )
+    if(flowTab) {
+      this.flowService
+        .stopInstance(flowTab.id)
+        .subscribe(
+          stopOK => {
+            if (stopOK) {
+              flowTab.flowInstance.state = FlowInstance.stateStopped
+              this.uiStateStore.updateFlowTabs()
+              this.updateContextBarItems(flowTab)
+            } else
+              alert("Flow Instance failed to stop")
+          },
+          (error: any) => this.errorService.handleError(error)
+        )
+    }
   }
 
   ngOnInit() {
@@ -179,9 +208,29 @@ export class FlowTabsComponent implements OnInit {
             }
 
             this.uiStateStore.addFlowTabs(flowTabs)
+            this.selectActiveTab(flowTabs.length - 1)
           },
           (error: any) => this.errorService.handleError(error)
         )
     }.bind(this))
+
+    this.stopFlowBarItem =  {iconClass: "fa-stop", enabled: false, command: (event) => {
+      this.stopFlow(this.activeTab())
+    }}
+    this.startFlowBarItem = {iconClass: "fa-play", enabled: true, command: (event) => {
+      this.startFlow(this.activeTab())
+    }}
+
+    let cbItems: ContextBarItem[] = [
+      {iconClass: "fa-trash", enabled: true, command: (event) => {
+        this.deleteTab(this.activeTab())
+      }},
+      this.stopFlowBarItem,
+      this.startFlowBarItem,
+      {iconClass: "fa-refresh", enabled: true, command: (event) => {
+        this.refreshFlow(this.activeTab())
+      }}
+    ]
+    this.contextStore.addContextBar(UiId.ANALYSE, cbItems)
   }
 }

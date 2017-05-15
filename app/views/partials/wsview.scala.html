@@ -3,9 +3,24 @@
     <p-header >
         <div >
             <span class="ui-panel-title">{{name}}</span>
-            <div class="btn-group btn-group-sm pull-right" *ngIf="contextStore.contextMenuObs(name) | async as items">
+            <div *ngIf="contextStore.contextMenuObs(name) | async as items"
+            class="btn-group btn-group-sm pull-right">
                 <p-menu #menu  appendTo="body" popup="popup" [model]="items"></p-menu>
-                <button type="button" class="btn"  (click)="menu.toggle($event)"><span class="fa fa-bars"></span></button>
+                <button
+                type="button"
+                class="btn"
+                (click)="menu.toggle($event)">
+                    <span class="fa fa-bars"></span>
+                </button>
+            </div>
+            <div *ngFor="let cbItem of contextStore.contextBarObs(name) | async"
+            class="btn-group btn-group-sm pull-right">
+                <button *ngIf="!uiStateStore.hasNoTabs"
+                class="btn btn-secondary"
+                (click)="cbItem.command($event)"
+                [disabled]="!cbItem.enabled">
+                    <i class="fa {{cbItem.iconClass}}" aria-hidden="true" ></i>
+                </button>
             </div>
         </div>
     </p-header>
