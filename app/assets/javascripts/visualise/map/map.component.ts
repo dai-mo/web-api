@@ -2,17 +2,22 @@
  * Created by cmathew on 22.11.16.
  */
 import {MapService} from "./map.service"
-import {Component, AfterViewInit, ElementRef, Input, ViewChild, OnDestroy, Renderer2} from "@angular/core"
+import {
+  Component, AfterViewInit, ElementRef, Input, ViewChild, OnDestroy, Renderer2, NgZone,
+  OnChanges, ChangeDetectionStrategy, ChangeDetectorRef
+} from "@angular/core"
 import {Map} from "leaflet"
 import {UIStateStore} from "../../shared/ui.state.store"
-import {Provenance} from "../../analyse/flow.model"
+import {Provenance, VisTab} from "../../analyse/flow.model"
 import LatLng = L.LatLng
 import Marker = L.Marker
+import {Observable} from "rxjs/Rx"
 
 
 @Component({
   selector: "map",
-  templateUrl: "partials/visualise/map.html"
+  templateUrl: "partials/visualise/map.html",
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MapComponent implements AfterViewInit,  OnDestroy {
 
@@ -22,7 +27,7 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
   private mapEl:HTMLElement
 
 
-  public map: Map = null
+  public map: Map
   private markers: Array<Marker> = []
   private isMapInitialised: boolean = false
 
@@ -31,31 +36,34 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
   private markerIconUrl: string = this.baseUrl + "assets/lib/leaflet/dist/images/marker-icon.png"
   private markerShadowUrl: string = this.baseUrl + "assets/lib/leaflet/dist/images/marker-shadow.png"
 
+  @Input() visTab: VisTab
+
   constructor(private mapService: MapService,
               private elementRef: ElementRef,
               private renderer: Renderer2,
-              private uiStateStore: UIStateStore) {
+              private uiStateStore: UIStateStore,
+              private cdr: ChangeDetectorRef,
+              private ngZone: NgZone) {
     this.el = elementRef.nativeElement
   }
 
 
-  @Input()
-  set resize(event: MouseEvent) {
-    if(event != null && this.el && this.mapEl) {
-      let elStyle = window.getComputedStyle(this.el, null)
-      let elWidth = parseInt(elStyle.width)
-      let elHeight = parseInt(elStyle.height)
-
-      this.renderer.setStyle(this.mapEl, "height", elHeight + "px")
-      this.renderer.setStyle(this.mapEl, "width", elWidth + "px")
-      this.map.invalidateSize(true)
-    }
-
-  }
+  // resize(event: MouseEvent) {
+  //   if(event != null && this.el && this.mapEl) {
+  //     let elStyle = window.getComputedStyle(this.el, null)
+  //     let elWidth = parseInt(elStyle.width)
+  //     let elHeight = parseInt(elStyle.height)
+  //
+  //     this.renderer.setStyle(this.mapEl, "height", elHeight + "px")
+  //     this.renderer.setStyle(this.mapEl, "width", elWidth + "px")
+  //     this.map.invalidateSize(true)
+  //   }
+  //
+  // }
 
   @Input()
   set reload(provenances: Provenance[]) {
-    if(provenances != null && this.isMapInitialised) {
+    if(this.isMapInitialised) {
       this.removeMarkers()
       this.loadMarkers()
     }
@@ -67,32 +75,71 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
   }
 
   ngAfterViewInit() {
+    if (!this.isMapInitialised) {
+      this.map = this.ngZone.runOutsideAngular(() => L.map(this.mapElementRef.nativeElement, {
+        zoomControl: false,
+        center: L.latLng(22.966484, 14.062500),
+        zoom: 3,
+        minZoom: 3,
+        maxZoom: 18,
+        layers: [this.mapService.baseMaps.OpenStreetMap]
+      }))
 
-    this.map = L.map("map", {
-      zoomControl: false,
-      center: L.latLng(22.966484, 14.062500),
-      zoom: 3,
-      minZoom: 3,
-      maxZoom: 32,
-      layers: [this.mapService.baseMaps.OpenStreetMap]
-    })
-    L.control.zoom({position: "topright"}).addTo(this.map)
-    L.control.layers(this.mapService.baseMaps).addTo(this.map)
-    L.control.scale().addTo(this.map)
 
-    this.mapEl = this.mapElementRef.nativeElement
-    this.map.invalidateSize(true)
-    this.loadMarkers()
-    this.isMapInitialised = true
+      L.control.zoom({position: "topright"}).addTo(this.map)
+      L.control.layers(this.mapService.baseMaps).addTo(this.map)
+      L.control.scale().addTo(this.map)
+
+      // this.map.on("load", function(){
+      //   console.log("map loaded")
+      //   this.invalidateSize(false)
+      //
+      // }.bind(this.map))
+      //
+      // this.map.setView([22.966484, 14.062500], 3, {
+      //   animate: false
+      // })
+
+      // this.ngZone.runOutsideAngular(() => {
+      //   Observable.fromEvent(this.map, "drag").subscribe(e => {
+      //     console.log("Yayyyyy! No change detection for drag!")
+      //   })
+      //   Observable.fromEvent(this.map, "dragstart").subscribe(e => {
+      //     console.log("Yayyyyy! No change detection for drag start!")
+      //   })
+      //   Observable.fromEvent(this.map, "dragend").subscribe(e => {
+      //     console.log("Yayyyyy! No change detection for drag end!")
+      //   })
+      //   Observable.fromEvent(this.map, "down").subscribe(e => {
+      //     console.log("Yayyyyy! No change detection for drag down!")
+      //   })
+      //   Observable.fromEvent(this.map, "mouseover").subscribe(e => {
+      //     console.log("Yayyyyy! No change detection for mouseover!")
+      //   })
+      //   Observable.fromEvent(this.map, "mousemove").subscribe(e => {
+      //     console.log("Yayyyyy! No change detection for mousemove!")
+      //   })
+      //   Observable.fromEvent(this.map, "move").subscribe(e => {
+      //     console.log("Yayyyyy! No change detection for move!")
+      //   })
+      // })
+      // this.map.on("mouseover", function(e){
+      //   console.log("mouseover")
+      // })
+
+      this.loadMarkers()
+      this.isMapInitialised = true
+    }
   }
 
+
   loadMarkers() {
-    if(this.uiStateStore.hasProvenances) {
+    if (this.uiStateStore.hasProvenances) {
       this.uiStateStore
         .getProvenances()
         .forEach(prov => {
           let content = JSON.parse(prov.content)
-          if(content.decimalLatitude && content.decimalLongitude)
+          if (content.decimalLatitude && content.decimalLongitude)
             this.addMarker(content)
         })
     }

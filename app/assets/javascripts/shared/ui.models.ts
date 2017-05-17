@@ -10,6 +10,8 @@ export class UiId {
   static ANALYSE: string = "analyse"
   static MOBILISE: string = "mobilise"
   static VISUALISE: string = "visualise"
+  static VIS_MAP: string = "map"
+  static VIS_CHART: string = "chart"
 }
 
 export interface ContextMenuItem extends MenuItem {}

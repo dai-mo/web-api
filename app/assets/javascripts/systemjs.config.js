@@ -33,6 +33,7 @@
             'moment': 'assets/lib/moment',
             'primeng': 'assets/lib/primeng',
             'angular-split': 'assets/lib/angular-split/dist/index.js',
+            'leaflet': 'assets/lib/leaflet/dist',
             'keycloak': 'assets/lib/keycloak-js/dist',
             'keycloak-authz': 'assets/lib/keycloak-js/dist',
             'traceur' : 'assets/lib/traceur/bin/traceur.js'
@@ -47,6 +48,7 @@
             'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
             'primeng': { defaultExtension: 'js' },
             'angular-split': {defaultExtension: 'js'},
+            'leaflet': {main: 'leaflet.js',defaultExtension: 'js'},
             'keycloak': { defaultExtension: 'js' },
             'keycloak-authz': { defaultExtension: 'js' },
             'traceur': { defaultExtension: 'js' }

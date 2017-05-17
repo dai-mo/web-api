@@ -2,24 +2,29 @@
  * Created by cmathew on 25.11.16.
  */
 
-import {Component, OnInit, Input, OnDestroy, AfterViewInit} from "@angular/core"
-import {Provenance} from "../../analyse/flow.model";
-import {UIStateStore} from "../../shared/ui.state.store";
+import {
+  Component, OnInit, Input, OnDestroy, AfterViewInit, AfterViewChecked, ViewChild,
+  ElementRef
+} from "@angular/core"
+import {Provenance} from "../../analyse/flow.model"
+import {UIStateStore} from "../../shared/ui.state.store"
 
-declare var Plotly: any;
+declare var Plotly: any
 
 @Component({
   selector: "chart",
   templateUrl: "partials/visualise/chart.html"
 })
 
-export class ChartComponent implements AfterViewInit,  OnDestroy {
+export class ChartComponent implements AfterViewInit,  OnDestroy{
+  @ViewChild("chart") chartElementRef: ElementRef
+
 
   private data: any
   private xData: Array<any> = []
   private yData: Array<any> = []
-  private layout: any;
-  private options: any;
+  private layout: any
+  private options: any
 
   private isChartInitialised: boolean = false
 
@@ -34,19 +39,20 @@ export class ChartComponent implements AfterViewInit,  OnDestroy {
     if(provenances != null && this.isChartInitialised) {
       this.reloadData()
       this.data = [{x : this.xData, y : this.yData, type : "bar"}]
-      Plotly.newPlot('chart', this.data, this.layout, this.options)
-      Plotly.redraw('chart');
+      Plotly.newPlot(this.chartElementRef.nativeElement, this.data, this.layout, this.options)
+      Plotly.redraw(this.chartElementRef.nativeElement)
     }
   }
 
-  ngOnDestroy() {
 
+  ngOnDestroy() {
+    Plotly.purge(this.chartElementRef.nativeElement)
   }
 
   ngAfterViewInit() {
     this.reloadData()
     this.data = [{x : this.xData, y : this.yData, type : "bar"}]
-    Plotly.newPlot('chart', this.data, this.layout, this.options)
+    Plotly.newPlot(this.chartElementRef.nativeElement, this.data, this.layout, this.options)
     this.isChartInitialised = true
   }
 
@@ -68,7 +74,6 @@ export class ChartComponent implements AfterViewInit,  OnDestroy {
             xyData.set(x, 1)
         })
       xyData.forEach(this.mapToData.bind(this))
-      //this.data = [{x : this.xData, y : this.yData, type : "bar"}]
     }
   }
 

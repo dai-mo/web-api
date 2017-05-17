@@ -191,6 +191,10 @@ html, body {
   overflow:auto;
 }
 
+.overflowx {
+  overflow-x:auto;
+}
+
 .flex-panel, .ui-panel, .ui-panel-content-wrapper, .ui-panel-content {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
@@ -362,8 +366,13 @@ html, body {
   position: relative;
 }
 
+#map {
+  width: 2000px;
+  height: 800px;
+}
+
 #chart {
-  width: 100%;
+  width: 800px;
   height: 400px;
 }
 
@@ -400,7 +409,9 @@ html, body {
   color:red;
 }
 
-
+div.ui-datatable-scrollable-body {
+  overflow-y: scroll;
+}
 
 
 

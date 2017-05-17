@@ -1,41 +1,57 @@
 /**
  * Created by cmathew on 14/07/16.
  */
-import {Component} from "@angular/core"
+import {Component, OnInit} from "@angular/core"
 import {ErrorService} from "../shared/util/error.service"
 import {UIStateStore} from "../shared/ui.state.store"
 import {FlowService} from "../shared/flow.service"
 import {VisTab} from "../analyse/flow.model"
+import {ContextMenuItem, UiId} from "../shared/ui.models"
+import {ContextStore} from "../shared/context.store"
 
 @Component({
   selector: "visualise",
   templateUrl: "partials/visualise/view.html"
 })
-export class VisualiseComponent {
-
-  private visTypes: Array<string> = []
-
-  constructor(private flowService: FlowService,
-              private uiStateStore: UIStateStore,
+export class VisualiseComponent implements OnInit {
+  constructor(private uiStateStore: UIStateStore,
+              private contextStore: ContextStore,
               private errorService: ErrorService) {
-    this.visTypes.push("map")
-    this.visTypes.push("chart")
+
   }
 
-  public selectVisType(event: MouseEvent, visType: string): void {
-    event.preventDefault()
-    event.stopPropagation()
+  ngOnInit(): void {
+    let cmItems: ContextMenuItem[] = [
+      {label: "Map", command: (event) => {
+        if(this.checkSelectedVisType(UiId.VIS_MAP))
+          this.selectVisType(UiId.VIS_MAP)
+      }},
+      {label: "Chart", command: (event) => {
+        if(this.checkSelectedVisType(UiId.VIS_CHART))
+          this.selectVisType(UiId.VIS_CHART)
+      }}
+    ]
+    this.contextStore.addContextMenu(UiId.VISUALISE, cmItems)
+  }
 
-    if(visType != null) {
-      let visTab: VisTab = new VisTab(visType)
-      visTab.active = true
-      this.uiStateStore.addVisTab(visTab)
-      // FIXME: Not sure why the change detection in this case needs
-      //        to be triggered manually
-      // this.cdr.detectChanges()
+  private checkSelectedVisType(visType: string): boolean {
+    if(this.uiStateStore.getSelectedProcessorId() == null) {
+      console.log("No processor selected")
+      return false
     }
 
+    if(this.uiStateStore.getVisTabs().find(vt => vt.visType === visType)) {
+      console.log("The type " + visType + "is already selected")
+      return false
+    }
+    return true
   }
 
-
+  public selectVisType(visType: string): void {
+    if(visType) {
+      let visTab: VisTab = new VisTab(visType)
+      this.uiStateStore.addVisTab(visTab)
+      this.uiStateStore.setActiveVisTab(visTab)
+    }
+  }
 }
