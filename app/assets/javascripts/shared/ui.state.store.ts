@@ -1,7 +1,7 @@
 import {Injectable, NgZone} from "@angular/core"
 import {BehaviorSubject, Observable} from "rxjs/Rx"
 import {FlowInstance, FlowCreation, FlowTab, Provenance, VisTab} from "../analyse/flow.model"
-import {UiId} from "./ui.models"
+import {UiId, ViewsVisible} from "./ui.models"
 
 @Injectable()
 export class UIStateStore {
@@ -18,11 +18,54 @@ export class UIStateStore {
     }
   }
 
+  private _viewsVisible: BehaviorSubject<ViewsVisible> = new BehaviorSubject(new ViewsVisible())
+
+  viewsVisible: Observable<ViewsVisible> = this._viewsVisible.asObservable()
+
+  setViewsVisible(viewsVisible: ViewsVisible) {
+    this.ngZone.run(() => this._viewsVisible.next(viewsVisible))
+  }
+
+  makeViewVisible(view: string) {
+    let vv = this._viewsVisible.getValue()
+    switch(view) {
+      case UiId.ANALYSE:
+        vv.analyse = true
+        break
+      case UiId.MOBILISE:
+        vv.mobilise = true
+        break
+      case UiId.VISUALISE:
+        vv.visualise = true
+        break
+    }
+    this.setViewsVisible(vv)
+  }
+
+  maximiseView(view: string) {
+    let vv = new ViewsVisible()
+    switch(view) {
+      case UiId.ANALYSE:
+        vv.mobilise = false
+        vv.visualise = false
+        break
+      case UiId.MOBILISE:
+        vv.analyse = false
+        vv.visualise = false
+        break
+      case UiId.VISUALISE:
+        vv.analyse = false
+        vv.mobilise = false
+        break
+    }
+    this.setViewsVisible(vv)
+  }
+
   private _resizeView: BehaviorSubject<MouseEvent> = new BehaviorSubject(null)
 
   resizeView: Observable<MouseEvent> = this._resizeView.asObservable()
 
-  setResizeView(event: MouseEvent) {
+  setResizeView(event: any) {
     this.ngZone.run(() => this._resizeView.next(event))
   }
 
@@ -47,7 +90,6 @@ export class UIStateStore {
   }
 
   private _flowTabs:BehaviorSubject<FlowTab[]> = new BehaviorSubject([])
-  hasNoTabs: boolean = true
   flowTabs: Observable<FlowTab[]> = this._flowTabs.asObservable()
 
   getFlowTabs(): Array<FlowTab> {

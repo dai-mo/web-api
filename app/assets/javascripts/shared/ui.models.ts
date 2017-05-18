@@ -1,6 +1,5 @@
 import {MenuItem, SelectItem} from "primeng/primeng"
 import {FlowTemplate} from "../analyse/flow.model"
-import {defaultKeyValueDiffers} from "@angular/core/src/change_detection/change_detection"
 import {UIStateStore} from "./ui.state.store"
 /**
  * Created by cmathew on 04.05.17.
@@ -159,4 +158,30 @@ export class TemplateInfo implements FlowEntityInfo {
 
 export enum DialogType {
   TEMPLATE_INFO
+}
+
+export class ViewsVisible {
+  analyse: boolean
+  mobilise: boolean
+  visualise: boolean
+
+  constructor(analyse: boolean = true,
+              mobilise: boolean = true,
+              visualise: boolean = true) {
+    this.analyse = analyse
+    this.mobilise = mobilise
+    this.visualise = visualise
+  }
+
+  noViewsVisible(): number {
+    if((this.analyse && !this.mobilise && !this.visualise) ||
+      (!this.analyse && this.mobilise && !this.visualise) ||
+      (!this.analyse && !this.mobilise && this.visualise))
+      return 1
+    if((!this.analyse && this.mobilise && this.visualise) ||
+      (this.analyse && !this.mobilise && this.visualise) ||
+      (this.analyse && this.mobilise && !this.visualise))
+      return 2
+    return 3
+  }
 }

@@ -7,11 +7,12 @@
                 <p-column field="label" header="action"></p-column>
             </p-dataTable>
         </div>
-         @*Workaround for bugs,*@
+         @*FIXME: Workaround for bugs,*@
          @*- https://github.com/primefaces/primeng/issues/487*@
          @*- https://github.com/primefaces/primeng/issues/2137*@
-        <div class="overflowx padding" [ngClass]="{'flex-panel-70': hasActions(), 'flex-panel': !hasActions()}">
-            <p-dataTable   [value]="results" scrollable="true" scrollHeight="100%" scrollWidth="150%">
+         @*The fixed scrollHeight is also required for the workaround*@
+        <div class="padding" [ngClass]="{'flex-panel-70': hasActions(), 'flex-panel': !hasActions()}">
+            <p-dataTable   [value]="results" scrollable="true" scrollHeight="600px" >
                 <p-column styleClass="info-column" [style]="{'width':'30px'}">
                     <ng-template let-result="rowData" pTemplate="body">
                         <i class="fa fa-info-circle"

@@ -17,10 +17,10 @@ export class FlowEntityInfoComponent implements OnInit {
 
   ngOnInit() {
     this.fields = this.entityFieldGroup.fields
-    this.fields.push(new Field("label", "This is a verrrrrry verrrry verrrry verrrry verrrry loonnnnnng description"))
-    this.fields.push(new Field("check", false, FieldType.BOOLEAN))
-    this.fields.push(new Field("property", "value", FieldType.STRING,[], true))
-    this.fields.push(new Field("list", "", FieldType.STRING,["value1", "value2", "value3"]))
+    // this.fields.push(new Field("label", "This is a verrrrrry verrrry verrrry verrrry verrrry loonnnnnng description"))
+    // this.fields.push(new Field("check", false, FieldType.BOOLEAN))
+    // this.fields.push(new Field("property", "value", FieldType.STRING,[], true))
+    // this.fields.push(new Field("list", "", FieldType.STRING,["value1", "value2", "value3"]))
   }
 
 

@@ -8,15 +8,16 @@
             Choose a visualisation for selected processor.
         </p-tabPanel>
         @*FIXME: Using ngSwitch for map results incorrect
-                rendering of the map, so we render it separately*@
+        rendering of the map, so we render it separately*@
         <p-tabPanel class="fill"
-        *ngIf="this.uiStateStore.mapVisTab | async as tabz"
+        *ngIf="uiStateStore.mapVisTab | async as tabz"
         [header]="tabz.visType"
         [selected]="tabz.active">
             <div class="flex-panel flex-panel-parent">
                 <map
                 class="flex-panel overflow"
-                [reload]= "uiStateStore.provenances | async">
+                [resize]="uiStateStore.resizeView | async"
+                [reload]="uiStateStore.provenances | async">
                 </map>
             </div>
         </p-tabPanel>

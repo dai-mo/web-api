@@ -36,7 +36,6 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
   private markerIconUrl: string = this.baseUrl + "assets/lib/leaflet/dist/images/marker-icon.png"
   private markerShadowUrl: string = this.baseUrl + "assets/lib/leaflet/dist/images/marker-shadow.png"
 
-  @Input() visTab: VisTab
 
   constructor(private mapService: MapService,
               private elementRef: ElementRef,
@@ -47,19 +46,13 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
     this.el = elementRef.nativeElement
   }
 
+  @Input()
+  set resize(event: any) {
+    if(event != null && this.map) {
+      this.map.invalidateSize(true)
+    }
 
-  // resize(event: MouseEvent) {
-  //   if(event != null && this.el && this.mapEl) {
-  //     let elStyle = window.getComputedStyle(this.el, null)
-  //     let elWidth = parseInt(elStyle.width)
-  //     let elHeight = parseInt(elStyle.height)
-  //
-  //     this.renderer.setStyle(this.mapEl, "height", elHeight + "px")
-  //     this.renderer.setStyle(this.mapEl, "width", elWidth + "px")
-  //     this.map.invalidateSize(true)
-  //   }
-  //
-  // }
+  }
 
   @Input()
   set reload(provenances: Provenance[]) {
