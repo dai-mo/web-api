@@ -7,10 +7,18 @@ module.exports = function(config) {
 
         files: [
             // paths loaded by Karma
+            'node_modules/systemjs/dist/system.src.js',
             
             {pattern: 'node_modules/core-js/client/shim.min.js', included: true, watched: false},
-            {pattern: 'node_modules/zone.js/dist/zone.js', included: true, watched: false},
-            {pattern: 'node_modules/zone.js/dist/async-test.js', included: true, watched: false},
+
+            'node_modules/zone.js/dist/zone.js',
+            'node_modules/zone.js/dist/long-stack-trace-zone.js',
+            'node_modules/zone.js/dist/proxy.js',
+            'node_modules/zone.js/dist/sync-test.js',
+            'node_modules/zone.js/dist/jasmine-patch.js',
+            'node_modules/zone.js/dist/async-test.js',
+            'node_modules/zone.js/dist/fake-async-test.js',
+
             {pattern: 'node_modules/reflect-metadata/Reflect.js', included: true, watched: false},
             {pattern: 'node_modules/systemjs/dist/system.src.js', included: true, watched: false},
             {pattern: 'app/assets/javascripts/systemjs.config.js', included: true, watched: true},
@@ -39,8 +47,8 @@ module.exports = function(config) {
         port: 9876,
 
 
-        //logLevel: config.LOG_INFO,
-        logLevel: config.LOG_ERROR,
+        logLevel: config.LOG_DEBUG,
+        //logLevel: config.LOG_ERROR,
         client: {
             captureConsole: true
         },
@@ -48,9 +56,24 @@ module.exports = function(config) {
 
         autoWatch: true,
 
-        //browsers: ['Chrome'],
+        browsers: ['Chrome'],
 
-        browsers: ['PhantomJS'],
+        // browsers: ['PhantomJS', 'PhantomJS_custom'],
+        //
+        // // you can define custom flags
+        // customLaunchers: {
+        //     'PhantomJS_custom': {
+        //         base: 'PhantomJS',
+        //         options: {
+        //             windowName: 'TestWindow',
+        //             settings: {
+        //                 webSecurityEnabled: false
+        //             },
+        //         },
+        //         flags: ['--load-images=true'],
+        //         debug: true
+        //     }
+        // },
 
 
         phantomjsLauncher: {

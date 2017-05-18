@@ -1,7 +1,7 @@
 /**
  * Created by cmathew on 20/07/16.
  */
-import { FlowTemplate } from "./flow.model"
+import {FlowTemplate} from "./flow.model"
 
 describe("FlowTemplate", () => {
     it("has id", () => {
@@ -12,6 +12,7 @@ describe("FlowTemplate", () => {
             uri: "uri",
             date: "timestamp"
         }
+        expect(ft.id).toEqual("12")
         expect(ft.id).toEqual("12")
     })
 })

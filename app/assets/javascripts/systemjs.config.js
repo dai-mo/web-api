@@ -18,14 +18,14 @@
             '@angular/forms': 'assets/lib/@angular/forms/bundles/forms.umd.js',
 
             // angular testing umd bundles
-            '@angular/core/testing': 'assets/lib/@angular/core/bundles/core-testing.umd.js',
-            '@angular/common/testing': 'assets/lib/@angular/common/bundles/common-testing.umd.js',
-            '@angular/compiler/testing': 'assets/lib/@angular/compiler/bundles/compiler-testing.umd.js',
-            '@angular/platform-browser/testing': 'assets/lib/@angular/platform-browser/bundles/platform-browser-testing.umd.js',
-            '@angular/platform-browser-dynamic/testing': 'assets/lib/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic-testing.umd.js',
-            '@angular/http/testing': 'assets/lib/@angular/http/bundles/http-testing.umd.js',
-            '@angular/router/testing': 'assets/lib/@angular/router/bundles/router-testing.umd.js',
-            '@angular/forms/testing': 'assets/lib/@angular/forms/bundles/forms-testing.umd.js',
+            // '@angular/core/testing': 'assets/lib/@angular/core/bundles/core-testing.umd.js',
+            // '@angular/common/testing': 'assets/lib/@angular/common/bundles/common-testing.umd.js',
+            // '@angular/compiler/testing': 'assets/lib/@angular/compiler/bundles/compiler-testing.umd.js',
+            // '@angular/platform-browser/testing': 'assets/lib/@angular/platform-browser/bundles/platform-browser-testing',
+            // '@angular/platform-browser-dynamic/testing': 'assets/lib/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic-testing',
+            // '@angular/http/testing': 'assets/lib/@angular/http/bundles/http-testing.umd.js',
+            // '@angular/router/testing': 'assets/lib/@angular/router/bundles/router-testing.umd.js',
+            // '@angular/forms/testing': 'assets/lib/@angular/forms/bundles/forms-testing.umd.js',
 
             // third party dependencies
             'rxjs':'assets/lib/rxjs',
