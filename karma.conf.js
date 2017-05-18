@@ -56,24 +56,9 @@ module.exports = function(config) {
 
         autoWatch: true,
 
-        browsers: ['Chrome'],
+        // browsers: ['Chrome'],
 
-        // browsers: ['PhantomJS', 'PhantomJS_custom'],
-        //
-        // // you can define custom flags
-        // customLaunchers: {
-        //     'PhantomJS_custom': {
-        //         base: 'PhantomJS',
-        //         options: {
-        //             windowName: 'TestWindow',
-        //             settings: {
-        //                 webSecurityEnabled: false
-        //             },
-        //         },
-        //         flags: ['--load-images=true'],
-        //         debug: true
-        //     }
-        // },
+        browsers: ['PhantomJS'],
 
 
         phantomjsLauncher: {
