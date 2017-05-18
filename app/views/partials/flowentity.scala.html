@@ -1,0 +1,42 @@
+@()
+
+<div class="flex-row-parent" >
+    <div class="flex-panel-30">
+        <p-listbox
+        [options]="entities"
+        [(ngModel)]="selectedEntityValue"
+        (onChange)="select($event.value.id)"
+        filter="filter"
+        [style]="{'width':'250px','height':'400px','max-height':'400px'}">
+            <ng-template let-entity pTemplate="item">
+                <div class="ui-helper-clearfix">
+                    <span>{{entity.label}}</span>
+                    <i *ngIf="entity.value.status === flowEntityStatus.WARNING" class="fa fa-exclamation-circle pull-right"></i>
+                </div>
+            </ng-template>
+        </p-listbox>
+    </div>
+    <div class="flex-panel-70 ">
+        <div class="entity-tab-view">
+            <p-tabView>
+                <p-tabPanel
+                *ngFor="let fieldGroup of selectedEntityFieldGroups; let select = first"
+                [header]="fieldGroup.label"
+                selected="true">
+                    <flow-entity-info [entityFieldGroup]="fieldGroup"></flow-entity-info>
+                </p-tabPanel>
+            </p-tabView>
+        </div>
+    </div>
+</div>
+
+<p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+        <button pButton
+        type="button"
+        (click)="finalise()"
+        [disabled]="entityInfo.selectedFlowEntityId === undefined"
+        label="{{finaliseLabel}}"></button>
+    </div>
+</p-footer>
+

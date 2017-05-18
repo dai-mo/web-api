@@ -1,22 +1,4 @@
 @()
-<nav class="navbar navbar-light bg-faded main-header" *ngIf="hasResults()">
-    <ul class="nav navbar-nav">
-        <li class="nav-item active">
-            <p-dropdown [options]="rowOptions" [(ngModel)]="selectedRowOption"></p-dropdown>
-        </li>
-        <li class="nav-item active">
-            <p-dropdown [options]="formatOptions" [(ngModel)]="selectedFormatOption"></p-dropdown>
-        </li>
-    </ul>
-    <div class="pull-xs-right">
-        <button class="btn btn-secondary" (click)="showProcessorOverlay()">
-            <i class="fa fa-plus" aria-hidden="true"></i>
-        </button>
-        <button class="btn btn-secondary">
-            <i class="fa fa-check" aria-hidden="true"></i>
-        </button>
-    </div>
-</nav>
 
 <div class="flex-panel table-container" *ngIf="hasResults()">
     <div class="flex-row-parent">
@@ -25,20 +7,26 @@
                 <p-column field="label" header="action"></p-column>
             </p-dataTable>
         </div>
-        <div class="overflow padding" [ngClass]="{'flex-panel-70': hasActions(), 'flex-panel': !hasActions()}">
-            <p-dataTable   [value]="results" scrollable="true" scrollWidth="200%">
-                <p-column styleClass="info-column" [style]="{'width':'10px'}">
-                    <template let-result="rowData">
-                        <i class="fa fa-info-circle" aria-hidden="true" tooltipPlacement="right" tooltip="id: {{result.id}}"></i>
-                    </template>
+         @*FIXME: Workaround for bugs,*@
+         @*- https://github.com/primefaces/primeng/issues/487*@
+         @*- https://github.com/primefaces/primeng/issues/2137*@
+         @*The fixed scrollHeight is also required for the workaround*@
+        <div class="padding" [ngClass]="{'flex-panel-70': hasActions(), 'flex-panel': !hasActions()}">
+            <p-dataTable   [value]="results" scrollable="true" scrollHeight="600px" >
+                <p-column styleClass="info-column" [style]="{'width':'30px'}">
+                    <ng-template let-result="rowData" pTemplate="body">
+                        <i class="fa fa-info-circle"
+                        aria-hidden="true"
+                        pTooltip="id: {{result.id}}"
+                        tooltipPosition="top"></i>
+                    </ng-template>
                 </p-column>
-                <p-column  *ngFor="let col of columns"  [field]="col" [header]="col" [style]="{'width':'100px'}"></p-column>
+                <p-column  *ngFor="let col of columns"
+                [field]="col"
+                [header]="col"></p-column>
             </p-dataTable>
         </div>
     </div>
 </div>
 
-<modal #dialog="dialog"></modal>
-
-<processor-panel #poverlay="poverlay"  [mobiliseActions]="actions"></processor-panel>
 

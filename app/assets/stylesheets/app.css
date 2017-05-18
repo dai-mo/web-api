@@ -19,27 +19,27 @@ html, body {
 
 .flex-box.container-column {
   -webkit-flex-flow: column nowrap;
-  flex-flow: column nowrap;  
+  flex-flow: column nowrap;
 }
 
-.flex-box.container-row {  
+.flex-box.container-row {
   -webkit-flex-flow: row nowrap;
-  flex-flow: row nowrap;  
+  flex-flow: row nowrap;
 }
 
-.flex-item {  
-  background: white;  
+.flex-item {
+  background: white;
   margin: 0;
   padding: 0;
 
-  color: black;  
+  color: black;
   font-size: 20px;
   text-align: left;
 
   -webkit-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
-  flex: 1 ;   
+  flex: 1 ;
 }
 
 .card-block {
@@ -64,15 +64,15 @@ html, body {
 }
 
 .btn {
-    background:transparent;
-    border:none;
-    box-shadow:none;    
+  background:transparent;
+  border:none;
+  box-shadow:none;
 }
 
 
 .grabber {
   border: 0;
-  background: white;  
+  background: white;
 }
 
 .grabber.column {
@@ -91,12 +91,12 @@ html, body {
 
 .nav-tabs > li > a
 {
-    padding-top: 1px;
-    padding-bottom: 1px;
+  padding-top: 1px;
+  padding-bottom: 1px;
 }
 
 
-.fill {
+.fill  {
   width: 100%;
   height: 100%;
 }
@@ -113,8 +113,7 @@ html, body {
 }
 
 .mobilise {
-
-  overflow: hidden;
+  overflow: hidden ;
 }
 
 
@@ -171,7 +170,7 @@ html, body {
   height:100%;
 }
 
-.flex-panel-parent {
+.flex-panel-parent, .ui-panel, .ui-panel-content-wrapper, .ui-panel-content, .ui-tabview-panels, .ui-tabview, .ui-tabview-panel {
   width: 100%;
   height: 100%;
   display:-webkit-flex;
@@ -191,7 +190,11 @@ html, body {
   overflow:auto;
 }
 
-.flex-panel {
+.overflowx {
+  overflow-x:auto;
+}
+
+.flex-panel, .ui-panel, .ui-panel-content-wrapper, .ui-panel-content {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
   -ms-flex: 1;
@@ -283,15 +286,15 @@ html, body {
 
 }
 
-.btn.red {
+.red {
   color:red
 }
 
-.btn.green {
+.green {
   color:green
 }
 
-.btn.black {
+.black {
   color:black
 }
 
@@ -351,21 +354,64 @@ html, body {
 
 
 /*#map {*/
-  /*position: absolute;*/
-  /*top: 0;*/
-  /*bottom: 0;*/
-  /*left: 0;*/
-  /*right: 0;*/
+/*position: absolute;*/
+/*top: 0;*/
+/*bottom: 0;*/
+/*left: 0;*/
+/*right: 0;*/
 /*}*/
 
 .relative {
   position: relative;
 }
 
-#chart {
+#map {
   width: 100%;
+  height: 100%;
+}
+
+#chart {
+  width: 800px;
   height: 400px;
 }
+
+.overlay {
+  left: 0;
+  position: fixed;
+  top: 0;
+}
+
+.modal-content {
+  width:80%;
+  height:80%;
+  margin: 10% auto;
+}
+
+.entity-tab-view {
+  width: 500px;
+  height: 100%;
+  overflow-x: auto;
+}
+.entity-list-box {
+  width:250px;
+  height:400px;
+  max-height:400px;
+}
+
+.entity-info-view {
+  height:300px;
+  overflow-y: auto
+}
+
+
+.fa-exclamation-circle {
+  color:red;
+}
+
+div.ui-datatable-scrollable-body {
+  overflow-y: scroll;
+}
+
 
 
 

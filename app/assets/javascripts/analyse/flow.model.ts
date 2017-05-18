@@ -1,4 +1,3 @@
-
 /**
  * Created by cmathew on 14/07/16.
  */
@@ -126,9 +125,9 @@ export class FlowTab {
 
 
   constructor(title: string,
-              id: string,
-              name: string,
-              flowInstance: FlowInstance,
+              id: string = undefined,
+              name: string = "",
+              flowInstance: FlowInstance = undefined,
               labelToggle: boolean = false,
               active: boolean = false,
               disabled: boolean = false,
@@ -197,3 +196,6 @@ export class ProcessorUIState {
   }
 }
 
+export class FlowCreation {
+  instantiationId: string
+}

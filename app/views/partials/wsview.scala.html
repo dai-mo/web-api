@@ -1,19 +1,63 @@
 @()
-<div class="card-header"
-unselectable="yes"
-onselectstart="return false"
-onmousedown="return false">
-{{name}}
-    <div class="btn-group btn-group-sm pull-right">
-        <button type="button" class="btn" ><span class="fa fa-arrows-alt"></span></button>
+<p-panel >
+    <p-header >
+        <div >
+            <span class="ui-panel-title pull-left">{{name}}</span>
+            <div class="btn-group btn-group-sm pull-left">
+                <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="uiStateStore.makeViewVisible(uiId.VISUALISE)"
+                [hidden]="(uiStateStore.viewsVisible | async).visualise">
+                    <i class="fa fa-file-image-o" aria-hidden="true"></i>
+                </button>
+                <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="uiStateStore.makeViewVisible(uiId.MOBILISE)"
+                [hidden]="(uiStateStore.viewsVisible | async).mobilise">
+                    <i class="fa fa-table" aria-hidden="true"></i>
+                </button>
+                <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="uiStateStore.makeViewVisible(uiId.ANALYSE)"
+                [hidden]="(uiStateStore.viewsVisible | async).analyse">
+                    <i class="fa fa-sitemap" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="btn-group btn-group-sm pull-right">
+                <button
+                type="button"
+                class="btn btn-secondary"
+                (click)="maximiseView($event, name)">
+                    <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div *ngIf="contextStore.contextMenuObs(name) | async as items"
+            class="btn-group btn-group-sm pull-right">
+                <p-menu #menu  appendTo="body" popup="popup" [model]="items"></p-menu>
+                <button
+                type="button"
+                class="btn"
+                (click)="menu.toggle($event)">
+                    <span class="fa fa-bars"></span>
+                </button>
+            </div>
+            <div *ngFor="let cbItem of contextStore.contextBarObs(name) | async"
+            class="btn-group btn-group-sm pull-right">
+                <button *ngIf="uiStateStore.store.flowTabs.length > 0"
+                class="btn btn-secondary"
+                (click)="cbItem.command($event)"
+                [disabled]="!cbItem.enabled">
+                    <i class="fa {{cbItem.iconClass}}" aria-hidden="true" ></i>
+                </button>
+            </div>
+        </div>
+    </p-header>
+    <div class="flex-panel fill" [ngSwitch]="name">
+        <visualise *ngSwitchCase="'visualise'"></visualise>
+        <mobilise *ngSwitchCase="'mobilise'"></mobilise>
+        <analyse  *ngSwitchCase="'analyse'"></analyse>
     </div>
-    <div class="btn-group btn-group-sm pull-right">
-        <button type="button" class="btn" ><span class="fa fa-expand"></span></button>
-    </div>
-</div>
-
-<div class="card-block flex-panel" [ngSwitch]="name">
-    <visualise class="flex-panel-parent" *ngSwitchCase="'visualise'"></visualise>
-    <mobilise class="flex-panel-parent" *ngSwitchCase="'mobilise'"></mobilise>
-    <analyse class="flex-panel-parent" *ngSwitchCase="'analyse'"></analyse>
-</div>
+</p-panel>

@@ -1,16 +1,26 @@
 /**
  * Created by cmathew on 13/07/16.
  */
-import {Component, Input} from "@angular/core"
-import {MobiliseComponent} from "../../mobilise/mobilise.component"
-import {VisualiseComponent} from "../../visualise/visualise.component"
-import {AnalyseComponent} from "../../analyse/analyse.component"
+import {Component, Input, OnInit} from "@angular/core"
+import {MenuItem, OverlayPanel} from "primeng/primeng"
+import {ContextStore} from "../context.store"
+import {UIStateStore} from "../ui.state.store"
+import {UiId} from "../ui.models"
 
 @Component({
     selector: "ws-view",
-    directives: [VisualiseComponent, MobiliseComponent, AnalyseComponent],
     templateUrl: "partials/wsview.html"
 })
 export class WsViewComponent {
     @Input()  name: String
+
+    uiId = UiId
+
+    constructor(private contextStore: ContextStore,
+                private uiStateStore: UIStateStore) {}
+
+    maximiseView(event: any, viewName: string) {
+        this.uiStateStore.maximiseView(viewName)
+        this.uiStateStore.setResizeView(event)
+    }
 }

@@ -1,14 +1,18 @@
 @()
-<div class="flex-box container-row">
-    <div class="flex-item flex-box container-column">
-        <ws-view name="visualise" class="flex-item card visualise flex-panel-parent"></ws-view>
-        <div resize [type]="'column'">
-            <div class="grabber column" ></div>
-        </div>
-        <ws-view name="mobilise" class="flex-item card mobilise flex-panel-parent"></ws-view>
-    </div>
-    <div resize [type]="'row'">
-        <div class="grabber row"></div>
-    </div>
-    <ws-view name="analyse" class="flex-item card flex-panel-parent"></ws-view>
-</div>
+<split direction="horizontal"
+(dragProgress)="uiStateStore.setResizeView($event)">
+    <split-area [visible]="(uiStateStore.viewsVisible | async).visualise || (uiStateStore.viewsVisible | async).mobilise">
+        <split direction="vertical" (dragProgress)="uiStateStore.setResizeView($event)">
+            <split-area [visible]="(uiStateStore.viewsVisible | async).visualise">
+                <ws-view [name]="uiId.VISUALISE" ></ws-view>
+            </split-area>
+            <split-area [visible]="(uiStateStore.viewsVisible | async).mobilise">
+                <ws-view [name]="uiId.MOBILISE" ></ws-view>
+            </split-area>
+        </split>
+    </split-area>
+    <split-area [visible]="(uiStateStore.viewsVisible | async).analyse">
+        <ws-view [name]="uiId.ANALYSE" ></ws-view>
+    </split-area>
+</split>
+

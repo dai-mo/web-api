@@ -1,17 +1,6 @@
 @()
-<nav class="navbar navbar-light bg-faded main-header" *ngIf="uiStateStore.provenancesUpdated | async">
-    <ul class="nav navbar-nav">
-        <li class="nav-item active">
-            <span dropdown>
-                <a href id="simple-dropdown" dropdownToggle >vis</a>
-                <ul class="dropdown-menu" dropdownMenu aria-labelledby="simple-dropdown">
-                    <li *ngFor="let choice of visTypes" (click)="selectVisType($event, choice)">
-                        <a class="dropdown-item" href="#">{{choice}}</a>
-                    </li>
-                </ul>
-            </span>
-        </li>
-    </ul>
-</nav>
-
-<vis-tabs class="flex-panel flex-panel-parent" *ngIf="uiStateStore.selectedProcessorId | async"></vis-tabs>
+<vis-tabs
+class="fill"
+*ngIf="uiStateStore.selectedProcessorId | async"
+[selectedVisType]="uiStateStore.selectedVisType | async">
+</vis-tabs>

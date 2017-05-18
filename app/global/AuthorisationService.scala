@@ -159,24 +159,25 @@ class AuthorisationService {
   def checkPermissions(requestPath: String,
                        requestMethod: String,
                        claims: Claims): Boolean = {
-    val policyPaths =
-      authPolicy.paths.filter(policyPath => {
+    val policyPath =
+      authPolicy.paths.find(policyPath => {
         policyPath.path.r.pattern.matcher(requestPath).matches()
       })
     // if no authConfig policy has been set for the requested endpoint uri path and http method
     // then there are no permissions to check
-    if (policyPaths.nonEmpty) {
-      val policyPathMethods =
-        policyPaths.head.methods.filter(policyPathMethod => policyPathMethod.method == requestMethod)
-      if (policyPathMethods.nonEmpty) {
+    if (policyPath.nonEmpty) {
+      val policyPathMethod =
+        policyPath.get.methods.find(policyPathMethod => policyPathMethod.method == requestMethod)
+      if (policyPathMethod.nonEmpty) {
         val perms = permissions(claims)
-        val filteredPerms = perms.filter(
-          p => policyPaths.head.name.r.pattern.matcher(p.resourceName).matches()
+        val filteredPerms = perms.find(
+          p => policyPath.get.name.r.pattern.matcher(p.resourceName).matches()
         )
         if (filteredPerms.isEmpty)
-          throw new RESTException(ErrorConstants.DCS503.withErrorMessage("No permissions to access resource (" + policyPaths.head.name + ")"))
-        val policyScopes = policyPathMethods.head.scopes
-        val permissionScopes = filteredPerms.head.scopes
+          throw new RESTException(ErrorConstants.DCS503.withErrorMessage("No permissions to access resource (" + policyPath.head.name + ")"))
+
+        val policyScopes = policyPathMethod.get.scopes
+        val permissionScopes = filteredPerms.get.scopes
         policyScopes.forall(scope => permissionScopes.contains(scope))
       } else
         true

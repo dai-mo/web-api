@@ -2,27 +2,33 @@
  * Created by cmathew on 22.11.16.
  */
 
-import {Component} from "@angular/core";
-import {UIStateStore} from "../shared/ui.state.store";
-import {MapComponent} from "./map/map.component";
-import {CORE_DIRECTIVES, NgClass} from "@angular/common";
-import {TAB_DIRECTIVES} from "ng2-bootstrap";
-import {Provenance} from "../analyse/flow.model";
-import {Observable} from "rxjs";
-import {ChartComponent} from "./chart/chart.component";
+import {Component, Input} from "@angular/core"
+import {UIStateStore} from "../shared/ui.state.store"
+import {UiId} from "../shared/ui.models"
+import {VisTab} from "../analyse/flow.model"
 
 
 @Component({
   selector: "vis-tabs",
   templateUrl: "partials/visualise/vistabs.html",
-  directives: [MapComponent, ChartComponent, TAB_DIRECTIVES, CORE_DIRECTIVES, NgClass]
 })
 export class VisTabsComponent {
 
-  private provenances : Observable<Provenance[]>
+  uiId = UiId
+
+  @Input() selectedVisType: string
 
   constructor(private uiStateStore: UIStateStore) {
-    this.provenances = uiStateStore.provenances
+
+  }
+
+  public selectActiveTab(index: number): void {
+    let at = this.uiStateStore.getVisTabs()[index]
+    if(at) this.uiStateStore.setActiveVisTab(at)
+  }
+
+  public getMapVisTab(): VisTab {
+    return this.uiStateStore.getVisTabs().find(vt => vt.visType === UiId.VIS_MAP)
   }
 
 }

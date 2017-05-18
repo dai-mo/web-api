@@ -2,7 +2,7 @@
  * Created by cmathew on 29/07/16.
  */
 
-import {Injectable, ChangeDetectorRef} from "@angular/core"
+import {Injectable} from "@angular/core"
 import {FlowGraph} from "../flow.model"
 import {UIStateStore} from "../../shared/ui.state.store"
 
@@ -13,8 +13,7 @@ export class FlowGraphService {
 
 
 
-  constructor(private uiStateStore:UIStateStore,
-              private cdr:ChangeDetectorRef) {
+  constructor(private uiStateStore:UIStateStore) {
 
   }
 
@@ -56,21 +55,17 @@ export class FlowGraphService {
     let uiss = this.uiStateStore
     let self = this
 
-    network.on("resize", function (params: any) {
-      this.fit()
-    })
+    // network.on("resize", function (params: any) {
+    //   this.fit()
+    // })
 
     network.on("click", function (params: any) {
       let selectedNodes = params.nodes
       if (selectedNodes.length > 0) {
         let pid = selectedNodes[0]
         uiss.setSelectedProcessorId(pid)
-        // FIXME: Not sure why the change detection in this case needs
-        //        to be triggered manually
-        self.cdr.detectChanges()
       } else {
         uiss.setSelectedProcessorId(null)
-        // uiss.mobilise.detectChanges()
       }
     })
 

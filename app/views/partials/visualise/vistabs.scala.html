@@ -1,19 +1,38 @@
 @()
 <div class="fill">
-    <tabset class="flex-panel-parent">
-        <tab  class="flex-panel-parent" *ngFor="let tabz of uiStateStore.store.visTabs"
-        [heading]="tabz.visType"
-        [active]="tabz.active"
-        (select)="tabz.active = true"
-        (deselect)="tabz.active = false"
-        [disabled]="tabz.disabled"
-        [removable]="true"
-        (removed)="removeTabHandler(tabz)">
-            <div class="flex-panel flex-panel-parent" [ngSwitch]="tabz.visType">
-                <map class="flex-panel" [reload]= "provenances | async" [resize]= "uiStateStore.resizeView | async" *ngSwitchCase="'map'"></map>
-                <chart class="flex-panel overflow" [reload]= "provenances | async" *ngSwitchCase="'chart'"></chart>
+    <p-tabView class="fill" (onChange)="selectActiveTab($event.index)">
+        @*Workaround for https://github.com/primefaces/primeng/issues/2000*@
+        <p-tabPanel class="fill" *ngIf="uiStateStore.store.visTabs.length === 0"
+        header="..."
+        selected="true">
+            Choose a visualisation for selected processor.
+        </p-tabPanel>
+        @*FIXME: Using ngSwitch for map results incorrect
+        rendering of the map, so we render it separately*@
+        <p-tabPanel class="fill"
+        *ngIf="uiStateStore.mapVisTab | async as tabz"
+        [header]="tabz.visType"
+        [selected]="tabz.active">
+            <div class="flex-panel flex-panel-parent">
+                <map
+                class="flex-panel overflow"
+                [resize]="uiStateStore.resizeView | async"
+                [reload]="uiStateStore.provenances | async">
+                </map>
             </div>
-        </tab>
-    </tabset>
-</div>
+        </p-tabPanel>
 
+        <p-tabPanel class="fill"
+        *ngFor="let tabz of uiStateStore.visTabsWoMap | async"
+        [header]="tabz.visType"
+        [selected]="tabz.active">
+            <div class="flex-panel flex-panel-parent" [ngSwitch]="tabz.visType">
+                <chart *ngSwitchCase="uiId.VIS_CHART"
+                class="flex-panel overflow"
+                [reload]= "uiStateStore.provenances | async">
+                </chart>
+
+            </div>
+        </p-tabPanel>
+    </p-tabView>
+</div>

@@ -1,42 +1,64 @@
-import {TAB_DIRECTIVES} from "ng2-bootstrap/ng2-bootstrap"
-import {CORE_DIRECTIVES, NgClass} from "@angular/common"
-import {Component, OnInit, Input, ChangeDetectorRef, NgZone, ChangeDetectionStrategy} from "@angular/core"
-import {FlowTab, FlowInstance} from "./flow.model"
-import {FlowGraphDirective} from "./flow-graph.directive"
+import {Component, Input, OnInit} from "@angular/core"
+import {DCSError, FlowCreation, FlowInstance, FlowTab} from "./flow.model"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
-import {Observable} from "rxjs"
+import {ContextStore} from "../shared/context.store"
+import {ContextBarItem, ContextMenuItem, UiId} from "../shared/ui.models"
 
 
 @Component({
   selector: "flow-tabs",
-  directives: [FlowGraphDirective, TAB_DIRECTIVES, CORE_DIRECTIVES, NgClass],
-  templateUrl: "partials/analyse/flowtabs.html",
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: "partials/analyse/flowtabs.html"
 })
 export class FlowTabsComponent implements OnInit {
 
   public nifiUrl: string
+  flowCMItems: ContextMenuItem[]
+
+  emptyTab: FlowTab
+
+  private stopFlowBarItem: ContextBarItem
+  private startFlowBarItem: ContextBarItem
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
-              private cdr:ChangeDetectorRef,
-              private uiStateStore: UIStateStore) {
+              private uiStateStore: UIStateStore,
+              private contextStore: ContextStore) {
     this.nifiUrl = window.location.protocol + "//" +
-        window.location.host +
-        "/nifi"
+      window.location.host +
+      "/nifi"
 
+    this.flowCMItems =  [
+      {label: "Start Flow"},
+      {label: "Stop Flow"},
+      {label: "Delete Flow"}
+    ]
+  }
+
+  public activeTab(): FlowTab {
+    return this.uiStateStore.getFlowTabs().find(ft => ft.active)
+  }
+
+
+  public selectActiveTab(index: number): void {
+    let at = this.uiStateStore.getFlowTabs()[index]
+    if(at) this.setActiveTab(at)
   }
 
   public setActiveTab(flowTab: FlowTab):void {
+    flowTab.active = true
     this.uiStateStore.getFlowTabs().forEach(t => {
-      if(t === flowTab)
-        t.active = true
-      else
+      if(t !== flowTab)
         t.active = false
     })
+    this.updateContextBarItems(flowTab)
+  }
+
+  updateContextBarItems(flowTab: FlowTab) {
+    this.stopFlowBarItem.enabled = flowTab.isRunning()
+    this.startFlowBarItem.enabled = !flowTab.isRunning()
   }
 
   public toggleTabLabel(flowTab: FlowTab) {
@@ -50,103 +72,165 @@ export class FlowTabsComponent implements OnInit {
       return flowTab.flowInstance.name
   }
 
-  @Input()
-  set addFlowInstance(flowInstance: FlowInstance) {
-    if(flowInstance != null) {
+  private addFlowInstance(flowInstance: FlowInstance) {
+    if (flowInstance) {
       let flowTabs: Array<FlowTab> = this.uiStateStore.getFlowTabs()
       let tab = new FlowTab("#" + (flowTabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
-      this.uiStateStore.addFlowTab(tab)
       this.setActiveTab(tab)
+      this.uiStateStore.addFlowTab(tab)
     }
   }
 
-  public deleteTab(flowTab: FlowTab) {
 
+  @Input()
+  set instantiateFlow(flowCreation: FlowCreation) {
+    if(flowCreation.instantiationId) {
+      if(flowCreation.instantiationId === ""){
+        // do nothing
+      }
+      else {
+        this.instantiateTemplate(flowCreation)
+      }
+    }
+  }
+
+  private instantiateTemplate(flowCreation: FlowCreation): void {
     KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
-          .destroyInstance(flowTab.id, rpt)
-          .subscribe(
-              (deleteOK: boolean) => {
-                if (!deleteOK)
-                  alert("Flow Instance could not be deleted")
-                else {
-                  this.uiStateStore.removeFlowTab(flowTab)
-                }
-                // FIXME: Not sure why the change detection in this case needs
-                //        to be triggered manually
-                this.cdr.detectChanges()
-              },
-              (error: any) => this.errorService.handleError(error)
-          )
+        .instantiateTemplate(flowCreation.instantiationId, rpt)
+        .subscribe(
+          (flowInstance: FlowInstance) => {
+            this.addFlowInstance(flowInstance)
+          },
+          (error: any) => {
+            this.errorService.handleError(error)
+            let dcsError: DCSError = error.json()
+            this.dialog.show(dcsError.message, dcsError.errorMessage)
+          }
+        )
+    }.bind(this))
+
+  }
+
+  public deleteTab(flowTab: FlowTab) {
+    KeycloakService.withTokenUpdate(function (rpt: string) {
+      this.flowService
+        .destroyInstance(flowTab.id, rpt, flowTab.flowInstance.version)
+        .subscribe(
+          (deleteOK: boolean) => {
+            if (!deleteOK)
+              alert("Flow Instance could not be deleted")
+            else {
+              let flowTabs = this.uiStateStore.getFlowTabs()
+              let flowTabIndex = flowTabs.indexOf(flowTab)
+              if(flowTabs.length > 1)
+                if(flowTabIndex === 0 )
+                  this.selectActiveTab(1)
+                else
+                  this.selectActiveTab(flowTabIndex - 1)
+              this.uiStateStore.removeFlowTab(flowTab)
+            }
+          },
+          (error: any) => this.errorService.handleError(error)
+        )
     }.bind(this))
   }
 
   public startFlow(flowTab: FlowTab) {
-    this.flowService
+    if(flowTab) {
+      this.flowService
         .startInstance(flowTab.id)
         .subscribe(
-            startOK => {
-              if(startOK) {
-                flowTab.flowInstance.state = FlowInstance.stateRunning
-                this.uiStateStore.updateFlowTabs()
-              } else
-                alert("Flow Instance failed to start")
-            },
-            (error: any) => this.errorService.handleError(error)
+          startOK => {
+            if (startOK) {
+              flowTab.flowInstance.state = FlowInstance.stateRunning
+              this.uiStateStore.updateFlowTabs()
+              this.updateContextBarItems(flowTab)
+            } else
+              alert("Flow Instance failed to start")
+          },
+          (error: any) => this.errorService.handleError(error)
         )
+    }
   }
 
   public refreshFlow(flowTab: FlowTab) {
-    this.flowService
+    if(flowTab) {
+      this.flowService
         .instance(flowTab.id)
         .subscribe(
-            (flowInstance: FlowInstance) => {
-              let flowTabs: Array<FlowTab> = this.uiStateStore.getFlowTabs()
-              flowTabs.filter(t => t.id === flowTab.id).forEach(t => t.flowInstance = flowInstance)
-              this.uiStateStore.updateFlowTabs()
-            },
-            (error: any) => this.errorService.handleError(error)
+          (flowInstance: FlowInstance) => {
+            let flowTabs: Array<FlowTab> = this.uiStateStore.getFlowTabs()
+            flowTabs.filter(t => t.id === flowTab.id).forEach(t => t.flowInstance = flowInstance)
+            this.uiStateStore.updateFlowTabs()
+            this.updateContextBarItems(flowTab)
+          },
+          (error: any) => this.errorService.handleError(error)
         )
+    }
   }
 
   public stopFlow(flowTab: FlowTab) {
-    this.flowService
+    if(flowTab) {
+      this.flowService
         .stopInstance(flowTab.id)
         .subscribe(
-            stopOK => {
-              if(stopOK) {
-                flowTab.flowInstance.state = FlowInstance.stateStopped
-                this.uiStateStore.updateFlowTabs()
-              } else
-                alert("Flow Instance failed to stop")
-            },
-            (error: any) => this.errorService.handleError(error)
+          stopOK => {
+            if (stopOK) {
+              flowTab.flowInstance.state = FlowInstance.stateStopped
+              this.uiStateStore.updateFlowTabs()
+              this.updateContextBarItems(flowTab)
+            } else
+              alert("Flow Instance failed to stop")
+          },
+          (error: any) => this.errorService.handleError(error)
         )
+    }
   }
 
   ngOnInit() {
     KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
-          .instances(rpt)
-          .subscribe(
-              (instances: Array<FlowInstance>) => {
-                let flowTabs: FlowTab[] = []
-                instances.map((flowInstance: FlowInstance) => {
-                  let flowTab = new FlowTab("#" + (flowTabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
-                  flowTabs.push(flowTab)
-                })
+        .instances(rpt)
+        .subscribe(
+          (instances: Array<FlowInstance>) => {
+            let flowTabs: FlowTab[] = []
+            instances.map((flowInstance: FlowInstance) => {
+              let flowTab = new FlowTab("#" + (flowTabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
+              flowTabs.push(flowTab)
+            })
 
-                if (flowTabs.length > 0) {
-                  flowTabs[0].active = true
-                }
-                this.uiStateStore.addFlowTabs(flowTabs)
+            if (flowTabs.length > 0) {
+              flowTabs[0].active = true
+              this.emptyTab = undefined
+            } else {
+              this.emptyTab = new FlowTab("...")
+            }
 
-                // FIXME: Not sure why the change detection in this case needs
-                //        to be triggered manually
-                this.cdr.detectChanges()
-              },
-              (error: any) => this.errorService.handleError(error)
-          )
+            this.uiStateStore.addFlowTabs(flowTabs)
+            this.selectActiveTab(flowTabs.length - 1)
+          },
+          (error: any) => this.errorService.handleError(error)
+        )
     }.bind(this))
+
+    this.stopFlowBarItem =  {iconClass: "fa-stop", enabled: false, command: (event) => {
+      this.stopFlow(this.activeTab())
+    }}
+    this.startFlowBarItem = {iconClass: "fa-play", enabled: true, command: (event) => {
+      this.startFlow(this.activeTab())
+    }}
+
+    let cbItems: ContextBarItem[] = [
+      {iconClass: "fa-trash", enabled: true, command: (event) => {
+        this.deleteTab(this.activeTab())
+      }},
+      this.stopFlowBarItem,
+      this.startFlowBarItem,
+      {iconClass: "fa-refresh", enabled: true, command: (event) => {
+        this.refreshFlow(this.activeTab())
+      }}
+    ]
+    this.contextStore.addContextBar(UiId.ANALYSE, cbItems)
   }
 }

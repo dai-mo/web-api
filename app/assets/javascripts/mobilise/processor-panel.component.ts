@@ -2,22 +2,16 @@
  * Created by cmathew on 25/08/16.
  */
 
-import {Component, ViewChild, Input} from "@angular/core"
-import {MODAL_DIRECTIVES, BS_VIEW_PROVIDERS, ModalDirective} from "ng2-bootstrap"
-import {CORE_DIRECTIVES} from "@angular/common"
+import {Component, Input} from "@angular/core"
 import {SelectItem} from "primeng/components/common/api"
 import {Action} from "../analyse/flow.model"
-import {ConfigureProcessorComponent} from "../shared/configure-processor.component"
 
 @Component({
   selector: "processor-panel",
-  directives: [MODAL_DIRECTIVES, CORE_DIRECTIVES, ConfigureProcessorComponent],
-  viewProviders:[BS_VIEW_PROVIDERS],
   exportAs: "poverlay",
   templateUrl: "partials/mobilise/processorpanel.html"
 })
 export class ProcessorPanelComponent {
-  @ViewChild("lgModal") public lgModal: ModalDirective
 
   @Input() mobiliseActions: Action[]
 
@@ -55,11 +49,6 @@ export class ProcessorPanelComponent {
 
   public show() {
     this.selectedProcessor == null
-    this.lgModal.show()
-  }
-
-  public hide() {
-    this.lgModal.hide()
   }
 
   public isProcessorSelected(): boolean {
@@ -68,7 +57,6 @@ export class ProcessorPanelComponent {
 
   public addProcessor() {
     this.mobiliseActions.push({ label: this.selectedProcessor })
-    this.hide()
     this.selectedProcessor = null
   }
 }
