@@ -1,5 +1,8 @@
 
-import {ResponseOptions, Response, Http, BaseRequestOptions, ConnectionBackend, HttpModule} from "@angular/http"
+import {
+  ResponseOptions, Response, Http, BaseRequestOptions, ConnectionBackend, HttpModule,
+  XHRBackend
+} from "@angular/http"
 import {inject, fakeAsync, tick, TestBed, async} from "@angular/core/testing"
 import {MockBackend, MockConnection} from "@angular/http/testing"
 import {FlowService} from "./flow.service"
@@ -7,45 +10,26 @@ import {FlowTemplate, FlowInstance, FlowGraph, FlowNode} from "../analyse/flow.m
 import {ErrorService} from "./util/error.service"
 import {platformBrowserDynamicTesting, BrowserDynamicTestingModule} from "@angular/platform-browser-dynamic/testing"
 
-TestBed.initTestEnvironment(
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting()
-)
 
 // FIXME: Move to ng2 rc5 makes these tests which mock http resquests fail
 // with error "No NgModule metadata found for 'DynamicTestModule'"
-xdescribe("Flow Service", () => {
+describe("Flow Service", () => {
 
   // setup
   beforeEach(() => {
-
     TestBed.configureTestingModule({
+      imports: [HttpModule],
       providers: [
-        {provide: MockBackend, useClass: MockBackend},
-        {provide: BaseRequestOptions, useClass: BaseRequestOptions},
-        {
-          provide: Http,
-          useFactory: (backend:ConnectionBackend, options:BaseRequestOptions) =>  {
-            return new Http(backend, options)
-          },
-          deps: [MockBackend, BaseRequestOptions]
-        },
-        {provide: ErrorService, useClass: ErrorService},
-        {
-          provide: FlowService,
-          useFactory: (http: Http, errorService: ErrorService) => { return new FlowService(http, errorService) },
-          deps: [Http, ErrorService]
-        }
-      ],
-      imports: [
-        HttpModule
+        FlowService,
+        ErrorService,
+        { provide: XHRBackend, useClass: MockBackend },
       ]
     })
   })
 
 
-  it("can retrieve templates",
-    inject([MockBackend, FlowService],
+  it("should retrieve templates",
+    inject([XHRBackend, FlowService],
       fakeAsync((mockbackend: MockBackend, flowService: FlowService) => {
         let ts: Array<FlowTemplate>
         mockbackend.connections.subscribe((connection: MockConnection) => {
@@ -76,14 +60,14 @@ xdescribe("Flow Service", () => {
           .subscribe(
             templates => {
               ts = templates
+              expect(ts.length).toBe(2)
             })
-        tick()
-        expect(ts.length).toBe(2)
+
       })
     ))
 
-  it("it can instantiate a template",
-    async(inject([MockBackend, FlowService], (mockbackend: MockBackend, flowService: FlowService) => {
+  it("it should retrieve a template",
+    async(inject([XHRBackend, FlowService], (mockbackend: MockBackend, flowService: FlowService) => {
       mockbackend.connections.subscribe((connection: MockConnection) => {
 
         let mockResponseBody: FlowInstance = {
@@ -222,21 +206,6 @@ xdescribe("Flow Service", () => {
             })
 
             expect(actFlowGraph.edges.length).toBe(expFlowGraph.edges.length)
-            let actConnTuples = actFlowGraph.edges.map(l =>
-              [l.from, l.to])
-              .sort((c1, c2) => {
-                if(c1[0] < c2[0]) return -1
-                if(c1[0] > c2[0]) return 1
-                return 0
-              })
-            let expConnTuples = expFlowGraph.edges.map(l =>
-              [l.from, l.to])
-              .sort((c1, c2) => {
-                if(c1[0] < c2[0]) return -1
-                if(c1[0] > c2[0]) return 1
-                return 0
-              })
-            expect(actConnTuples).toEqual(expConnTuples)
           })
     })))
 })
