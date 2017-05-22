@@ -88,4 +88,10 @@ export class ContextStore {
     this.removeContextItems(key, cbItems, this.contextBarItemsObsMap)
   }
 
+  getContextBarItems(key: string): ContextBarItem[] {
+    if(this.contextBarItemsObsMap.has(key))
+      return this.contextBarItemsObsMap.get(key).getValue()
+    return []
+  }
+
 }

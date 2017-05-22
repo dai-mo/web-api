@@ -1,7 +1,8 @@
 import {Injectable, NgZone} from "@angular/core"
 import {BehaviorSubject, Observable} from "rxjs/Rx"
-import {FlowInstance, FlowCreation, FlowTab, Provenance, VisTab} from "../analyse/flow.model"
+import {FlowInstance, FlowCreation, FlowTab, Provenance, VisTab, EntityType} from "../analyse/flow.model"
 import {UiId, ViewsVisible} from "./ui.models"
+import {ContextStore} from "./context.store"
 
 @Injectable()
 export class UIStateStore {
@@ -11,7 +12,8 @@ export class UIStateStore {
     visTabs: VisTab[]
   }
 
-  constructor(private ngZone: NgZone) {
+  constructor(private contextStore: ContextStore,
+              private ngZone: NgZone) {
     this.store = {
       flowTabs: [],
       visTabs: []
@@ -74,6 +76,19 @@ export class UIStateStore {
   selectedProcessorId: Observable<string> = this._selectedProcessorId.asObservable()
 
   setSelectedProcessorId(processorId: string) {
+    this.contextStore.getContextBarItems(UiId.ANALYSE)
+      .forEach(cbItem => {
+        if(cbItem.entityType === EntityType.PROCESSOR)
+          if(processorId === null)
+            cbItem.hidden = true
+          else
+            cbItem.hidden = false
+        else
+          if(processorId === null)
+            cbItem.hidden = false
+          else
+            cbItem.hidden = true
+      })
     this.ngZone.run(() => this._selectedProcessorId.next(processorId))
   }
 
@@ -188,6 +203,7 @@ export class UIStateStore {
 
   // ---- Dialog Flags Start ----
   public isTemplateInfoDialogVisible: boolean = false
+  public isProcessorSchemaDialogVisible: boolean = false
   // ---- Dialog Flags End   ----
 
 }

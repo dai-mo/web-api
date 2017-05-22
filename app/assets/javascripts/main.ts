@@ -88,6 +88,7 @@ import {LayoutComponent} from "./layout.component"
 import {ContextStore} from "./shared/context.store"
 import {FlowEntityComponent} from "./shared/flow-entity.component"
 import {FlowEntityInfoComponent} from "./shared/flow-entity-info.component"
+import {ProcessorSchemaComponent} from "./shared/processor-schema.component"
 
 
 export const routes: Routes = [ {path: "", component: LayoutComponent}]
@@ -112,7 +113,8 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
     VisTabsComponent,
     FlowGraphDirective,
     FlowEntityComponent,
-    FlowEntityInfoComponent
+    FlowEntityInfoComponent,
+    ProcessorSchemaComponent
   ],
   providers:[{provide: Window, useValue: window},
     FlowService,

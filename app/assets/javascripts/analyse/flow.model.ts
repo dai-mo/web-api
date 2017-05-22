@@ -2,6 +2,10 @@
  * Created by cmathew on 14/07/16.
  */
 
+export enum EntityType {
+  FLOW_INSTANCE,
+  PROCESSOR
+}
 
 export class FlowTemplate {
   id: string

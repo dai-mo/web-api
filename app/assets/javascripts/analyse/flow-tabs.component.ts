@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from "@angular/core"
-import {DCSError, FlowCreation, FlowInstance, FlowTab} from "./flow.model"
+import {DCSError, EntityType, FlowCreation, FlowInstance, FlowTab} from "./flow.model"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {KeycloakService} from "../shared/keycloak.service"
@@ -214,22 +214,41 @@ export class FlowTabsComponent implements OnInit {
         )
     }.bind(this))
 
-    this.stopFlowBarItem =  {iconClass: "fa-stop", enabled: false, command: (event) => {
-      this.stopFlow(this.activeTab())
-    }}
-    this.startFlowBarItem = {iconClass: "fa-play", enabled: true, command: (event) => {
-      this.startFlow(this.activeTab())
-    }}
+    this.stopFlowBarItem =  {entityType: EntityType.FLOW_INSTANCE,
+      iconClass: "fa-stop",
+      enabled: false,
+      command: (event) => {
+        this.stopFlow(this.activeTab())
+      }}
+    this.startFlowBarItem = {entityType: EntityType.FLOW_INSTANCE,
+      iconClass: "fa-play",
+      enabled: true,
+      command: (event) => {
+        this.startFlow(this.activeTab())
+      }}
 
     let cbItems: ContextBarItem[] = [
-      {iconClass: "fa-trash", enabled: true, command: (event) => {
-        this.deleteTab(this.activeTab())
-      }},
+      {entityType: EntityType.FLOW_INSTANCE,
+        iconClass: "fa-trash",
+        enabled: true,
+        command: (event) => {
+          this.deleteTab(this.activeTab())
+        }},
       this.stopFlowBarItem,
       this.startFlowBarItem,
-      {iconClass: "fa-refresh", enabled: true, command: (event) => {
-        this.refreshFlow(this.activeTab())
-      }}
+      {entityType: EntityType.FLOW_INSTANCE,
+        iconClass: "fa-refresh",
+        enabled: true,
+        command: (event) => {
+          this.refreshFlow(this.activeTab())
+        }},
+      {entityType: EntityType.PROCESSOR,
+        iconClass: "fa-list-alt",
+        enabled: true,
+        hidden: true,
+        command: () => {
+          this.uiStateStore.isProcessorSchemaDialogVisible = true
+        }}
     ]
     this.contextStore.addContextBar(UiId.ANALYSE, cbItems)
   }

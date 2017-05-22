@@ -46,4 +46,8 @@ export class FlowEntityComponent implements OnInit {
   finalise() {
     this.entityInfo.finalise(this.uiStateStore)
   }
+
+  cancel() {
+    this.entityInfo.cancel(this.uiStateStore)
+  }
 }

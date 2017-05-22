@@ -2,7 +2,7 @@
  * Created by cmathew on 29/07/16.
  */
 
-import {Injectable} from "@angular/core"
+import {Injectable, NgZone} from "@angular/core"
 import {FlowGraph} from "../flow.model"
 import {UIStateStore} from "../../shared/ui.state.store"
 
@@ -11,9 +11,8 @@ declare var vis: any
 @Injectable()
 export class FlowGraphService {
 
-
-
-  constructor(private uiStateStore:UIStateStore) {
+  constructor(private uiStateStore:UIStateStore,
+              private ngZone: NgZone) {
 
   }
 
@@ -51,13 +50,13 @@ export class FlowGraphService {
         }
       }
     }
-    let network = new vis.Network(el, data, options)
+    let network = this.ngZone.runOutsideAngular(() => new vis.Network(el, data, options))
     let uiss = this.uiStateStore
     let self = this
 
-    // network.on("resize", function (params: any) {
-    //   this.fit()
-    // })
+    network.on("resize", function (params: any) {
+      this.fit()
+    })
 
     network.on("click", function (params: any) {
       let selectedNodes = params.nodes

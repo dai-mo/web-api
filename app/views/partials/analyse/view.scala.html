@@ -8,7 +8,18 @@
 header="Templates"
 width="900"
 [resizable]="false"
+[closable]="false"
 [(visible)]="uiStateStore.isTemplateInfoDialogVisible"
 *ngIf="uiStateStore.isTemplateInfoDialogVisible">
     <flow-entity  [entityInfo]="templateEntityInfo" finaliseLabel="Instantiate Flow"></flow-entity>
+</p-dialog>
+
+<p-dialog
+header="Read / Write Schema"
+width="900"
+[resizable]="true"
+[closable]="true"
+[(visible)]="uiStateStore.isProcessorSchemaDialogVisible"
+*ngIf="uiStateStore.isProcessorSchemaDialogVisible">
+    <processor-schema finaliseLabel="Save"></processor-schema>
 </p-dialog>

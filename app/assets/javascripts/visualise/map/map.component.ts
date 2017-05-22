@@ -47,11 +47,17 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
   }
 
   @Input()
+  set show(showMap: boolean) {
+    if (showMap) {
+      setTimeout(() => this.map.invalidateSize(true), 0)
+    }
+  }
+
+  @Input()
   set resize(event: any) {
     if(event != null && this.map) {
-      this.map.invalidateSize(true)
+      setTimeout(() => this.map.invalidateSize(true), 0)
     }
-
   }
 
   @Input()
@@ -83,43 +89,7 @@ export class MapComponent implements AfterViewInit,  OnDestroy {
       L.control.layers(this.mapService.baseMaps).addTo(this.map)
       L.control.scale().addTo(this.map)
 
-      // this.map.on("load", function(){
-      //   console.log("map loaded")
-      //   this.invalidateSize(false)
-      //
-      // }.bind(this.map))
-      //
-      // this.map.setView([22.966484, 14.062500], 3, {
-      //   animate: false
-      // })
-
-      // this.ngZone.runOutsideAngular(() => {
-      //   Observable.fromEvent(this.map, "drag").subscribe(e => {
-      //     console.log("Yayyyyy! No change detection for drag!")
-      //   })
-      //   Observable.fromEvent(this.map, "dragstart").subscribe(e => {
-      //     console.log("Yayyyyy! No change detection for drag start!")
-      //   })
-      //   Observable.fromEvent(this.map, "dragend").subscribe(e => {
-      //     console.log("Yayyyyy! No change detection for drag end!")
-      //   })
-      //   Observable.fromEvent(this.map, "down").subscribe(e => {
-      //     console.log("Yayyyyy! No change detection for drag down!")
-      //   })
-      //   Observable.fromEvent(this.map, "mouseover").subscribe(e => {
-      //     console.log("Yayyyyy! No change detection for mouseover!")
-      //   })
-      //   Observable.fromEvent(this.map, "mousemove").subscribe(e => {
-      //     console.log("Yayyyyy! No change detection for mousemove!")
-      //   })
-      //   Observable.fromEvent(this.map, "move").subscribe(e => {
-      //     console.log("Yayyyyy! No change detection for move!")
-      //   })
-      // })
-      // this.map.on("mouseover", function(e){
-      //   console.log("mouseover")
-      // })
-
+      setTimeout(() => this.map.invalidateSize(true), 0)
       this.loadMarkers()
       this.isMapInitialised = true
     }
