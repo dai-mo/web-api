@@ -15,11 +15,21 @@ export class FlowTemplate {
   date:string
 }
 
+export class ProcessorProperties {
+  _PROCESSOR_CLASS: string
+  _PROCESSOR_TYPE: string
+  _READ_SCHEMA_ID: string
+  _READ_SCHEMA: string
+  _WRITE_SCHEMA_ID: string
+  _WRITE_SCHEMA: string
+}
+
 export class Processor {
   id: string
   type: string
   processorType: string
   status: string
+  properties: ProcessorProperties
 }
 
 export class ConnectionPort {
@@ -61,7 +71,7 @@ export class FlowNode {
 
 
   private baseUrl: string = window.location.protocol + "//" +
-  window.location.host
+    window.location.host
   constructor(uuid: string,
               type: string,
               ptype: string,

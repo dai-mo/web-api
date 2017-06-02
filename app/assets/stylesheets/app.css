@@ -412,6 +412,20 @@ div.ui-datatable-scrollable-body {
   overflow-y: scroll;
 }
 
+.schema-panel-view {
+  height:30vh;
+  overflow: auto
+}
+
+.schema-panel-view .ui-state-highlight {
+  background:  #ffffff !important;
+  color: #000000 !important;
+}
+
+.schema-panel-view .ui-widget-content {
+  border: none !important;
+}
+
 
 
 

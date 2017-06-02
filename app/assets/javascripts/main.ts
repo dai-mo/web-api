@@ -89,6 +89,8 @@ import {ContextStore} from "./shared/context.store"
 import {FlowEntityComponent} from "./shared/flow-entity.component"
 import {FlowEntityInfoComponent} from "./shared/flow-entity-info.component"
 import {ProcessorSchemaComponent} from "./shared/processor-schema.component"
+import {SchemaPanelComponent} from "./shared/schema-panel.component"
+import {SchemaService} from "./shared/schema.service"
 
 
 export const routes: Routes = [ {path: "", component: LayoutComponent}]
@@ -114,7 +116,8 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
     FlowGraphDirective,
     FlowEntityComponent,
     FlowEntityInfoComponent,
-    ProcessorSchemaComponent
+    ProcessorSchemaComponent,
+    SchemaPanelComponent
   ],
   providers:[{provide: Window, useValue: window},
     FlowService,
@@ -123,7 +126,8 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
     KeycloakService,
     ErrorService,
     MapService,
-    FlowGraphService],
+    FlowGraphService,
+    SchemaService],
   imports: [// Angular Imports follow ...
     BrowserAnimationsModule,
     HttpModule,
