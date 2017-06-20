@@ -36,7 +36,13 @@
         type="button"
         (click)="finalise()"
         [disabled]="entityInfo.selectedFlowEntityId === undefined"
-        label="{{finaliseLabel}}"></button>
+        label="{{finaliseLabel}}">
+        </button>
+        <button pButton
+        type="button"
+        (click)="cancel()"
+        label="Cancel">
+        </button>
     </div>
 </p-footer>
 

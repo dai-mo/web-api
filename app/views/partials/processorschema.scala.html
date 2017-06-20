@@ -1,0 +1,18 @@
+@()
+<schema-panel [processor]="uiStateStore.selectedProcessor | async"></schema-panel>
+
+<p-footer>
+    <div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+        <button pButton
+        type="button"
+        (click)="save()"
+        [disabled]="false"
+        label="Save">
+        </button>
+        <button pButton
+        type="button"
+        (click)="cancel()"
+        label="Cancel">
+        </button>
+    </div>
+</p-footer>

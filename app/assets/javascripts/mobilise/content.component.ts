@@ -4,7 +4,7 @@
 
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
-import {Component, Input, ViewChild} from "@angular/core"
+import {ChangeDetectionStrategy, Component, Input, ViewChild} from "@angular/core"
 import {Provenance, Action} from "../analyse/flow.model"
 import {SelectItem} from "primeng/components/common/api"
 import {ProcessorPanelComponent} from "./processor-panel.component"

@@ -4,9 +4,6 @@ import {FlowGraphService} from "./shared/flow-graph.service"
 import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 
-declare let $: any
-declare let cola: any
-
 
 @Directive({
   selector: "[flow-graph]"

@@ -13,11 +13,13 @@
         [header]="tabz.title"
         [selected]="tabz.active"
         [disabled]="tabz.disabled">
-            <div pTooltip="{{tabz.id}}"
-            tooltipPosition="top"
-            class="pull-left"
-            [ngClass]="{green: tabz.isRunning(), red: tabz.isStopped(), black: tabz.isNotStarted()}">{{tabz.name}}</div>
-            <div class="flex-panel fill"  flow-graph [showFlowInstance]="tabz.flowInstance">Content</div>
+            <div class="flex-panel-parent">
+                <div pTooltip="{{tabz.id}}"
+                tooltipPosition="top"
+                class="pull-left"
+                [ngClass]="{green: tabz.isRunning(), red: tabz.isStopped(), black: tabz.isNotStarted()}">{{tabz.name}}</div>
+                <div class="flex-panel"  flow-graph [showFlowInstance]="tabz.flowInstance">Content</div>
+            </div>
         </p-tabPanel>
     </p-tabView>
 </div>

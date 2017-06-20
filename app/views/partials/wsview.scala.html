@@ -44,12 +44,14 @@
                     <span class="fa fa-bars"></span>
                 </button>
             </div>
+
             <div *ngFor="let cbItem of contextStore.contextBarObs(name) | async"
             class="btn-group btn-group-sm pull-right">
                 <button *ngIf="uiStateStore.store.flowTabs.length > 0"
                 class="btn btn-secondary"
                 (click)="cbItem.command($event)"
-                [disabled]="!cbItem.enabled">
+                [disabled]="!cbItem.enabled"
+                [hidden]="cbItem.hidden">
                     <i class="fa {{cbItem.iconClass}}" aria-hidden="true" ></i>
                 </button>
             </div>

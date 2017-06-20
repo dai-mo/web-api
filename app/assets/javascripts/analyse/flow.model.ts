@@ -2,6 +2,10 @@
  * Created by cmathew on 14/07/16.
  */
 
+export enum EntityType {
+  FLOW_INSTANCE,
+  PROCESSOR
+}
 
 export class FlowTemplate {
   id: string
@@ -11,11 +15,21 @@ export class FlowTemplate {
   date:string
 }
 
+export class ProcessorProperties {
+  _PROCESSOR_CLASS: string
+  _PROCESSOR_TYPE: string
+  _READ_SCHEMA_ID: string
+  _READ_SCHEMA: string
+  _WRITE_SCHEMA_ID: string
+  _WRITE_SCHEMA: string
+}
+
 export class Processor {
   id: string
   type: string
   processorType: string
   status: string
+  properties: ProcessorProperties
 }
 
 export class ConnectionPort {
@@ -57,7 +71,7 @@ export class FlowNode {
 
 
   private baseUrl: string = window.location.protocol + "//" +
-  window.location.host
+    window.location.host
   constructor(uuid: string,
               type: string,
               ptype: string,
@@ -75,7 +89,7 @@ export class FlowNode {
 
 
     switch (ptype) {
-      case "data-ingestion":
+      case "ingestion":
         return this.baseUrl + "/assets/images/ingestion_processor.svg"
       case "worker":
         return this.baseUrl + "/assets/images/worker_processor.svg"

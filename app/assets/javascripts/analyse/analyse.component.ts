@@ -44,16 +44,17 @@ export class AnalyseComponent  implements OnInit {
   ngOnInit() {
     let cmItems: ContextMenuItem[] = [
       {label: "Instantiate Flow", command: (event) => {
-        this.showDialog()
+        this.showTemplateInfoDialog()
       }},
       {label: "Create Flow"}
     ]
     this.contextStore.addContextMenu(UiId.ANALYSE, cmItems)
   }
 
-  showDialog() {
+  showTemplateInfoDialog() {
     this.getTemplates()
   }
+
 
   public toggleDropdown(event:MouseEvent):void {
     event.preventDefault()

@@ -1,5 +1,5 @@
 import {MenuItem, SelectItem} from "primeng/primeng"
-import {FlowTemplate} from "../analyse/flow.model"
+import {EntityType, FlowTemplate} from "../analyse/flow.model"
 import {UIStateStore} from "./ui.state.store"
 /**
  * Created by cmathew on 04.05.17.
@@ -16,8 +16,10 @@ export class UiId {
 export interface ContextMenuItem extends MenuItem {}
 
 export class ContextBarItem {
+  entityType: EntityType
   iconClass: string = ""
   enabled: boolean = false
+  hidden?: boolean = false
   command: (event: any) => void
 }
 
@@ -119,6 +121,7 @@ export interface FlowEntityInfo {
   list(): FlowEntity[]
   info(flowEntityId: string): FieldGroup[]
   finalise(uiStateStore: UIStateStore): void
+  cancel(uiStateStore: UIStateStore): void
 }
 
 export class TemplateInfo implements FlowEntityInfo {
@@ -152,6 +155,10 @@ export class TemplateInfo implements FlowEntityInfo {
 
   finalise(uiStateStore: UIStateStore): void {
     uiStateStore.updateFlowInstantiationId(this.selectedFlowEntityId)
+    uiStateStore.isTemplateInfoDialogVisible = false
+  }
+
+  cancel(uiStateStore: UIStateStore): void {
     uiStateStore.isTemplateInfoDialogVisible = false
   }
 }

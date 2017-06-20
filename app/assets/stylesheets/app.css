@@ -174,7 +174,7 @@ html, body {
   width: 100%;
   height: 100%;
   display:-webkit-flex;
-  display:flex;
+  display:flex ;
   flex-direction:column;
 }
 
@@ -410,6 +410,20 @@ html, body {
 
 div.ui-datatable-scrollable-body {
   overflow-y: scroll;
+}
+
+.schema-panel-view {
+  height:30vh;
+  overflow: auto
+}
+
+.schema-panel-view .ui-state-highlight {
+  background:  #ffffff !important;
+  color: #000000 !important;
+}
+
+.schema-panel-view .ui-widget-content {
+  border: none !important;
 }
 
 

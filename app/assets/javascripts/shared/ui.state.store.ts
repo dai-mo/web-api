@@ -1,7 +1,8 @@
 import {Injectable, NgZone} from "@angular/core"
 import {BehaviorSubject, Observable} from "rxjs/Rx"
-import {FlowInstance, FlowCreation, FlowTab, Provenance, VisTab} from "../analyse/flow.model"
+import {FlowInstance, FlowCreation, FlowTab, Provenance, VisTab, EntityType, Processor} from "../analyse/flow.model"
 import {UiId, ViewsVisible} from "./ui.models"
+import {ContextStore} from "./context.store"
 
 @Injectable()
 export class UIStateStore {
@@ -11,7 +12,8 @@ export class UIStateStore {
     visTabs: VisTab[]
   }
 
-  constructor(private ngZone: NgZone) {
+  constructor(private contextStore: ContextStore,
+              private ngZone: NgZone) {
     this.store = {
       flowTabs: [],
       visTabs: []
@@ -73,12 +75,39 @@ export class UIStateStore {
 
   selectedProcessorId: Observable<string> = this._selectedProcessorId.asObservable()
 
+  private _selectedProcessor: BehaviorSubject<Processor> = new BehaviorSubject(null)
+
+  selectedProcessor: Observable<Processor> = this._selectedProcessor.asObservable()
+
   setSelectedProcessorId(processorId: string) {
+    this.contextStore.getContextBarItems(UiId.ANALYSE)
+      .forEach(cbItem => {
+        if(cbItem.entityType === EntityType.PROCESSOR)
+          if(processorId === null)
+            cbItem.hidden = true
+          else
+            cbItem.hidden = false
+        else
+        if(processorId === null)
+          cbItem.hidden = false
+        else
+          cbItem.hidden = true
+      })
     this.ngZone.run(() => this._selectedProcessorId.next(processorId))
+    let selectedProcessor = this.getActiveFlowProcessor(processorId)
+    this.ngZone.run(() => this._selectedProcessor.next(selectedProcessor))
   }
 
   getSelectedProcessorId(): string {
     return this._selectedProcessorId.getValue()
+  }
+
+  getActiveFlowProcessor(processorId: string): Processor {
+    if(processorId)
+      return this.getActiveFlowTab().flowInstance
+        .processors.find(p => processorId.endsWith(p.id))
+    else
+      return null
   }
 
   private _flowInstanceToAdd: BehaviorSubject<FlowInstance> = new BehaviorSubject(null)
@@ -94,6 +123,10 @@ export class UIStateStore {
 
   getFlowTabs(): Array<FlowTab> {
     return this._flowTabs.getValue()
+  }
+
+  getActiveFlowTab(): FlowTab {
+    return this._flowTabs.getValue().find(ft => ft.active)
   }
 
 
@@ -188,6 +221,7 @@ export class UIStateStore {
 
   // ---- Dialog Flags Start ----
   public isTemplateInfoDialogVisible: boolean = false
+  public isProcessorSchemaDialogVisible: boolean = false
   // ---- Dialog Flags End   ----
 
 }

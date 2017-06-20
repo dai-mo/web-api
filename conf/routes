@@ -41,6 +41,7 @@ GET     /api/flow/provenance/list/:pid   controllers.FlowProvenanceApi.list(pid:
 POST    /api/flow/processor/create/:fid  controllers.FlowProcessorApi.create(fid: String)
 PUT     /api/flow/processor/start/:pid   controllers.FlowProcessorApi.start(pid: String)
 PUT     /api/flow/processor/stop/:pid    controllers.FlowProcessorApi.stop(pid: String)
+PUT     /api/flow/processor/schema/:fid/:pid   controllers.FlowProcessorApi.updateSchema(fid:String, pid: String)
 GET     /api/flow/processor/list/:property/:regex    controllers.FlowProcessorApi.list(property: String, regex: String)
 ##- Connection Api
 ->      /api/flow/connection             controllers.FlowConnectionApi
