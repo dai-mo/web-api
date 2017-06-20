@@ -5,6 +5,8 @@ import java.util.UUID
 import controllers.util.Req
 import org.dcs.api.processor.RemoteProcessor
 import org.dcs.api.service.ProcessorServiceDefinition
+import org.dcs.commons.SchemaAction
+import org.dcs.commons.serde.JsonPath
 import org.dcs.commons.serde.JsonSerializerImplicits._
 import org.scalatest.Ignore
 import org.scalatestplus.play.OneAppPerTest
@@ -110,6 +112,59 @@ class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
       ).get
 
       status(deleteInstance) mustBe OK
+    }
+
+    "update processor schema correctly" taggedAs IT in {
+      init(app)
+
+      val clientId = UUID.randomUUID().toString
+
+      val templates = route(app,
+        withDcsCookiesHeaders(FakeRequest(GET, "/api/flow/templates"))).get
+
+      status(templates) mustBe OK
+
+      val templatesResponse = contentAsJson(templates).as[JsArray]
+      val flowTemplate = templatesResponse.value.find(ft => (ft \ "name").as[String] == "CleanGBIFDataScratch")
+
+      assert(flowTemplate.isDefined)
+
+
+      val flowTemplateId = (flowTemplate.get \ "id").as[String]
+
+      val flowInstance = route(app,
+        withDcsCookiesHeaders(FakeRequest(POST, "/api/flow/instances/instantiate/" + flowTemplateId))
+          .withHeaders((Req.FlowClientId, clientId))
+      ).get
+
+      status(flowInstance) mustBe OK
+
+      val createInstanceResponse = contentAsJson(flowInstance).as[JsObject]
+
+      val flowInstanceId = (createInstanceResponse \ "id").as[String]
+
+      val processorId = ((createInstanceResponse \ "processors").
+        as[JsArray].value.find(jsv => (jsv \ "processorType").as[String] == RemoteProcessor.IngestionProcessorType).
+        get \ "id").as[String]
+
+      val SciNName = "scientificName"
+      val remSciNameAction = SchemaAction(SchemaAction.SCHEMA_REM_ACTION, JsonPath.Root + JsonPath.Sep + SciNName)
+
+      val body = List(remSciNameAction).toJson
+      val updatedProcessors =  route(app,
+        withDcsCookiesHeaders(FakeRequest(PUT, "/api/flow/processor/schema/" + flowInstanceId + "/" + processorId))
+          .withTextBody(List(remSciNameAction).toJson)
+          .withHeaders((Req.FlowClientId, clientId))).get
+
+      status(updatedProcessors) mustBe OK
+
+      val updateProcessorSchemaResponse = contentAsJson(updatedProcessors).as[JsArray]
+
+      assert(updateProcessorSchemaResponse.value.size == 4)
+
+      updateProcessorSchemaResponse.value.tail.
+        foreach(p => assert((p \ "properties" \ "_READ_SCHEMA").as[String].nonEmpty))
+
     }
   }
 

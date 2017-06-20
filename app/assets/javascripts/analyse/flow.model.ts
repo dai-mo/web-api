@@ -89,7 +89,7 @@ export class FlowNode {
 
 
     switch (ptype) {
-      case "data-ingestion":
+      case "ingestion":
         return this.baseUrl + "/assets/images/ingestion_processor.svg"
       case "worker":
         return this.baseUrl + "/assets/images/worker_processor.svg"
