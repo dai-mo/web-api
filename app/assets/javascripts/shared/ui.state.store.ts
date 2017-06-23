@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable} from "rxjs/Rx"
 import {FlowInstance, FlowCreation, FlowTab, Provenance, VisTab, EntityType, Processor} from "../analyse/flow.model"
 import {UiId, ViewsVisible} from "./ui.models"
 import {ContextStore} from "./context.store"
+import {SchemaAction} from "./schema.service"
 
 @Injectable()
 export class UIStateStore {
@@ -218,6 +219,16 @@ export class UIStateStore {
   updateFlowInstantiationId(flowInstantiationId: string) {
     this.ngZone.run(() => this._flowInstantiation.next({instantiationId: flowInstantiationId}))
   }
+
+  // --- Processor Schema State Start ---
+  private _isSchemaUpdatable: BehaviorSubject<boolean> = new BehaviorSubject(false)
+  private isSchemaUpdatable =  this._isSchemaUpdatable.asObservable()
+
+  getSchemaUpdatable(): boolean  { return this._isSchemaUpdatable.getValue() }
+  setSchemaUpdatable(isSchemaUpdatable: boolean) {
+    this.ngZone.run(() => this._isSchemaUpdatable.next(isSchemaUpdatable))
+  }
+  // --- Processor Schema State End ---
 
   // ---- Dialog Flags Start ----
   public isTemplateInfoDialogVisible: boolean = false

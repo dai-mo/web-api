@@ -3,23 +3,50 @@
  */
 
 import {Injectable} from "@angular/core"
-import {ProcessorProperties} from "../analyse/flow.model"
+import {Processor, ProcessorProperties} from "../analyse/flow.model"
+import {ApiHttpService} from "./api-http.service"
+import {Http} from "@angular/http"
+import {Observable} from "rxjs/Rx"
 
 
 export class AvroSchemaField {
   name: string
-  type: string[] | AvroSchemaType
-  default: string | boolean | number
+  type: string | string[] | AvroSchemaType
+  doc: string = ""
+  defaultValue: string | boolean | number = null
 
   static equals(fa:AvroSchemaField, fb: AvroSchemaField): boolean {
     if(!fa && !fb) return true
     if(!fa || !fb) return false
-    let fat: string[] | AvroSchemaType = fa.type
-    let fbt: string[] | AvroSchemaType = fb.type
-    if(fat instanceof Array && fbt instanceof Array){
-      if(fa.name === fb.name && fat[1] === fbt[1]) return true
+    if(fa.name !== fb.name) return false
+    let fat: string | string[] | AvroSchemaType = fa.type
+    let fbt: string | string[] | AvroSchemaType = fb.type
+
+    if(typeof fat === "string" && typeof fbt === "string") {
+      if(fat === fbt) return true
     }
+
+    if(fat instanceof Array && fbt instanceof Array){
+      if(fat[1] === fbt[1]) return true
+    }
+
+    if((<AvroSchemaType>fat).name && (<AvroSchemaType>fbt).name){
+      if((<AvroSchemaType>fat).name === (<AvroSchemaType>fbt).name &&
+        (<AvroSchemaType>fat).type === (<AvroSchemaType>fbt).type)
+        return true
+    }
+
     return false
+  }
+
+  static typeAsString(asf:AvroSchemaField): string {
+    if(asf.type instanceof Array)
+      return asf.type[1]
+    if(typeof asf.type === "string")
+      return asf.type
+    if((<AvroSchemaType>asf.type).name)
+      return (<AvroSchemaType>asf.type).name
+    return undefined
   }
 }
 
@@ -33,50 +60,41 @@ export class AvroSchema extends AvroSchemaType {
   namespace: string
 }
 
+export class SchemaAction {
+  action: string
+  avroPath: string
+  field: AvroSchemaField
+
+  constructor(action: string,
+              avroPath: string,
+              field: AvroSchemaField) {
+    this.action = action
+    this.avroPath = avroPath
+    this.field = field
+  }
+}
 
 
 @Injectable()
-export class SchemaService {
+export class SchemaService extends ApiHttpService {
 
-  schema(schemaId: string): AvroSchema {
-    return {
-      "namespace": "org.dcs.processor",
-      "type": "record",
-      "name": "GBIFOccurrence",
-      "fields": [
-        {"name": "scientificName",   "type": ["null", "string"], "default": null},
-        {"name": "decimalLongitude", "type": ["null", "double"], "default": null},
-        {"name": "decimalLatitude",  "type": ["null", "double"], "default": null},
-        {"name": "institutionCode",  "type": ["null", "string"], "default": null},
-        {"name": "institutionCode1",  "type": ["null", "string"], "default": null},
-        {"name": "scientificName1",   "type": ["null", "string"], "default": null},
-        {"name": "decimalLongitude1", "type": ["null", "double"], "default": null},
-        {"name": "decimalLatitude1",  "type": ["null", "double"], "default": null},
-        {"name": "institutionCode2",  "type": ["null", "string"], "default": null},
-        {"name": "institutionCode3",  "type": ["null", "string"], "default": null},
-        {"name": "scientificName2",   "type": ["null", "string"], "default": null},
-        {"name": "decimalLongitude2", "type": ["null", "double"], "default": null},
-        {"name": "decimalLatitude2",  "type": ["null", "double"], "default": null},
-        {"name": "institutionCode4",  "type": ["null", "string"], "default": null},
-        {"name": "institutionCode5",  "type": ["null", "string"], "default": null}
-      ]
-    }
+  private processorSchemaUrl = "api/flow/processor/schema/"
+
+  private schemaCache: Map<string, AvroSchema> = new Map()
+
+  constructor(private fsHttp: Http) {
+    super()
   }
 
-  wSchema: AvroSchema = {
-    "namespace": "org.dcs.processor",
-    "type": "record",
-    "name": "GBIFOccurrence",
-    "fields": [
-      {"name": "scientificName",   "type": ["null", "string"], "default": null},
-      {"name": "decimalLongitude", "type": ["null", "double"], "default": null},
-      {"name": "decimalLatitude",  "type": ["null", "double"], "default": null},
-      {"name": "institutionCode",  "type": ["null", "string"], "default": null}
-
-    ]
+  schema(schemaId: string): Observable<AvroSchema> {
+    return super.get(this.processorSchemaUrl + schemaId)
   }
 
-  isSameNamespaceId(schema: AvroSchema, schemaToCompare: AvroSchema): boolean {
+  updateSchema(flowInstanceId: string, processorId: string, schemaActions: SchemaAction[]): Observable<Processor[]> {
+    return super.put(this.processorSchemaUrl + flowInstanceId + "/" + processorId, schemaActions)
+  }
+
+  static isSameNamespaceId(schema: AvroSchema, schemaToCompare: AvroSchema): boolean {
     if(schema && schemaToCompare &&
       schema.namespace === schemaToCompare.namespace && schema.name === schemaToCompare.name)
       return true
@@ -84,46 +102,59 @@ export class SchemaService {
       return false
   }
 
-  baseSchema(processorProperties: ProcessorProperties): AvroSchema {
-    let readSchema: AvroSchema = this.readSchema(processorProperties)
-
-    let writeSchema: AvroSchema = this.writeSchema(processorProperties)
-
-    if(this.isSameNamespaceId(readSchema, writeSchema))
-      return readSchema
-
-    return writeSchema
+  baseSchema(processorProperties: ProcessorProperties): Observable<AvroSchema> {
+    if(this.isPropertyDefined(processorProperties._WRITE_SCHEMA_ID))
+      return this.schemaFromId(processorProperties._WRITE_SCHEMA_ID)
+    else
+      return this.readSchema(processorProperties)
   }
 
-  outputSchema(processorProperties: ProcessorProperties): AvroSchema {
-    let readSchema: AvroSchema = this.readSchema(processorProperties)
+  outputSchema(processorProperties: ProcessorProperties): Observable<AvroSchema> {
 
-    let writeSchema: AvroSchema = this.writeSchema(processorProperties)
+    let writeSchema: Observable<AvroSchema> = this.writeSchema(processorProperties)
 
-    if(writeSchema) return writeSchema
+    if(writeSchema !== undefined) return writeSchema
 
-    return readSchema
+    return this.readSchema(processorProperties)
   }
 
-  readSchema(processorProperties: ProcessorProperties): AvroSchema {
-    if(processorProperties._READ_SCHEMA_ID)
-      return this.schema(processorProperties._READ_SCHEMA_ID)
+  readSchema(processorProperties: ProcessorProperties): Observable<AvroSchema> {
 
-    if(processorProperties._READ_SCHEMA)
-      return JSON.parse(processorProperties._READ_SCHEMA)
+    if(this.isPropertyDefined(processorProperties._READ_SCHEMA))
+      return Observable.of(JSON.parse(processorProperties._READ_SCHEMA))
+
+    if(this.isPropertyDefined(processorProperties._READ_SCHEMA_ID))
+      return this.schemaFromId(processorProperties._READ_SCHEMA_ID)
 
     return undefined
   }
 
-  writeSchema(processorProperties: ProcessorProperties): AvroSchema {
-    return this.wSchema
+  writeSchema(processorProperties: ProcessorProperties): Observable<AvroSchema> {
+    if(this.isPropertyDefined(processorProperties._WRITE_SCHEMA))
+      return Observable.of(JSON.parse(processorProperties._WRITE_SCHEMA))
 
-    // if(processorProperties._WRITE_SCHEMA_ID)
-    //   return this.schema(processorProperties._READ_SCHEMA_ID)
-    //
-    // if(processorProperties._WRITE_SCHEMA)
-    //   return JSON.parse(processorProperties._READ_SCHEMA)
-    //
-    // return undefined
+    if(this.isPropertyDefined(processorProperties._WRITE_SCHEMA_ID))
+      return this.schemaFromId(processorProperties._WRITE_SCHEMA_ID)
+
+    return undefined
   }
+
+  schemaFromId(schemaId: string): Observable<AvroSchema> {
+    if(schemaId) {
+      let cachedSchema = this.schemaCache.get(schemaId)
+      if (cachedSchema)
+        return Observable.of(cachedSchema)
+      else
+        return this.schema(schemaId).map(rs => {
+          this.schemaCache.set(schemaId, rs)
+          return rs
+        })
+    }
+    return undefined
+  }
+
+  isPropertyDefined(property: string): boolean {
+    return property !== undefined && property !== ""
+  }
+
 }
