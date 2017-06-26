@@ -1,22 +1,19 @@
-
 import {Injectable} from "@angular/core"
-import {Http, Headers, RequestOptions} from "@angular/http"
+import {Headers, Http, RequestOptions} from "@angular/http"
 import "rxjs/add/operator/toPromise"
 import "rxjs/add/operator/map"
 import {Observable} from "rxjs/Rx"
 
 
-import {FlowTemplate, FlowInstance, FlowGraph, FlowEdge, FlowNode, Processor, Provenance} from "../analyse/flow.model"
+import {FlowEdge, FlowGraph, FlowInstance, FlowNode, FlowTemplate, Provenance} from "../analyse/flow.model"
 import {ErrorService} from "./util/error.service"
-import {KeycloakService} from "./keycloak.service"
+import {ApiHttpService} from "./api-http.service"
 
 
 @Injectable()
-export class FlowService {
+export class FlowService extends ApiHttpService {
 
-  private flowClientId: string
 
-  private clientIdUrl = "api/cid"
   private templatesUrl = "api/flow/templates"
   private instantiateFlowBaseUrl: string = "api/flow/instances/instantiate/"
   private createInstanceBaseUrl: string = "api/flow/instances/create/"
@@ -26,8 +23,9 @@ export class FlowService {
 
   private listProvenanceBaseUrl: string = "api/flow/provenance/list/"
 
-  constructor(private http: Http,
-              private errorService: ErrorService) {}
+  constructor(private errorService: ErrorService) {
+    super()
+  }
 
   updateHeaders(options: RequestOptions, rpt: string, version: string = ""): RequestOptions  {
     if(options.headers == null)

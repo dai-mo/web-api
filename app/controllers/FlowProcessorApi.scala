@@ -7,6 +7,8 @@ import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
 import global.ResultSerialiserImplicits._
 import org.dcs.api.service.ProcessorServiceDefinition
 import org.dcs.commons.SchemaAction
+import org.dcs.commons.error.{ErrorConstants, ErrorResponse}
+import org.dcs.commons.serde.AvroSchemaStore
 import org.dcs.commons.serde.JsonSerializerImplicits._
 import org.dcs.flow.ProcessorApi
 import org.dcs.remote.ZkRemoteService
@@ -52,6 +54,12 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActi
   def create(flowInstanceId: String): EssentialAction =  csrfCheckAction async { implicit request =>
     ProcessorApi.create(Req.body.toObject[ProcessorServiceDefinition], flowInstanceId, Req.clientId)
       .map(_.toResult)
+  }
+
+  def schema(schemaId: String): EssentialAction = csrfCheckAction { implicit request =>
+    AvroSchemaStore.add(schemaId)
+    AvroSchemaStore.get(schemaId).map(s => Ok(s.toString)).
+      getOrElse(ErrorConstants.DCS002.toResult)
   }
 
   def updateSchema(flowInstanceId: String, processorId: String): EssentialAction = csrfCheckAction async { implicit request =>

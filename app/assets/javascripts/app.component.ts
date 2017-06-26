@@ -5,7 +5,7 @@
  * Created by cmathew on 12/07/16.
  */
 
-import {Component} from "@angular/core"
+import {Component, Injector} from "@angular/core"
 import {FlowService} from "./shared/flow.service"
 
 @Component({
@@ -16,7 +16,12 @@ import {FlowService} from "./shared/flow.service"
 })
 export class App {
 
-    constructor(private flowService: FlowService) {
-        this.flowService.genClientId()
+    constructor(private injector: Injector) {
+        ServiceLocator.injector = injector
+        // this.flowService.genClientId()
     }
+}
+
+export class ServiceLocator {
+    static injector: Injector
 }

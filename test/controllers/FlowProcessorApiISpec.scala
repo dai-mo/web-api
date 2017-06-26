@@ -3,14 +3,15 @@ package controllers
 import java.util.UUID
 
 import controllers.util.Req
+import org.apache.avro.Schema
 import org.dcs.api.processor.RemoteProcessor
 import org.dcs.api.service.ProcessorServiceDefinition
-import org.dcs.commons.SchemaAction
+import org.dcs.commons.{SchemaAction, SchemaField}
 import org.dcs.commons.serde.JsonPath
 import org.dcs.commons.serde.JsonSerializerImplicits._
 import org.scalatest.Ignore
 import org.scalatestplus.play.OneAppPerTest
-import play.api.libs.json.{JsArray, JsObject}
+import play.api.libs.json.{JsArray, JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, route, _}
 
@@ -125,7 +126,7 @@ class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
       status(templates) mustBe OK
 
       val templatesResponse = contentAsJson(templates).as[JsArray]
-      val flowTemplate = templatesResponse.value.find(ft => (ft \ "name").as[String] == "CleanGBIFDataScratch")
+      val flowTemplate = templatesResponse.value.find(ft => (ft \ "name").as[String] == "CleanGBIFDataScratch1")
 
       assert(flowTemplate.isDefined)
 
@@ -147,24 +148,49 @@ class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
         as[JsArray].value.find(jsv => (jsv \ "processorType").as[String] == RemoteProcessor.IngestionProcessorType).
         get \ "id").as[String]
 
+
       val SciNName = "scientificName"
       val remSciNameAction = SchemaAction(SchemaAction.SCHEMA_REM_ACTION, JsonPath.Root + JsonPath.Sep + SciNName)
 
-      val body = List(remSciNameAction).toJson
-      val updatedProcessors =  route(app,
+      var body = List(remSciNameAction).toJson
+      var updatedRemProcessors =  route(app,
         withDcsCookiesHeaders(FakeRequest(PUT, "/api/flow/processor/schema/" + flowInstanceId + "/" + processorId))
-          .withTextBody(List(remSciNameAction).toJson)
+          .withJsonBody(Json.parse(List(remSciNameAction).toJson))
           .withHeaders((Req.FlowClientId, clientId))).get
 
-      status(updatedProcessors) mustBe OK
+      status(updatedRemProcessors) mustBe OK
 
-      val updateProcessorSchemaResponse = contentAsJson(updatedProcessors).as[JsArray]
+      var updateProcessorRemSchemaResponse = contentAsJson(updatedRemProcessors).as[JsArray]
 
-      assert(updateProcessorSchemaResponse.value.size == 4)
+      assert(updateProcessorRemSchemaResponse.value.size == 4)
 
-      updateProcessorSchemaResponse.value.tail.
-        foreach(p => assert((p \ "properties" \ "_READ_SCHEMA").as[String].nonEmpty))
+      updateProcessorRemSchemaResponse.value.tail.
+        foreach(p => assert(
+          new Schema.Parser()
+            .parse((p \ "properties" \ "_READ_SCHEMA").as[String]).getField(SciNName) == null
+        ))
 
+      val addSciNameAction = SchemaAction(SchemaAction.SCHEMA_ADD_ACTION,
+        JsonPath.Root,
+        new SchemaField(SciNName, Schema.Type.STRING.getName, "", null))
+
+
+      val updatedAddSchemaProcessors =  route(app,
+        withDcsCookiesHeaders(FakeRequest(PUT, "/api/flow/processor/schema/" + flowInstanceId + "/" + processorId))
+          .withJsonBody(Json.parse(List(addSciNameAction).toJson))
+          .withHeaders((Req.FlowClientId, clientId))).get
+
+      status(updatedAddSchemaProcessors) mustBe OK
+
+      val updateProcessorAddSchemaResponse = contentAsJson(updatedAddSchemaProcessors).as[JsArray]
+
+      assert(updateProcessorAddSchemaResponse.value.size == 4)
+
+      updateProcessorAddSchemaResponse.value.tail.
+        foreach(p => assert(
+          new Schema.Parser()
+            .parse((p \ "properties" \ "_READ_SCHEMA").as[String]).getField(SciNName) != null
+        ))
     }
   }
 
