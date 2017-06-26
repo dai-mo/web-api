@@ -5,13 +5,14 @@
 import {Injectable, NgZone} from "@angular/core"
 import {FlowGraph} from "../flow.model"
 import {UIStateStore} from "../../shared/ui.state.store"
+import {Msg} from "../../shared/ui.models"
 
 declare var vis: any
 
 @Injectable()
 export class FlowGraphService {
 
-  constructor(private uiStateStore:UIStateStore,
+  constructor(private uiStateStore: UIStateStore,
               private ngZone: NgZone) {
 
   }
@@ -63,10 +64,11 @@ export class FlowGraphService {
       if (selectedNodes.length > 0) {
         let pid = selectedNodes[0]
         uiss.setSelectedProcessorId(pid)
+        uiss.displayProcessorValidationErrors(pid)
       } else {
         uiss.setSelectedProcessorId(null)
       }
-    })
+    }.bind(this))
 
     return network
   }

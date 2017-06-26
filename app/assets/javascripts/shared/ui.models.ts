@@ -1,9 +1,24 @@
-import {MenuItem, SelectItem} from "primeng/primeng"
+import {MenuItem, Message, SelectItem} from "primeng/primeng"
 import {EntityType, FlowTemplate} from "../analyse/flow.model"
 import {UIStateStore} from "./ui.state.store"
 /**
  * Created by cmathew on 04.05.17.
  */
+export interface Msg extends Message {}
+
+export class MsgGroup {
+  messages: Msg[]
+  sticky: boolean = false
+  delay: number = 3000
+
+  constructor(messages: Msg[],
+              sticky: boolean,
+              delay: number) {
+    this.messages = messages
+    this.sticky = sticky
+    this.delay = delay
+  }
+}
 
 export class UiId {
   static ANALYSE: string = "analyse"

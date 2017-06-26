@@ -83,7 +83,9 @@ export class FlowService extends ApiHttpService {
 
   toFlowGraph(flowInstance: FlowInstance): FlowGraph {
     let links: FlowEdge[] = []
-    let nodes: FlowNode[] = flowInstance.processors.map(p => new FlowNode(p.id, p.type, p.processorType))
+    let nodes: FlowNode[] = flowInstance.processors.map(p =>
+      new FlowNode(p.id, p.type, p.processorType, p.validationErrors)
+    )
     flowInstance.connections.forEach(c => {
       let sourceNodes: FlowNode[] = nodes.filter(p =>  p.uuid === c.source.id)
       let targetNodes: FlowNode[] = nodes.filter(p =>  p.uuid === c.destination.id)

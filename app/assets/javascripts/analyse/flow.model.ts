@@ -30,6 +30,7 @@ export class Processor {
   processorType: string
   status: string
   properties: ProcessorProperties
+  validationErrors: string[]
 }
 
 export class ConnectionPort {
@@ -66,15 +67,23 @@ export class FlowNode {
   title: string
   image: string
   shape: string = "image"
-  color: {background: string}  = {background: "white"}
-  highlight: {background: string}  = {background: "blue"}
+  color: {
+    background: string,
+    highlight: { background: string }
+  } = {
+    background: "white",
+    highlight: {background: "white"}
+  }
+  valMessages: string[] = []
 
 
   private baseUrl: string = window.location.protocol + "//" +
     window.location.host
+
   constructor(uuid: string,
               type: string,
               ptype: string,
+              validationErrors: string[] = [],
               label: string = "") {
     this.uuid = uuid
     this.id = type + ":" + uuid
@@ -83,6 +92,15 @@ export class FlowNode {
     this.ptype = ptype
     this.title = type.split(".").pop()
     this.image = this.pTypeImage(ptype)
+    this.validate(validationErrors)
+  }
+
+  validate(validationErrors: string[]) {
+    if (validationErrors !== undefined && validationErrors.length > 0) {
+      this.color.background = "#8e2f33"
+      this.color.highlight.background = "#8e2f33"
+      this.valMessages = validationErrors
+    }
   }
 
   pTypeImage(ptype: string): string {

@@ -1,7 +1,7 @@
 import {Injectable, NgZone} from "@angular/core"
 import {BehaviorSubject, Observable} from "rxjs/Rx"
 import {FlowInstance, FlowCreation, FlowTab, Provenance, VisTab, EntityType, Processor} from "../analyse/flow.model"
-import {UiId, ViewsVisible} from "./ui.models"
+import {Msg, MsgGroup, UiId, ViewsVisible} from "./ui.models"
 import {ContextStore} from "./context.store"
 import {SchemaAction} from "./schema.service"
 
@@ -109,6 +109,31 @@ export class UIStateStore {
         .processors.find(p => processorId.endsWith(p.id))
     else
       return null
+  }
+
+  displayProcessorValidationErrors(processorId: string) {
+    if (processorId !== undefined) {
+      let errors: Msg[] = []
+      console.log("node selected")
+      let processor = this.getActiveFlowProcessor(processorId)
+
+      if (processor !== null) {
+        if (processor.validationErrors !== undefined &&
+          processor.validationErrors.length > 0) {
+          console.log("validation errors")
+          processor.validationErrors
+            .forEach((e: string) => errors.push({
+              severity: "error",
+              summary: "Processor Invalid",
+              detail: e
+            }))
+        }
+        if (errors.length > 0) {
+          console.log("validation errors")
+          this.setDisplayMessages({messages: errors, sticky: true, delay: 1000})
+        }
+      }
+    }
   }
 
   private _flowInstanceToAdd: BehaviorSubject<FlowInstance> = new BehaviorSubject(null)
@@ -220,7 +245,7 @@ export class UIStateStore {
     this.ngZone.run(() => this._flowInstantiation.next({instantiationId: flowInstantiationId}))
   }
 
-  // --- Processor Schema State Start ---
+// --- Processor Schema State Start ---
   private _isSchemaUpdatable: BehaviorSubject<boolean> = new BehaviorSubject(false)
   private isSchemaUpdatable =  this._isSchemaUpdatable.asObservable()
 
@@ -228,11 +253,23 @@ export class UIStateStore {
   setSchemaUpdatable(isSchemaUpdatable: boolean) {
     this.ngZone.run(() => this._isSchemaUpdatable.next(isSchemaUpdatable))
   }
-  // --- Processor Schema State End ---
+// --- Processor Schema State End ---
 
-  // ---- Dialog Flags Start ----
+// --- Messages State Start ---
+  private _displayMesssages: BehaviorSubject<MsgGroup> =
+    new BehaviorSubject({messages:[], sticky: false, delay: 3000})
+  private displayMesssages =  this._displayMesssages.asObservable()
+
+  getDisplayMessages(): MsgGroup  { return this._displayMesssages.getValue() }
+  setDisplayMessages(msgGroup: MsgGroup) {
+    this.ngZone.run(() => this._displayMesssages
+      .next(msgGroup))
+  }
+// --- Messages State End ---
+
+// ---- Dialog Flags Start ----
   public isTemplateInfoDialogVisible: boolean = false
   public isProcessorSchemaDialogVisible: boolean = false
-  // ---- Dialog Flags End   ----
+// ---- Dialog Flags End   ----
 
 }

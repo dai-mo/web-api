@@ -426,7 +426,13 @@ div.ui-datatable-scrollable-body {
   border: none !important;
 }
 
+.ui-growl {
+  width: 500px;
+}
 
+.ui-growl-message {
+  width: 400px;
+}
 
 
 
