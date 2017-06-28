@@ -6,7 +6,7 @@
     </div>
     <p-tree
     [value]="nodes"
-    selectionMode="checkbox"
+    [selectionMode]="selectionMode"
     [(selection)]="selectedNodes"
     [propagateSelectionDown]="true"
     (onNodeSelect)="updateNode($event)"

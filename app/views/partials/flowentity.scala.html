@@ -1,7 +1,7 @@
 @()
 
 <div class="flex-row-parent" >
-    <div class="flex-panel-30">
+    <div class="flex-panel-30" *ngIf="!hasSingleEntity()">
         <p-listbox
         [options]="entities"
         [(ngModel)]="selectedEntityValue"
@@ -16,7 +16,7 @@
             </ng-template>
         </p-listbox>
     </div>
-    <div class="flex-panel-70 ">
+    <div [ngClass]="{'flex-panel-70': !hasSingleEntity(), 'flex-panel': hasSingleEntity()}">
         <div class="entity-tab-view">
             <p-tabView>
                 <p-tabPanel
@@ -25,6 +25,14 @@
                 selected="true">
                     <flow-entity-info [entityFieldGroup]="fieldGroup"></flow-entity-info>
                 </p-tabPanel>
+                @*<p-tabPanel*@
+                @**ngFor="let field of selectedEntitySpecificFields"*@
+                @*[header]="field.label"*@
+                @*selected="true">*@
+                    @*<schema-property *ngIf="field.isSchemaField()"*@
+                    @*[entityField]="field">*@
+                    @*</schema-property>*@
+                @*</p-tabPanel>*@
             </p-tabView>
         </div>
     </div>

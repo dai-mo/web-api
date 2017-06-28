@@ -91,6 +91,8 @@ import {FlowEntityInfoComponent} from "./shared/flow-entity-info.component"
 import {ProcessorSchemaComponent} from "./shared/processor-schema.component"
 import {SchemaPanelComponent} from "./shared/schema-panel.component"
 import {SchemaService} from "./shared/schema.service"
+import {SchemaPropertyComponent} from "./shared/schema-property.component"
+import {NotificationService} from "./shared/util/notification.service"
 
 
 export const routes: Routes = [ {path: "", component: LayoutComponent}]
@@ -117,7 +119,8 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
     FlowEntityComponent,
     FlowEntityInfoComponent,
     ProcessorSchemaComponent,
-    SchemaPanelComponent
+    SchemaPanelComponent,
+    SchemaPropertyComponent
   ],
   providers:[{provide: Window, useValue: window},
     FlowService,
@@ -125,6 +128,7 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
     ContextStore,
     KeycloakService,
     ErrorService,
+    NotificationService,
     MapService,
     FlowGraphService,
     SchemaService],

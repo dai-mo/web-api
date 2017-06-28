@@ -16,6 +16,7 @@ import {UIStateStore} from "./ui.state.store"
 export class SchemaPanelComponent  implements OnInit {
 
   @Input() processor: Processor
+  @Input() selectionMode: string
 
   baseSchema: Observable<AvroSchema>
 

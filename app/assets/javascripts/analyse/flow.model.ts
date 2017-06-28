@@ -15,13 +15,52 @@ export class FlowTemplate {
   date:string
 }
 
-export class ProcessorProperties {
-  _PROCESSOR_CLASS: string
-  _PROCESSOR_TYPE: string
-  _READ_SCHEMA_ID: string
-  _READ_SCHEMA: string
-  _WRITE_SCHEMA_ID: string
-  _WRITE_SCHEMA: string
+export class SchemaProperties {
+  static _FIELDS_TO_MAP = "_FIELDS_TO_MAP"
+  static _FIELD_ACTIONS = "_FIELDS_ACTIONS"
+
+  static isSchemaProperty(propertyName: string): boolean {
+    return propertyName === this._FIELDS_TO_MAP ||
+      propertyName === this._FIELD_ACTIONS
+  }
+}
+
+export class CoreProperties {
+  static _PROCESSOR_CLASS: string = "_PROCESSOR_CLASS"
+  static _PROCESSOR_TYPE: string = "_PROCESSOR_TYPE"
+  static _READ_SCHEMA_ID: string = "_READ_SCHEMA_ID"
+  static _READ_SCHEMA: string = "_READ_SCHEMA"
+  static _WRITE_SCHEMA_ID: string = "_WRITE_SCHEMA_ID"
+  static _WRITE_SCHEMA: string = "_WRITE_SCHEMA"
+
+  static isCoreProperty(propertyName: string): boolean {
+    return propertyName === this._PROCESSOR_CLASS ||
+      propertyName === this._PROCESSOR_TYPE ||
+      propertyName === this._READ_SCHEMA_ID ||
+      propertyName === this._READ_SCHEMA ||
+      propertyName === this._WRITE_SCHEMA_ID ||
+      propertyName === this._WRITE_SCHEMA
+  }
+}
+
+export class PossibleValue {
+  value: string
+  displayName: string
+  description: string
+}
+
+export class PropertyDefinition {
+  displayName: string
+  name: string
+  description: string
+  defaultValue: string
+  possibleValues: PossibleValue[]
+  required: boolean
+  sensitive: boolean
+  dynamic: boolean
+  type: string
+  level: number
+
 }
 
 export class Processor {
@@ -29,7 +68,8 @@ export class Processor {
   type: string
   processorType: string
   status: string
-  properties: ProcessorProperties
+  properties: any
+  propertyDefinitions: PropertyDefinition[]
   validationErrors: string[]
 }
 

@@ -1,5 +1,5 @@
 @()
-<div class="entity-info-view">
+<div class="entity-groups-view">
     <div *ngFor="let field of fields" [ngSwitch]="field.fieldUIType()">
         <div class="ui-g" *ngSwitchCase="fieldUIType.TEXT_NOT_EDITABLE">
             <div class="ui-g-4"><h4><span class="label label-default pull-right">{{field.label}}</span></h4></div>

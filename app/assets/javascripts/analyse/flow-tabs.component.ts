@@ -5,7 +5,8 @@ import {ErrorService} from "../shared/util/error.service"
 import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
 import {ContextStore} from "../shared/context.store"
-import {ContextBarItem, ContextMenuItem, UiId} from "../shared/ui.models"
+import {ContextBarItem, ContextMenuItem, ProcessorPropertiesConf, UiId} from "../shared/ui.models"
+import {NotificationService} from "../shared/util/notification.service"
 
 
 @Component({
@@ -24,6 +25,7 @@ export class FlowTabsComponent implements OnInit {
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
+              private notificationService: NotificationService,
               private uiStateStore: UIStateStore,
               private contextStore: ContextStore) {
     this.nifiUrl = window.location.protocol + "//" +
@@ -248,6 +250,23 @@ export class FlowTabsComponent implements OnInit {
         hidden: true,
         command: () => {
           this.uiStateStore.isProcessorSchemaDialogVisible = true
+        }},
+      {entityType: EntityType.PROCESSOR,
+        iconClass: "fa-cogs",
+        enabled: true,
+        hidden: true,
+        command: () => {
+          let conf: ProcessorPropertiesConf =
+            this.uiStateStore.getSelectedProcessorPropertiesConf()
+          if(conf === undefined || !conf.hasEntities()) {
+            this.uiStateStore.isProcessorPropertiesDialogVisible = false
+            this.notificationService
+              .warn({
+                title: "Processor Properties",
+                description: "No configurable properties for chosen processor"})
+          } else {
+            this.uiStateStore.isProcessorPropertiesDialogVisible = true
+          }
         }}
     ]
     this.contextStore.addContextBar(UiId.ANALYSE, cbItems)

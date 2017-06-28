@@ -1,5 +1,5 @@
 import {MenuItem, Message, SelectItem} from "primeng/primeng"
-import {EntityType, FlowTemplate} from "../analyse/flow.model"
+import {CoreProperties, EntityType, FlowTemplate, Processor, SchemaProperties} from "../analyse/flow.model"
 import {UIStateStore} from "./ui.state.store"
 /**
  * Created by cmathew on 04.05.17.
@@ -40,7 +40,9 @@ export class ContextBarItem {
 
 export enum FieldType {
   STRING,
-  BOOLEAN
+  NUMBER,
+  BOOLEAN,
+  UNKNOWN
 }
 
 export enum FieldUIType {
@@ -48,42 +50,78 @@ export enum FieldUIType {
   TEXT_NOT_EDITABLE,
   TEXT_EDITABLE,
   BOOLEAN,
-  VALUE_LIST
+  VALUE_LIST,
+  SCHEMA_FIELD
 }
 
 export class Field {
   label: string
-  defaultValue: string | boolean
-  type: FieldType
+  description: string
+  defaultValue: string
   possibleValues: string[]
-  value: string | boolean
+  type: FieldType
+  level: number
+  value: string
   isEditable: boolean
   selectItems: SelectItem[]
 
   constructor(label: string,
-              defaultValue: string | boolean = "",
-              type: FieldType = FieldType.STRING,
+              description: string = "",
+              defaultValue: string = "",
               possibleValues: string[] = [],
+              type: FieldType = FieldType.STRING,
+              value: string = "",
               isEditable: boolean = false) {
     this.label = label
-    this.type = type
+    this.description = description
     this.defaultValue = defaultValue
     this.possibleValues = possibleValues
+    this.type = type
     this.isEditable = isEditable
-    if(possibleValues.length > 0) {
-      this.value = possibleValues[0]
-      this.selectItems = []
-      this.possibleValues.forEach(v => this.selectItems.push({label:v, value:v}))
+    if(value !== undefined) {
+      if (possibleValues.length > 0) {
+        this.value = possibleValues[0]
+        this.selectItems = []
+        this.possibleValues.forEach(v => this.selectItems.push({label: v, value: v}))
+      }
+      else
+        this.value = defaultValue
+    } else {
+      this.value = value
     }
-    else
-      this.value = defaultValue
   }
 
-  updateValue(value: string | boolean) {
+  valueToString(value: string | number | boolean): string {
+    if(typeof value === "string") {
+      return value
+    }
+
+    if(typeof value === "number") {
+      return value.toString()
+    }
+
+    if(typeof value === "boolean") {
+      return value.toString()
+    }
+
+    return undefined
+  }
+
+  updateValue(value: string) {
     this.value = value
   }
 
+  static fieldType(type: string): FieldType {
+    switch(type) {
+      case "STRING" : return FieldType.STRING
+      case "NUMBER" : return FieldType.NUMBER
+      case "BOOLEAN": return FieldType.BOOLEAN
+      default  : return FieldType.UNKNOWN
+    }
+  }
   fieldUIType(): FieldUIType {
+    if(this.isSchemaField())
+      return FieldUIType.SCHEMA_FIELD
     if(typeof this.value === "string") {
       if(this.possibleValues.length > 0)
         return FieldUIType.VALUE_LIST
@@ -96,16 +134,33 @@ export class Field {
     }
     return FieldUIType.UNKNOWN
   }
+
+  isSchemaField(): boolean {
+    // FIXME: Change hack check to use field display 'level'
+    return SchemaProperties.isSchemaProperty(this.label)
+  }
+
+  isCorePropertyField(): boolean {
+    // FIXME: Change hack check to use field display 'level'
+    return CoreProperties.isCoreProperty(this.label)
+  }
 }
 
 export class FieldGroup {
   label: string
-  fields: Field[]
+  fields: Field[] = []
 
   constructor(label: string,
-              fields: Field[]) {
+              fields: Field[] = []) {
     this.label = label
-    this.fields = fields
+    if(fields === undefined)
+      this.fields = []
+    else
+      this.fields = fields
+  }
+
+  add(field: Field) {
+    this.fields.push(field)
   }
 }
 
@@ -131,41 +186,52 @@ export class FlowEntity {
   }
 }
 
-export interface FlowEntityInfo {
+export abstract class  FlowEntityConf {
   selectedFlowEntityId: string
-  list(): FlowEntity[]
-  info(flowEntityId: string): FieldGroup[]
-  finalise(uiStateStore: UIStateStore): void
-  cancel(uiStateStore: UIStateStore): void
-}
-
-export class TemplateInfo implements FlowEntityInfo {
-
-
-  selectedFlowEntityId: string
-  flowEntityInfoMap: Map<string, FieldGroup[]> = new Map<string, FieldGroup[]>()
+  flowEntityFieldGroupsMap: Map<string, FieldGroup[]> = new Map<string, FieldGroup[]>()
+  flowEntitySpecificFieldsMap: Map<string, Field[]> = new Map<string, Field[]>()
   flowEntities: FlowEntity[] = []
-
-  constructor(flowTemplates: FlowTemplate[]) {
-    flowTemplates
-      .forEach(ft => {
-        this.flowEntities.push(new FlowEntity(ft.id, ft.name, ft.description))
-        this.flowEntityInfoMap.set(ft.id, this.fieldGroups(ft))
-      })
-  }
-
-  fieldGroups(flowTemplate: FlowTemplate): FieldGroup[] {
-    let description = new Field("description", flowTemplate.description)
-    let metadata = new FieldGroup("metadata",[description])
-    return [metadata]
-  }
 
   list(): FlowEntity[] {
     return this.flowEntities
   }
 
-  info(flowEntityId: string): FieldGroup[] {
-    return this.flowEntityInfoMap.get(flowEntityId)
+  fieldGroups(flowEntityId: string): FieldGroup[] {
+    return this.flowEntityFieldGroupsMap.get(flowEntityId)
+  }
+
+  specificFields(flowEntityId: string): Field[] {
+    return this.flowEntitySpecificFieldsMap.get(flowEntityId)
+  }
+
+  hasEntities(): boolean {
+    return this.flowEntities.length > 0
+  }
+
+  abstract finalise(uiStateStore: UIStateStore): void
+  abstract cancel(uiStateStore: UIStateStore): void
+}
+
+export enum DialogType {
+  TEMPLATE_INFO,
+  PROCESSOR_CONF
+}
+
+export class TemplateInfo extends FlowEntityConf {
+
+  constructor(flowTemplates: FlowTemplate[]) {
+    super()
+    flowTemplates
+      .forEach(ft => {
+        this.flowEntities.push(new FlowEntity(ft.id, ft.name, ft.description))
+        this.flowEntityFieldGroupsMap.set(ft.id, this.init(ft))
+      })
+  }
+
+  init(flowTemplate: FlowTemplate): FieldGroup[] {
+    let description = new Field("description", "description", flowTemplate.description)
+    let metadata = new FieldGroup("metadata",[description])
+    return [metadata]
   }
 
   finalise(uiStateStore: UIStateStore): void {
@@ -178,9 +244,53 @@ export class TemplateInfo implements FlowEntityInfo {
   }
 }
 
-export enum DialogType {
-  TEMPLATE_INFO
+export class ProcessorPropertiesConf extends FlowEntityConf {
+
+  constructor(processor: Processor) {
+    super()
+    let properties = processor.properties
+    let propertiesFieldGroup: FieldGroup = new FieldGroup("properties")
+    let propertySpecificFields: Field[] = []
+
+    processor.propertyDefinitions.forEach(pd => {
+      let pvs: string[] = []
+      if(pd.possibleValues !== undefined)
+        pvs = pd.possibleValues.map(pv => pv.value)
+
+      let field: Field = new Field(pd.displayName,
+        pd.description,
+        pd.defaultValue,
+        pvs,
+        Field.fieldType(pd.type),
+        properties[pd.name],
+        true
+      )
+      if(!field.isCorePropertyField()) {
+        if (field.isSchemaField())
+          propertySpecificFields.push(field)
+        else
+          propertiesFieldGroup.add(field)
+      }
+    })
+
+    if(propertiesFieldGroup.fields.length > 0 || propertySpecificFields.length > 0) {
+      this.flowEntities.push(new FlowEntity(processor.id, processor.id, ""))
+      if(propertiesFieldGroup.fields.length > 0)
+        this.flowEntityFieldGroupsMap.set(processor.id, [propertiesFieldGroup])
+      if(propertySpecificFields.length > 0)
+        this.flowEntitySpecificFieldsMap.set(processor.id, propertySpecificFields)
+    }
+  }
+
+  finalise(uiStateStore: UIStateStore): void {
+    uiStateStore.isProcessorPropertiesDialogVisible = false
+  }
+
+  cancel(uiStateStore: UIStateStore): void {
+    uiStateStore.isProcessorPropertiesDialogVisible = false
+  }
 }
+
 
 export class ViewsVisible {
   analyse: boolean

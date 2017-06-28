@@ -26,3 +26,17 @@ width="500"
 *ngIf="uiStateStore.isProcessorSchemaDialogVisible">
     <processor-schema></processor-schema>
 </p-dialog>
+
+<p-dialog
+header="Processor Properties"
+width="900"
+[resizable]="false"
+[closable]="false"
+[(visible)]="uiStateStore.isProcessorPropertiesDialogVisible"
+*ngIf="uiStateStore.isProcessorPropertiesDialogVisible">
+    <flow-entity
+    [entityInfo]="uiStateStore.getSelectedProcessorPropertiesConf()"
+    finaliseLabel="Update">
+    </flow-entity>
+</p-dialog>
+

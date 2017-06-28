@@ -1,9 +1,8 @@
 import {Injectable, NgZone} from "@angular/core"
 import {BehaviorSubject, Observable} from "rxjs/Rx"
-import {FlowInstance, FlowCreation, FlowTab, Provenance, VisTab, EntityType, Processor} from "../analyse/flow.model"
-import {Msg, MsgGroup, UiId, ViewsVisible} from "./ui.models"
+import {EntityType, FlowCreation, FlowInstance, FlowTab, Processor, Provenance, VisTab} from "../analyse/flow.model"
+import {Msg, MsgGroup, ProcessorPropertiesConf, UiId, ViewsVisible} from "./ui.models"
 import {ContextStore} from "./context.store"
-import {SchemaAction} from "./schema.service"
 
 @Injectable()
 export class UIStateStore {
@@ -101,6 +100,14 @@ export class UIStateStore {
 
   getSelectedProcessorId(): string {
     return this._selectedProcessorId.getValue()
+  }
+
+  getSelectedProcessorPropertiesConf(): ProcessorPropertiesConf {
+    let selectedProcessor = this._selectedProcessor.getValue()
+    if (selectedProcessor !== null)
+      return new ProcessorPropertiesConf(selectedProcessor)
+    else
+      return undefined
   }
 
   getActiveFlowProcessor(processorId: string): Processor {
@@ -270,6 +277,7 @@ export class UIStateStore {
 // ---- Dialog Flags Start ----
   public isTemplateInfoDialogVisible: boolean = false
   public isProcessorSchemaDialogVisible: boolean = false
+  public isProcessorPropertiesDialogVisible: boolean = false
 // ---- Dialog Flags End   ----
 
 }

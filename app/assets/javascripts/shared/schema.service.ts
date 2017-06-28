@@ -3,7 +3,7 @@
  */
 
 import {Injectable} from "@angular/core"
-import {Processor, ProcessorProperties} from "../analyse/flow.model"
+import {Processor} from "../analyse/flow.model"
 import {ApiHttpService} from "./api-http.service"
 import {Http} from "@angular/http"
 import {Observable} from "rxjs/Rx"
@@ -102,14 +102,14 @@ export class SchemaService extends ApiHttpService {
       return false
   }
 
-  baseSchema(processorProperties: ProcessorProperties): Observable<AvroSchema> {
+  baseSchema(processorProperties: any): Observable<AvroSchema> {
     if(this.isPropertyDefined(processorProperties._WRITE_SCHEMA_ID))
       return this.schemaFromId(processorProperties._WRITE_SCHEMA_ID)
     else
       return this.readSchema(processorProperties)
   }
 
-  outputSchema(processorProperties: ProcessorProperties): Observable<AvroSchema> {
+  outputSchema(processorProperties: any): Observable<AvroSchema> {
 
     let writeSchema: Observable<AvroSchema> = this.writeSchema(processorProperties)
 
@@ -118,7 +118,7 @@ export class SchemaService extends ApiHttpService {
     return this.readSchema(processorProperties)
   }
 
-  readSchema(processorProperties: ProcessorProperties): Observable<AvroSchema> {
+  readSchema(processorProperties: any): Observable<AvroSchema> {
 
     if(this.isPropertyDefined(processorProperties._READ_SCHEMA))
       return Observable.of(JSON.parse(processorProperties._READ_SCHEMA))
@@ -129,7 +129,7 @@ export class SchemaService extends ApiHttpService {
     return undefined
   }
 
-  writeSchema(processorProperties: ProcessorProperties): Observable<AvroSchema> {
+  writeSchema(processorProperties: any): Observable<AvroSchema> {
     if(this.isPropertyDefined(processorProperties._WRITE_SCHEMA))
       return Observable.of(JSON.parse(processorProperties._WRITE_SCHEMA))
 
