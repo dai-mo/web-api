@@ -1,10 +1,10 @@
-import {Component, Input, OnInit, ViewChild} from "@angular/core"
+import {Component, Input, OnInit} from "@angular/core"
 import {UIStateStore} from "./ui.state.store"
-import {FlowInstance, Processor} from "../analyse/flow.model"
-import {SchemaPanelComponent} from "./schema-panel.component"
+import {SchemaProperties} from "../analyse/flow.model"
 import {ErrorService} from "./util/error.service"
 import {FlowService} from "./flow.service"
 import {Field} from "./ui.models"
+import {SelectItem} from "primeng/primeng"
 
 /**
  * Created by cmathew on 19.05.17.
@@ -14,33 +14,41 @@ import {Field} from "./ui.models"
   templateUrl: "partials/schemapropertypanel.html"
 })
 
-export class SchemaPropertyComponent {
+export class SchemaPropertyComponent implements OnInit {
 
-  @Input() entityField: Field
-  constructor(private uiStateStore: UIStateStore,
-              private flowService: FlowService,
-              private errorService:ErrorService) {}
+  @Input() schemaField: Field
+  parameters: SelectItem[]
+  selectedParameter: string
+
+  label: string = ""
+  dynamic: boolean = false
+
+  constructor(private uiStateStore: UIStateStore) {
+    this.parameters = []
+  }
+
+  ngOnInit() {
+    this.parameters = []
+    switch(this.schemaField.label) {
+      case SchemaProperties._FIELDS_TO_MAP:
+        break
+      case SchemaProperties._FIELD_ACTIONS:
+        let fas:[{
+          jsonPath: string,
+          cmd: string,
+          args: string
+        }] = JSON.parse(this.schemaField.defaultValue)
+        fas.forEach(fa => this.parameters.push({label: fa.cmd, value: fa.cmd}))
+        this.label = "commands"
+        this.dynamic = true
+        break
+      default:
+        break
+    }
+  }
 
   save() {
-    // this.schemaPanelComponent.updateSchema()
-    //   .subscribe(
-    //     processors => {
-    //       this.flowService.instance(this.uiStateStore.getActiveFlowTab().flowInstance.id)
-    //         .subscribe(
-    //           (flowInstance: FlowInstance) => {
-    //             this.uiStateStore.getActiveFlowTab().flowInstance = flowInstance
-    //             this.uiStateStore.updateFlowTabs()
-    //             this.uiStateStore.isProcessorSchemaDialogVisible = false
-    //           },
-    //           (error: any) =>  {
-    //             this.errorService.handleError(error)
-    //           }
-    //         )
-    //     },
-    //     (error: any) =>  {
-    //       this.errorService.handleError(error)
-    //     }
-    //   )
+
   }
 
   cancel() {

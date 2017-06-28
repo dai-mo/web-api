@@ -25,14 +25,14 @@
                 selected="true">
                     <flow-entity-info [entityFieldGroup]="fieldGroup"></flow-entity-info>
                 </p-tabPanel>
-                @*<p-tabPanel*@
-                @**ngFor="let field of selectedEntitySpecificFields"*@
-                @*[header]="field.label"*@
-                @*selected="true">*@
-                    @*<schema-property *ngIf="field.isSchemaField()"*@
-                    @*[entityField]="field">*@
-                    @*</schema-property>*@
-                @*</p-tabPanel>*@
+                <p-tabPanel
+                *ngFor="let field of selectedEntitySpecificFields"
+                [header]="field.label"
+                selected="true">
+                    <schema-property *ngIf="field.isSchemaField()"
+                    [schemaField]="field">
+                    </schema-property>
+                </p-tabPanel>
             </p-tabView>
         </div>
     </div>

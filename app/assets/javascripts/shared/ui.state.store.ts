@@ -121,13 +121,11 @@ export class UIStateStore {
   displayProcessorValidationErrors(processorId: string) {
     if (processorId !== undefined) {
       let errors: Msg[] = []
-      console.log("node selected")
       let processor = this.getActiveFlowProcessor(processorId)
 
       if (processor !== null) {
         if (processor.validationErrors !== undefined &&
           processor.validationErrors.length > 0) {
-          console.log("validation errors")
           processor.validationErrors
             .forEach((e: string) => errors.push({
               severity: "error",
@@ -136,7 +134,6 @@ export class UIStateStore {
             }))
         }
         if (errors.length > 0) {
-          console.log("validation errors")
           this.setDisplayMessages({messages: errors, sticky: true, delay: 1000})
         }
       }

@@ -2,8 +2,16 @@
 <div class="ui-g">
     <schema-panel class="ui-g-6"
     [processor]="uiStateStore.selectedProcessor | async"
-    [selectionMode]="single">
+    [selectionMode]="'single'">
     </schema-panel>
-    <div class="ui-g-6"></div>
+    <div class="ui-g-6">
+        <div class="flex-panel-parent">
+            <div><h4><span class="label label-default pull-left">{{label}}</span></h4></div>
+            <p-listbox class="flex-panel"
+            [options]="parameters"
+            [(ngModel)]="selectedParameter">
+            </p-listbox>
+        </div>
+    </div>
 </div>
 

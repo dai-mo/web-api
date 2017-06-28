@@ -64,7 +64,11 @@ export class FlowGraphService {
       if (selectedNodes.length > 0) {
         let pid = selectedNodes[0]
         uiss.setSelectedProcessorId(pid)
-        uiss.displayProcessorValidationErrors(pid)
+        // FIXME : Displaying errors every time the
+        // processor node is clicked is annoying
+        // Much better to have somewhere specific
+        // to click / hover to get this info
+        // uiss.displayProcessorValidationErrors(pid)
       } else {
         uiss.setSelectedProcessorId(null)
       }
