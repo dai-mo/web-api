@@ -78,17 +78,7 @@ export class Field {
     this.possibleValues = possibleValues
     this.type = type
     this.isEditable = isEditable
-    if(value !== undefined) {
-      if (possibleValues.length > 0) {
-        this.value = possibleValues[0]
-        this.selectItems = []
-        this.possibleValues.forEach(v => this.selectItems.push({label: v, value: v}))
-      }
-      else
-        this.value = defaultValue
-    } else {
-      this.value = value
-    }
+    this.value = value
   }
 
   valueToString(value: string | number | boolean): string {

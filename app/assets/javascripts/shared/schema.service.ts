@@ -154,7 +154,7 @@ export class SchemaService extends ApiHttpService {
   }
 
   isPropertyDefined(property: string): boolean {
-    return property !== undefined && property !== ""
+    return property !== undefined && property !== "" &&  property !== null
   }
 
 }

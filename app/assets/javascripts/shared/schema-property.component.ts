@@ -20,7 +20,7 @@ export class SchemaPropertyComponent implements OnInit {
   parameters: SelectItem[]
   selectedParameter: string
 
-  label: string = ""
+  description: string = "description"
   dynamic: boolean = false
 
   constructor(private uiStateStore: UIStateStore) {
@@ -29,22 +29,10 @@ export class SchemaPropertyComponent implements OnInit {
 
   ngOnInit() {
     this.parameters = []
-    switch(this.schemaField.label) {
-      case SchemaProperties._FIELDS_TO_MAP:
-        break
-      case SchemaProperties._FIELD_ACTIONS:
-        let fas:[{
-          jsonPath: string,
-          cmd: string,
-          args: string
-        }] = JSON.parse(this.schemaField.defaultValue)
-        fas.forEach(fa => this.parameters.push({label: fa.cmd, value: fa.cmd}))
-        this.label = "commands"
-        this.dynamic = true
-        break
-      default:
-        break
-    }
+    let sfs:[{
+        name: string
+      }] = JSON.parse(this.schemaField.defaultValue)
+    sfs.forEach(sf => this.parameters.push({label: sf.name, value: sf.name}))
   }
 
   save() {

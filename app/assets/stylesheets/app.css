@@ -413,17 +413,17 @@ div.ui-datatable-scrollable-body {
   overflow-y: scroll;
 }
 
-.dialog-panel {
+.dialog-panel, .schema-panel {
   height:60vh;
   overflow: auto
 }
 
-.dialog-panel .ui-state-highlight {
+.schema-panel .ui-state-highlight {
   background:  #ffffff !important;
   color: #000000 !important;
 }
 
-.dialog-panel .ui-widget-content {
+.schema-panel .ui-widget-content {
   border: none !important;
 }
 

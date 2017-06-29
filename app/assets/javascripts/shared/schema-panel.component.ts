@@ -71,7 +71,7 @@ export class SchemaPanelComponent  implements OnInit {
           (wf: AvroSchemaField) => AvroSchemaField.equals(wf, f))
       }
       if(f.type instanceof Array || typeof f.type === "string") {
-        child = {label: f.name + " [" + AvroSchemaField.typeAsString(f) + "]", leaf: true}
+        child = {label: f.name, leaf: true}
         if(writeField !== undefined)
           this.addSelectedNode(child)
       } else {
@@ -92,6 +92,13 @@ export class SchemaPanelComponent  implements OnInit {
 
   updateNode(event: any) {
     this.uiStateStore.setSchemaUpdatable(this.canUpdate())
+  }
+
+  nodeType(node: TreeNode): string {
+    if(node.data === undefined)
+      return ""
+    else
+      return AvroSchemaField.typeAsString(node.data)
   }
 
   // FIXME: Should use schema paths to test equality
@@ -135,14 +142,6 @@ export class SchemaPanelComponent  implements OnInit {
     forEach(sa => {
       if(schemaActions
           .find(a => sa.avroPath !== a.avroPath && sa.avroPath.startsWith(a.avroPath)) === undefined) {
-        // if(sa.field.type instanceof Array)
-        //   sa.field.type = sa.field.type[1]
-        // if((<AvroSchemaType>sa.field.type).type) {
-        //   sa.field.schemaType = (<AvroSchemaType>sa.field.type)
-        //   sa.field.type = null
-        // } else {
-        //   sa.field.schemaType = null
-        // }
         actions.push(sa)
       }
     })

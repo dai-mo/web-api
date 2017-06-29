@@ -1,9 +1,5 @@
 @()
-<div class="dialog-panel">
-    @*<div class="ui-g" >*@
-        @*<div class="ui-g-4"><h4><span class="label label-default pull-left">namespace.id</span></h4></div>*@
-        @*<div class="ui-g-8">{{schemaNamespace}}.{{schemaName}}</div>*@
-    @*</div>*@
+<div class="schema-panel">
     <p-tree
     [value]="nodes"
     [selectionMode]="selectionMode"
@@ -11,5 +7,8 @@
     [propagateSelectionDown]="true"
     (onNodeSelect)="updateNode($event)"
     (onNodeUnselect)="updateNode($event)">
+        <ng-template let-node pTemplate="default">
+            {{node.label}} <i class="text-primary">{{nodeType(node)}}</i>
+        </ng-template>
     </p-tree>
 </div>
