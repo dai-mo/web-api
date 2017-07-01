@@ -1,10 +1,11 @@
 import {Component, Input, OnInit} from "@angular/core"
-import {Processor} from "../analyse/flow.model"
+import {Processor, SchemaProperties} from "../analyse/flow.model"
 import {AvroSchema, AvroSchemaField, AvroSchemaType, SchemaAction, SchemaService} from "./schema.service"
 import {TreeNode} from "primeng/primeng"
 import {Observable} from "rxjs/Rx"
 import {ErrorService} from "./util/error.service"
 import {UIStateStore} from "./ui.state.store"
+import {Field} from "./ui.models"
 /**
  * Created by cmathew on 23.05.17.
  */
@@ -17,43 +18,53 @@ export class SchemaPanelComponent  implements OnInit {
 
   @Input() processor: Processor
   @Input() selectionMode: string
+  @Input() mappedFieldName: string
 
   baseSchema: Observable<AvroSchema>
 
   schemaNamespace: string
   schemaName: string
 
-  nodes: TreeNode[] = []
+  nodes: TreeNode[]
+  rootNode: TreeNode
 
   selectedNodes: TreeNode[] = []
   initialNodes: TreeNode[] = []
 
-  schemaFieldPathsToCheck: string[] = []
+  processorSchemaFields: any[] = []
+
+  scp = SchemaProperties
 
   constructor(private schemaService: SchemaService,
               private uiStateStore: UIStateStore,
               private errorService:ErrorService) {}
 
   ngOnInit(): void {
+    this.nodes = []
     this.selectedNodes = []
+    this.uiStateStore.setProcessorPropertiesToUpdate(JSON.parse(JSON.stringify(this.processor.properties)))
+    this.processorSchemaFields = Object.keys(this.processor.properties)
+      .filter(k => k === this.mappedFieldName)
+      .map(k => JSON.parse(this.processor.properties[k]))
+
     this.baseSchema = this.schemaService.baseSchema(this.processor.properties)
     let outputSchema = this.schemaService.outputSchema(this.processor.properties)
-    let rootNode: TreeNode = {label: "$"}
-    rootNode.expanded = true
-    this.addSelectedNode(rootNode)
+    this.rootNode = {label: "$"}
+    this.rootNode.expanded = true
+    this.addSelectedNode(this.rootNode)
 
     this.baseSchema.flatMap(bs => outputSchema.map(ws => [bs,ws])).
     subscribe(
       (bws: [AvroSchema, AvroSchema]) => {
         this.schemaNamespace = bws[0].namespace
         this.schemaName = bws[0].name
-        this.buildTree(bws[0], bws[1], rootNode)
+        this.buildTree(bws[0], bws[1], this.rootNode)
       },
       (error: any) =>  {
         this.errorService.handleError(error)
       }
     )
-    this.nodes.push(rootNode)
+    this.nodes.push(this.rootNode)
   }
 
   addSelectedNode(node: TreeNode) {
@@ -75,19 +86,46 @@ export class SchemaPanelComponent  implements OnInit {
         if(writeField !== undefined)
           this.addSelectedNode(child)
       } else {
-        child = {label: f.name, leaf: false}
+        child = {label: f.name}
         if(writeField !== undefined) {
           this.addSelectedNode(child)
           this.buildTree(f.type, writeField.type, child)
         }
         else
           this.buildTree(f.type, undefined, child)
+        child.expanded = true
       }
-      child.expanded = true
+
       child.data = f
+
+      let childSchemaPath = this.schemaFieldPath(child)
+      let flinks: TreeNode[] = []
+      this.processorSchemaFields.forEach(psf => {
+        psf.forEach((sf: any) => {
+            if (sf.jsonPath !== undefined &&
+              "$." + childSchemaPath === sf.jsonPath) {
+              flinks.push({label: sf.name, type: this.mappedFieldName, leaf: true, data: sf})
+            }
+          }
+        )
+      })
+
+      if(flinks.length > 0) {
+        if(child.children === undefined)
+          child.children = flinks
+        else
+          child.children.push(flinks)
+        child.expanded = true
+      }
+
       return child
     })
     parentTreeNode.children = children
+  }
+
+  removeLink(node: TreeNode) {
+    node.parent.children = node.parent.children.filter(n => n !== node)
+    this.updateSchemaFields()
   }
 
   updateNode(event: any) {
@@ -95,10 +133,10 @@ export class SchemaPanelComponent  implements OnInit {
   }
 
   nodeType(node: TreeNode): string {
-    if(node.data === undefined)
-      return ""
-    else
+    if(node.data !== undefined && (<AvroSchemaType>node.data).type)
       return AvroSchemaField.typeAsString(node.data)
+    else
+      return ""
   }
 
   // FIXME: Should use schema paths to test equality
@@ -155,5 +193,19 @@ export class SchemaPanelComponent  implements OnInit {
   }
 
   canUpdate(): boolean { return this.initialNodes.length !== this.selectedNodes.length }
+
+  currentSchemaFields(node: TreeNode, sfs: any[]) {
+    if(node.type === this.mappedFieldName)
+      sfs.push(node.data)
+    if(node.children !== undefined && node.children.length > 0)
+      node.children.forEach(c => this.currentSchemaFields(c, sfs))
+  }
+  updateSchemaFields() {
+    let schemaFields: any[] = []
+    this.currentSchemaFields(this.rootNode, schemaFields)
+    let currentProperties = this.uiStateStore.getProcessorPropertiesToUpdate()
+    currentProperties[this.mappedFieldName] = JSON.stringify(schemaFields)
+    this.uiStateStore.setProcessorPropertiesToUpdate(currentProperties)
+  }
 }
 

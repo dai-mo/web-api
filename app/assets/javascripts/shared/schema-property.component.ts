@@ -1,10 +1,11 @@
-import {Component, Input, OnInit} from "@angular/core"
+import {Component, Input, OnInit, ViewChild} from "@angular/core"
 import {UIStateStore} from "./ui.state.store"
 import {SchemaProperties} from "../analyse/flow.model"
 import {ErrorService} from "./util/error.service"
 import {FlowService} from "./flow.service"
 import {Field} from "./ui.models"
 import {SelectItem} from "primeng/primeng"
+import {SchemaPanelComponent} from "./schema-panel.component"
 
 /**
  * Created by cmathew on 19.05.17.
@@ -15,10 +16,12 @@ import {SelectItem} from "primeng/primeng"
 })
 
 export class SchemaPropertyComponent implements OnInit {
+  @ViewChild(SchemaPanelComponent) schemaPanelComponent: SchemaPanelComponent
 
   @Input() schemaField: Field
   parameters: SelectItem[]
   selectedParameter: string
+  fieldName: string
 
   description: string = "description"
   dynamic: boolean = false
@@ -28,6 +31,7 @@ export class SchemaPropertyComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.fieldName = this.schemaField.label
     this.parameters = []
     let sfs:[{
         name: string
@@ -35,12 +39,5 @@ export class SchemaPropertyComponent implements OnInit {
     sfs.forEach(sf => this.parameters.push({label: sf.name, value: sf.name}))
   }
 
-  save() {
-
-  }
-
-  cancel() {
-    this.uiStateStore.isProcessorPropertiesDialogVisible = false
-  }
 
 }

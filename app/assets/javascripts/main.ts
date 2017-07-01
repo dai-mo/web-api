@@ -93,6 +93,8 @@ import {SchemaPanelComponent} from "./shared/schema-panel.component"
 import {SchemaService} from "./shared/schema.service"
 import {SchemaPropertyComponent} from "./shared/schema-property.component"
 import {NotificationService} from "./shared/util/notification.service"
+import {FieldsToMapComponent} from "./shared/schema/fields-to-map.component"
+import {FieldActionsComponent} from "./shared/schema/field-actions.component"
 
 
 export const routes: Routes = [ {path: "", component: LayoutComponent}]
@@ -120,7 +122,9 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
     FlowEntityInfoComponent,
     ProcessorSchemaComponent,
     SchemaPanelComponent,
-    SchemaPropertyComponent
+    SchemaPropertyComponent,
+    FieldsToMapComponent,
+    FieldActionsComponent
   ],
   providers:[{provide: Window, useValue: window},
     FlowService,

@@ -249,6 +249,19 @@ export class UIStateStore {
     this.ngZone.run(() => this._flowInstantiation.next({instantiationId: flowInstantiationId}))
   }
 
+  // --- Processor Properties Start
+  private _processorPropertiesToUpdate: BehaviorSubject<any> = new BehaviorSubject(undefined)
+  processorPropertiesToUpdate: Observable<any> = this._processorPropertiesToUpdate.asObservable()
+
+  setProcessorPropertiesToUpdate(properties: any) {
+    this.ngZone.run(() => this._processorPropertiesToUpdate.next(properties))
+  }
+
+  getProcessorPropertiesToUpdate(): any {
+    return this._processorPropertiesToUpdate.getValue()
+  }
+  // --- Processor Properties End
+
 // --- Processor Schema State Start ---
   private _isSchemaUpdatable: BehaviorSubject<boolean> = new BehaviorSubject(false)
   private isSchemaUpdatable =  this._isSchemaUpdatable.asObservable()

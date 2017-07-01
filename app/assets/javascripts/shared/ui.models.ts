@@ -1,5 +1,8 @@
 import {MenuItem, Message, SelectItem} from "primeng/primeng"
-import {CoreProperties, EntityType, FlowTemplate, Processor, SchemaProperties} from "../analyse/flow.model"
+import {
+  CoreProperties, EntityType, FlowTemplate, Processor, PropertyDefinition,
+  SchemaProperties
+} from "../analyse/flow.model"
 import {UIStateStore} from "./ui.state.store"
 /**
  * Created by cmathew on 04.05.17.
@@ -134,6 +137,20 @@ export class Field {
     // FIXME: Change hack check to use field display 'level'
     return CoreProperties.isCoreProperty(this.label)
   }
+
+  static fromPDef(pd: PropertyDefinition, value: string, isEditable: boolean): Field {
+    let pvs: string[] = []
+    if(pd.possibleValues !== undefined)
+      pvs = pd.possibleValues.map(pv => pv.value)
+    return new Field(pd.displayName,
+      pd.description,
+      pd.defaultValue,
+      pvs,
+      Field.fieldType(pd.type),
+      value,
+      isEditable
+    )
+  }
 }
 
 export class FieldGroup {
@@ -236,8 +253,12 @@ export class TemplateInfo extends FlowEntityConf {
 
 export class ProcessorPropertiesConf extends FlowEntityConf {
 
+  processor: Processor
+
   constructor(processor: Processor) {
     super()
+    this.processor = processor
+    this.selectedFlowEntityId = processor.id
     let properties = processor.properties
     let propertiesFieldGroup: FieldGroup = new FieldGroup("properties")
     let propertySpecificFields: Field[] = []
@@ -247,14 +268,8 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
       if(pd.possibleValues !== undefined)
         pvs = pd.possibleValues.map(pv => pv.value)
 
-      let field: Field = new Field(pd.displayName,
-        pd.description,
-        pd.defaultValue,
-        pvs,
-        Field.fieldType(pd.type),
-        properties[pd.name],
-        true
-      )
+      let field: Field = Field.fromPDef(pd, properties[pd.name], true)
+
       if(!field.isCorePropertyField()) {
         if (field.isSchemaField())
           propertySpecificFields.push(field)
@@ -273,6 +288,8 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
   }
 
   finalise(uiStateStore: UIStateStore): void {
+    this.processor.properties = uiStateStore.getProcessorPropertiesToUpdate()
+    uiStateStore.setProcessorPropertiesToUpdate(undefined)
     uiStateStore.isProcessorPropertiesDialogVisible = false
   }
 

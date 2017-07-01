@@ -427,6 +427,11 @@ div.ui-datatable-scrollable-body {
   border: none !important;
 }
 
+.schema-panel .ui-tree {
+  width: 100%;
+}
+
+
 .ui-growl {
   width: 500px;
 }
@@ -434,6 +439,8 @@ div.ui-datatable-scrollable-body {
 .ui-growl-message {
   width: 400px;
 }
+
+
 
 
 

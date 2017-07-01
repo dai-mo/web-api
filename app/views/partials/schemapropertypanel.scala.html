@@ -1,10 +1,11 @@
 @()
 <div class="ui-g">
-    <schema-panel class="ui-g-6"
+    <schema-panel class="ui-g-8"
     [processor]="uiStateStore.selectedProcessor | async"
+    [mappedFieldName]="fieldName"
     [selectionMode]="'single'">
     </schema-panel>
-    <div class="ui-g-6">
+    <div class="ui-g-4">
         <div class="flex-panel-parent">
             <div><p>{{description}}</p></div>
             <p-listbox class="flex-panel"

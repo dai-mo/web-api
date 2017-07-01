@@ -14,6 +14,7 @@ export class AvroSchemaField {
   type: string | string[] | AvroSchemaType
   doc: string = ""
   defaultValue: string | boolean | number = null
+  links: any[] = []
 
   static equals(fa:AvroSchemaField, fb: AvroSchemaField): boolean {
     if(!fa && !fb) return true
@@ -22,6 +23,7 @@ export class AvroSchemaField {
     let fat: string | string[] | AvroSchemaType = fa.type
     let fbt: string | string[] | AvroSchemaType = fb.type
 
+    // FIXME : How do we elegantly check for type ?
     if(typeof fat === "string" && typeof fbt === "string") {
       if(fat === fbt) return true
     }

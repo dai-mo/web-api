@@ -7,8 +7,20 @@
     [propagateSelectionDown]="true"
     (onNodeSelect)="updateNode($event)"
     (onNodeUnselect)="updateNode($event)">
+        // FIXME: For some reason, the tree toggle is displayed
+        //        for leaf nodes
         <ng-template let-node pTemplate="default">
             {{node.label}} <i class="text-primary">{{nodeType(node)}}</i>
+        </ng-template>
+        <ng-template let-node [pTemplate]="scp._FIELDS_TO_MAP">
+            <fields-to-map [processorField]="node.data"></fields-to-map>
+            @*<i class="text-info">{{node.label}}</i>*@
+            <span (click)="removeLink(node)"><i class="fa fa-times" aria-hidden="true"></i></span>
+        </ng-template>
+        <ng-template let-node [pTemplate]="scp._FIELD_ACTIONS">
+            <field-actions [processorField]="node.data"></field-actions>
+            @*<i class="text-info">{{node.label}}</i>*@
+            <span (click)="removeLink(node)"><i class="fa fa-times" aria-hidden="true"></i></span>
         </ng-template>
     </p-tree>
 </div>
