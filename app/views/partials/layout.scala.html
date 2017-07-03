@@ -16,3 +16,13 @@
     </split-area>
 </split>
 
+
+<p-growl
+[value]="(uiStateStore.displayMesssages | async).messages"
+[sticky]="(uiStateStore.displayMesssages | async).sticky"
+[life]="(uiStateStore.displayMesssages | async).delay"
+></p-growl>
+
+
+
+

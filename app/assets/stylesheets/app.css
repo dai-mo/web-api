@@ -308,13 +308,13 @@ html, body {
   margin: 2px;
 }
 
-.ui-dropdown .ui-dropdown-trigger {
-  width: 30px;
-}
+/*.ui-dropdown .ui-dropdown-trigger {*/
+  /*width: 30px;*/
+/*}*/
 
-.ui-dropdown {
-  padding-right: 20px;
-}
+/*.ui-dropdown {*/
+  /*padding-right: 20px;*/
+/*}*/
 
 .plistbox {
   max-height: 90%;
@@ -388,10 +388,11 @@ html, body {
 }
 
 .entity-tab-view {
-  width: 500px;
+  width: 100%;
   height: 100%;
   overflow-x: auto;
 }
+
 .entity-list-box {
   width:250px;
   height:400px;
@@ -399,7 +400,7 @@ html, body {
 }
 
 .entity-info-view {
-  height:300px;
+  height:70vh;
   overflow-y: auto
 }
 
@@ -412,18 +413,31 @@ div.ui-datatable-scrollable-body {
   overflow-y: scroll;
 }
 
-.schema-panel-view {
-  height:70vh;
+.dialog-panel, .schema-panel {
+  height:60vh;
   overflow: auto
 }
 
-.schema-panel-view .ui-state-highlight {
+.schema-panel .ui-state-highlight {
   background:  #ffffff !important;
   color: #000000 !important;
 }
 
-.schema-panel-view .ui-widget-content {
+.schema-panel .ui-widget-content {
   border: none !important;
+}
+
+.schema-panel .ui-tree {
+  width: 100%;
+}
+
+
+.ui-growl {
+  width: 500px;
+}
+
+.ui-growl-message {
+  width: 400px;
 }
 
 

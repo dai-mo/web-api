@@ -6,7 +6,7 @@ import {FlowService} from "../shared/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {FlowTemplate} from "./flow.model"
 import {UIStateStore} from "../shared/ui.state.store"
-import {ContextBarItem, ContextMenuItem, FlowEntityInfo, TemplateInfo, UiId} from "../shared/ui.models"
+import {ContextBarItem, ContextMenuItem, FlowEntityConf, TemplateInfo, UiId} from "../shared/ui.models"
 import {ContextStore} from "../shared/context.store"
 
 
@@ -18,7 +18,7 @@ export class AnalyseComponent  implements OnInit {
 
   public status: { isopen:boolean } = { isopen: false }
   public templates: Array<any>
-  public templateEntityInfo: FlowEntityInfo
+  public templateEntityInfo: FlowEntityConf
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService,

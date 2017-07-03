@@ -2,6 +2,7 @@
  * Created by cmathew on 14/07/16.
  */
 
+import {Record} from "immutable"
 export enum EntityType {
   FLOW_INSTANCE,
   PROCESSOR
@@ -15,13 +16,52 @@ export class FlowTemplate {
   date:string
 }
 
-export class ProcessorProperties {
-  _PROCESSOR_CLASS: string
-  _PROCESSOR_TYPE: string
-  _READ_SCHEMA_ID: string
-  _READ_SCHEMA: string
-  _WRITE_SCHEMA_ID: string
-  _WRITE_SCHEMA: string
+export class SchemaProperties {
+  static _FIELDS_TO_MAP = "_FIELDS_TO_MAP"
+  static _FIELD_ACTIONS = "_FIELDS_ACTIONS"
+
+  static isSchemaProperty(propertyName: string): boolean {
+    return propertyName === this._FIELDS_TO_MAP ||
+      propertyName === this._FIELD_ACTIONS
+  }
+}
+
+export class CoreProperties {
+  static _PROCESSOR_CLASS: string = "_PROCESSOR_CLASS"
+  static _PROCESSOR_TYPE: string = "_PROCESSOR_TYPE"
+  static _READ_SCHEMA_ID: string = "_READ_SCHEMA_ID"
+  static _READ_SCHEMA: string = "_READ_SCHEMA"
+  static _WRITE_SCHEMA_ID: string = "_WRITE_SCHEMA_ID"
+  static _WRITE_SCHEMA: string = "_WRITE_SCHEMA"
+
+  static isCoreProperty(propertyName: string): boolean {
+    return propertyName === this._PROCESSOR_CLASS ||
+      propertyName === this._PROCESSOR_TYPE ||
+      propertyName === this._READ_SCHEMA_ID ||
+      propertyName === this._READ_SCHEMA ||
+      propertyName === this._WRITE_SCHEMA_ID ||
+      propertyName === this._WRITE_SCHEMA
+  }
+}
+
+export class PossibleValue {
+  value: string
+  displayName: string
+  description: string
+}
+
+export class PropertyDefinition {
+  displayName: string
+  name: string
+  description: string
+  defaultValue: string
+  possibleValues: PossibleValue[]
+  required: boolean
+  sensitive: boolean
+  dynamic: boolean
+  type: string
+  level: number
+
 }
 
 export class Processor {
@@ -29,7 +69,9 @@ export class Processor {
   type: string
   processorType: string
   status: string
-  properties: ProcessorProperties
+  properties: any
+  propertyDefinitions: PropertyDefinition[]
+  validationErrors: string[]
 }
 
 export class ConnectionPort {
@@ -66,15 +108,23 @@ export class FlowNode {
   title: string
   image: string
   shape: string = "image"
-  color: {background: string}  = {background: "white"}
-  highlight: {background: string}  = {background: "blue"}
+  color: {
+    background: string,
+    highlight: { background: string }
+  } = {
+    background: "white",
+    highlight: {background: "white"}
+  }
+  valMessages: string[] = []
 
 
   private baseUrl: string = window.location.protocol + "//" +
     window.location.host
+
   constructor(uuid: string,
               type: string,
               ptype: string,
+              validationErrors: string[] = [],
               label: string = "") {
     this.uuid = uuid
     this.id = type + ":" + uuid
@@ -83,6 +133,15 @@ export class FlowNode {
     this.ptype = ptype
     this.title = type.split(".").pop()
     this.image = this.pTypeImage(ptype)
+    this.validate(validationErrors)
+  }
+
+  validate(validationErrors: string[]) {
+    if (validationErrors !== undefined && validationErrors.length > 0) {
+      this.color.background = "#8e2f33"
+      this.color.highlight.background = "#8e2f33"
+      this.valMessages = validationErrors
+    }
   }
 
   pTypeImage(ptype: string): string {
@@ -129,13 +188,13 @@ export class FlowGraph {
 
 export class FlowTab {
   title: string
-  id: string
-  name: string
-  labelToggle: boolean
-  flowInstance: FlowInstance
-  active: boolean
-  disabled: boolean
-  removable: boolean
+  id?: string = undefined
+  name?: string = ""
+  flowInstance?: FlowInstance = undefined
+  labelToggle?: boolean = false
+  active?: boolean = false
+  disabled?: boolean = false
+  removable?: boolean = false
 
 
   constructor(title: string,
@@ -145,7 +204,7 @@ export class FlowTab {
               labelToggle: boolean = false,
               active: boolean = false,
               disabled: boolean = false,
-              removable: boolean = false){
+              removable: boolean = false) {
     this.title = title
     this.id = id
     this.name = name
@@ -154,6 +213,7 @@ export class FlowTab {
     this.active = active
     this.disabled = disabled
     this.removable = removable
+
   }
 
   instanceState() {
@@ -172,6 +232,7 @@ export class FlowTab {
     return this.flowInstance.state === FlowInstance.stateNotStarted
   }
 }
+
 
 export class VisTab {
   visType: string

@@ -1,15 +1,32 @@
 @()
-<div class="schema-panel-view">
-    <div class="ui-g" >
-        <div class="ui-g-4"><h4><span class="label label-default pull-left">namespace.id</span></h4></div>
-        <div class="ui-g-8">{{schemaNamespace}}.{{schemaName}}</div>
-    </div>
+<div class="schema-panel">
     <p-tree
     [value]="nodes"
-    selectionMode="checkbox"
+    [selectionMode]="selectionMode"
     [(selection)]="selectedNodes"
     [propagateSelectionDown]="true"
     (onNodeSelect)="updateNode($event)"
     (onNodeUnselect)="updateNode($event)">
+        // FIXME: For some reason, the tree toggle is displayed
+        //        for leaf nodes
+        <ng-template
+        let-node
+        pTemplate="default">
+            <div
+            pDroppable="p-schema-params"
+            (onDrop)="nodeDrop($event, node)">
+                {{node.label}} <i class="text-primary">{{nodeType(node)}}</i>
+            </div>
+        </ng-template>
+        <ng-template let-node [pTemplate]="scp._FIELDS_TO_MAP">
+            <fields-to-map [processorField]="node.data"></fields-to-map>
+            @*<i class="text-info">{{node.label}}</i>*@
+            <span (click)="removeLink(node)"><i class="fa fa-times" aria-hidden="true"></i></span>
+        </ng-template>
+        <ng-template let-node [pTemplate]="scp._FIELD_ACTIONS">
+            <field-actions [processorField]="node.data"></field-actions>
+            @*<i class="text-info">{{node.label}}</i>*@
+            <span (click)="removeLink(node)"><i class="fa fa-times" aria-hidden="true"></i></span>
+        </ng-template>
     </p-tree>
 </div>

@@ -6,7 +6,7 @@
  */
 
 import {Component, Injector} from "@angular/core"
-import {FlowService} from "./shared/flow.service"
+
 
 @Component({
     selector    : "app",
@@ -15,7 +15,6 @@ import {FlowService} from "./shared/flow.service"
   `
 })
 export class App {
-
     constructor(private injector: Injector) {
         ServiceLocator.injector = injector
         // this.flowService.genClientId()

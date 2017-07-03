@@ -1,0 +1,28 @@
+@()
+<div class="ui-g">
+    <schema-panel class="ui-g-8"
+    [processor]="uiStateStore.selectedProcessor | async"
+    [mappedFieldName]="fieldName"
+    [selectionMode]="'single'">
+    </schema-panel>
+    <div class="ui-g-4">
+        <div class="flex-panel-parent">
+            <div><p>{{description}}</p></div>
+            <p-listbox class="flex-panel"
+            [options]="parameters"
+            [(ngModel)]="selectedParameter">
+                <ng-template
+                let-parameter
+                pTemplate="default">
+                    <div
+                    pDraggable="p-schema-params"
+                    (onDragStart)="dragStart($event, parameter.value)"
+                    (onDragEnd)="dragEnd($event)">
+                        {{parameter.label}}
+                    </div>
+                </ng-template>
+            </p-listbox>
+        </div>
+    </div>
+</div>
+
