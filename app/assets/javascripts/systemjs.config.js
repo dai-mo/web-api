@@ -36,8 +36,8 @@
             'leaflet': 'assets/lib/leaflet/dist',
             'keycloak': 'assets/lib/keycloak-js/dist',
             'keycloak-authz': 'assets/lib/keycloak-js/dist',
-            'traceur' : 'assets/lib/traceur/bin/traceur.js'
-
+            'traceur' : 'assets/lib/traceur/bin/traceur.js',
+            'immutable' : 'assets/lib/immutable/dist'
         },
         packages: {
             'app': {main: 'main.js',defaultExtension: 'js'},
@@ -51,7 +51,8 @@
             'leaflet': {main: 'leaflet.js',defaultExtension: 'js'},
             'keycloak': { defaultExtension: 'js' },
             'keycloak-authz': { defaultExtension: 'js' },
-            'traceur': { defaultExtension: 'js' }
+            'traceur': { defaultExtension: 'js' },
+            'immutable': { defaultExtension: 'js' }
 
         }
     });

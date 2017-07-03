@@ -2,6 +2,7 @@
  * Created by cmathew on 14/07/16.
  */
 
+import {Record} from "immutable"
 export enum EntityType {
   FLOW_INSTANCE,
   PROCESSOR
@@ -187,13 +188,13 @@ export class FlowGraph {
 
 export class FlowTab {
   title: string
-  id: string
-  name: string
-  labelToggle: boolean
-  flowInstance: FlowInstance
-  active: boolean
-  disabled: boolean
-  removable: boolean
+  id?: string = undefined
+  name?: string = ""
+  flowInstance?: FlowInstance = undefined
+  labelToggle?: boolean = false
+  active?: boolean = false
+  disabled?: boolean = false
+  removable?: boolean = false
 
 
   constructor(title: string,
@@ -203,7 +204,7 @@ export class FlowTab {
               labelToggle: boolean = false,
               active: boolean = false,
               disabled: boolean = false,
-              removable: boolean = false){
+              removable: boolean = false) {
     this.title = title
     this.id = id
     this.name = name
@@ -212,6 +213,7 @@ export class FlowTab {
     this.active = active
     this.disabled = disabled
     this.removable = removable
+
   }
 
   instanceState() {
@@ -230,6 +232,7 @@ export class FlowTab {
     return this.flowInstance.state === FlowInstance.stateNotStarted
   }
 }
+
 
 export class VisTab {
   visType: string

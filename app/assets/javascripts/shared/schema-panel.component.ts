@@ -6,6 +6,7 @@ import {Observable} from "rxjs/Rx"
 import {ErrorService} from "./util/error.service"
 import {UIStateStore} from "./ui.state.store"
 import {Field} from "./ui.models"
+import {DnDStore} from "./dnd.store"
 /**
  * Created by cmathew on 23.05.17.
  */
@@ -37,6 +38,7 @@ export class SchemaPanelComponent  implements OnInit {
 
   constructor(private schemaService: SchemaService,
               private uiStateStore: UIStateStore,
+              private dndStore: DnDStore,
               private errorService:ErrorService) {}
 
   ngOnInit(): void {
@@ -99,28 +101,27 @@ export class SchemaPanelComponent  implements OnInit {
       child.data = f
 
       let childSchemaPath = this.schemaFieldPath(child)
-      let flinks: TreeNode[] = []
       this.processorSchemaFields.forEach(psf => {
         psf.forEach((sf: any) => {
             if (sf.jsonPath !== undefined &&
               "$." + childSchemaPath === sf.jsonPath) {
-              flinks.push({label: sf.name, type: this.mappedFieldName, leaf: true, data: sf})
+              this.addChildField(child, sf)
             }
           }
         )
       })
-
-      if(flinks.length > 0) {
-        if(child.children === undefined)
-          child.children = flinks
-        else
-          child.children.push(flinks)
-        child.expanded = true
-      }
-
       return child
     })
     parentTreeNode.children = children
+  }
+
+  addChildField(node: TreeNode, sf: any) {
+    if(node !== undefined && sf !== undefined) {
+      if(node.children === undefined)
+        node.children = []
+      node.children.push({label: sf.name, type: this.mappedFieldName, leaf: true, data: sf})
+      node.expanded = true
+    }
   }
 
   removeLink(node: TreeNode) {
@@ -200,12 +201,20 @@ export class SchemaPanelComponent  implements OnInit {
     if(node.children !== undefined && node.children.length > 0)
       node.children.forEach(c => this.currentSchemaFields(c, sfs))
   }
+
   updateSchemaFields() {
     let schemaFields: any[] = []
     this.currentSchemaFields(this.rootNode, schemaFields)
     let currentProperties = this.uiStateStore.getProcessorPropertiesToUpdate()
     currentProperties[this.mappedFieldName] = JSON.stringify(schemaFields)
     this.uiStateStore.setProcessorPropertiesToUpdate(currentProperties)
+  }
+
+  nodeDrop(event: any, node: TreeNode) {
+    let param = this.dndStore.pSchemaParameter.getState()
+    param.jsonPath = this.schemaFieldPath(node)
+    this.addChildField(node, param)
+    this.updateSchemaFields()
   }
 }
 

@@ -95,6 +95,7 @@ import {SchemaPropertyComponent} from "./shared/schema-property.component"
 import {NotificationService} from "./shared/util/notification.service"
 import {FieldsToMapComponent} from "./shared/schema/fields-to-map.component"
 import {FieldActionsComponent} from "./shared/schema/field-actions.component"
+import {DnDStore} from "./shared/dnd.store"
 
 
 export const routes: Routes = [ {path: "", component: LayoutComponent}]
@@ -129,6 +130,7 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
   providers:[{provide: Window, useValue: window},
     FlowService,
     UIStateStore,
+    DnDStore,
     ContextStore,
     KeycloakService,
     ErrorService,

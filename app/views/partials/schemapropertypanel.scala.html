@@ -11,6 +11,16 @@
             <p-listbox class="flex-panel"
             [options]="parameters"
             [(ngModel)]="selectedParameter">
+                <ng-template
+                let-parameter
+                pTemplate="default">
+                    <div
+                    pDraggable="p-schema-params"
+                    (onDragStart)="dragStart($event, parameter.value)"
+                    (onDragEnd)="dragEnd($event)">
+                        {{parameter.label}}
+                    </div>
+                </ng-template>
             </p-listbox>
         </div>
     </div>
