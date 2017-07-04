@@ -5,8 +5,8 @@ import {TreeNode} from "primeng/primeng"
 import {Observable} from "rxjs/Rx"
 import {ErrorService} from "./util/error.service"
 import {UIStateStore} from "./ui.state.store"
-import {Field} from "./ui.models"
 import {DnDStore} from "./dnd.store"
+import * as SI from "seamless-immutable"
 /**
  * Created by cmathew on 23.05.17.
  */
@@ -44,7 +44,7 @@ export class SchemaPanelComponent  implements OnInit {
   ngOnInit(): void {
     this.nodes = []
     this.selectedNodes = []
-    this.uiStateStore.setProcessorPropertiesToUpdate(JSON.parse(JSON.stringify(this.processor.properties)))
+    this.uiStateStore.setProcessorPropertiesToUpdate(SI.from(this.processor.properties))
     this.processorSchemaFields = Object.keys(this.processor.properties)
       .filter(k => k === this.mappedFieldName)
       .map(k => JSON.parse(this.processor.properties[k]))
@@ -206,12 +206,15 @@ export class SchemaPanelComponent  implements OnInit {
     let schemaFields: any[] = []
     this.currentSchemaFields(this.rootNode, schemaFields)
     let currentProperties = this.uiStateStore.getProcessorPropertiesToUpdate()
-    currentProperties[this.mappedFieldName] = JSON.stringify(schemaFields)
-    this.uiStateStore.setProcessorPropertiesToUpdate(currentProperties)
+
+    this.uiStateStore.setProcessorPropertiesToUpdate(
+      currentProperties.set(this.mappedFieldName, JSON.stringify(schemaFields)
+      )
+    )
   }
 
   nodeDrop(event: any, node: TreeNode) {
-    let param = this.dndStore.pSchemaParameter.getState()
+    let param = this.dndStore.pSchemaParameter
     param.jsonPath = this.schemaFieldPath(node)
     this.addChildField(node, param)
     this.updateSchemaFields()

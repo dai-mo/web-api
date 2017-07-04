@@ -2,7 +2,6 @@
  * Created by cmathew on 14/07/16.
  */
 
-import {Record} from "immutable"
 export enum EntityType {
   FLOW_INSTANCE,
   PROCESSOR
@@ -50,6 +49,7 @@ export class PossibleValue {
   description: string
 }
 
+
 export class PropertyDefinition {
   displayName: string
   name: string
@@ -61,6 +61,16 @@ export class PropertyDefinition {
   dynamic: boolean
   type: string
   level: number
+}
+
+export class ConnectionPort {
+  id: string
+  type: string
+}
+export class Connection {
+  id: string
+  source: ConnectionPort
+  destination: ConnectionPort
 
 }
 
@@ -74,16 +84,8 @@ export class Processor {
   validationErrors: string[]
 }
 
-export class ConnectionPort {
-  id: string
-  type: string
-}
-export class Connection {
-  id: string
-  source: ConnectionPort
-  destination: ConnectionPort
 
-}
+
 export class FlowInstance {
   id: string
   name: string
@@ -96,7 +98,6 @@ export class FlowInstance {
   static stateRunning = "RUNNING"
   static stateStopped = "STOPPED"
   static stateNotStarted = "NOT_STARTED"
-
 }
 
 export class FlowNode {

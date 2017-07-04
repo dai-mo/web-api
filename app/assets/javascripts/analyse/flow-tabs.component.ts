@@ -216,13 +216,17 @@ export class FlowTabsComponent implements OnInit {
         )
     }.bind(this))
 
-    this.stopFlowBarItem =  {entityType: EntityType.FLOW_INSTANCE,
+    this.stopFlowBarItem =  {
+      view: UiId.ANALYSE,
+      entityType: EntityType.FLOW_INSTANCE,
       iconClass: "fa-stop",
       enabled: false,
       command: (event) => {
         this.stopFlow(this.activeTab())
       }}
-    this.startFlowBarItem = {entityType: EntityType.FLOW_INSTANCE,
+    this.startFlowBarItem = {
+      view: UiId.ANALYSE,
+      entityType: EntityType.FLOW_INSTANCE,
       iconClass: "fa-play",
       enabled: true,
       command: (event) => {
@@ -230,7 +234,9 @@ export class FlowTabsComponent implements OnInit {
       }}
 
     let cbItems: ContextBarItem[] = [
-      {entityType: EntityType.FLOW_INSTANCE,
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.FLOW_INSTANCE,
         iconClass: "fa-trash",
         enabled: true,
         command: (event) => {
@@ -238,20 +244,26 @@ export class FlowTabsComponent implements OnInit {
         }},
       this.stopFlowBarItem,
       this.startFlowBarItem,
-      {entityType: EntityType.FLOW_INSTANCE,
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.FLOW_INSTANCE,
         iconClass: "fa-refresh",
         enabled: true,
         command: (event) => {
           this.refreshFlow(this.activeTab())
         }},
-      {entityType: EntityType.PROCESSOR,
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.PROCESSOR,
         iconClass: "fa-list-alt",
         enabled: true,
         hidden: true,
         command: () => {
           this.uiStateStore.isProcessorSchemaDialogVisible = true
         }},
-      {entityType: EntityType.PROCESSOR,
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.PROCESSOR,
         iconClass: "fa-cogs",
         enabled: true,
         hidden: true,

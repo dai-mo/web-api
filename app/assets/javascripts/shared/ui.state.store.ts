@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable} from "rxjs/Rx"
 import {EntityType, FlowCreation, FlowInstance, FlowTab, Processor, Provenance, VisTab} from "../analyse/flow.model"
 import {Msg, MsgGroup, ProcessorPropertiesConf, UiId, ViewsVisible} from "./ui.models"
 import {ContextStore} from "./context.store"
+import * as SI from "seamless-immutable"
 
 @Injectable()
 export class UIStateStore {
@@ -80,22 +81,27 @@ export class UIStateStore {
   selectedProcessor: Observable<Processor> = this._selectedProcessor.asObservable()
 
   setSelectedProcessorId(processorId: string) {
-    this.contextStore.getContextBarItems(UiId.ANALYSE)
-      .forEach(cbItem => {
-        if(cbItem.entityType === EntityType.PROCESSOR)
-          if(processorId === null)
-            cbItem.hidden = true
-          else
-            cbItem.hidden = false
-        else
-        if(processorId === null)
-          cbItem.hidden = false
-        else
-          cbItem.hidden = true
-      })
+    // this.updateAnalyseContextItems(processorId)
     this.ngZone.run(() => this._selectedProcessorId.next(processorId))
     let selectedProcessor = this.getActiveFlowProcessor(processorId)
     this.ngZone.run(() => this._selectedProcessor.next(selectedProcessor))
+  }
+
+  updateAnalyseContextItems(processorId: string) {
+    this.contextStore.getContextBarItems(UiId.ANALYSE)
+      .forEach(cbItem => {
+        if(cbItem.entityType === EntityType.PROCESSOR)
+          if(processorId === "")
+            cbItem.hidden = true
+          else
+            cbItem.hidden = false
+        else {
+          if (processorId === "")
+            cbItem.hidden = false
+          else
+            cbItem.hidden = true
+        }
+      })
   }
 
   getSelectedProcessorId(): string {
@@ -250,14 +256,17 @@ export class UIStateStore {
   }
 
   // --- Processor Properties Start
-  private _processorPropertiesToUpdate: BehaviorSubject<any> = new BehaviorSubject(undefined)
-  processorPropertiesToUpdate: Observable<any> = this._processorPropertiesToUpdate.asObservable()
+  private _processorPropertiesToUpdate: BehaviorSubject<SI.ImmutableObject<any>> =
+    new BehaviorSubject(SI.from({}))
+  processorPropertiesToUpdate: Observable<SI.ImmutableObject<any>> =
+    this._processorPropertiesToUpdate.asObservable()
 
-  setProcessorPropertiesToUpdate(properties: any) {
-    this.ngZone.run(() => this._processorPropertiesToUpdate.next(properties))
+  setProcessorPropertiesToUpdate(properties: SI.ImmutableObject<any>) {
+    this.ngZone.run(() => this._processorPropertiesToUpdate
+      .next(properties))
   }
 
-  getProcessorPropertiesToUpdate(): any {
+  getProcessorPropertiesToUpdate(): SI.ImmutableObject<any> {
     return this._processorPropertiesToUpdate.getValue()
   }
   // --- Processor Properties End

@@ -37,10 +37,12 @@
             'keycloak': 'assets/lib/keycloak-js/dist',
             'keycloak-authz': 'assets/lib/keycloak-js/dist',
             'traceur' : 'assets/lib/traceur/bin/traceur.js',
-            'immutable' : 'assets/lib/immutable/dist'
+            'seamless-immutable' : 'assets/lib/seamless-immutable',
+            '@ngrx/core' : 'assets/lib/@ngrx/core',
+            '@ngrx/store' : 'assets/lib/@ngrx/store'
         },
         packages: {
-            'app': {main: 'main.js',defaultExtension: 'js'},
+            'app': {main: 'main.js', defaultExtension: 'js'},
             'rxjs': {defaultExtension: 'js'},
             'assets/lib': {defaultExtension: 'js'},
             'symbol-observable': {defaultExtension: 'js', main: 'index.js'},
@@ -52,7 +54,9 @@
             'keycloak': { defaultExtension: 'js' },
             'keycloak-authz': { defaultExtension: 'js' },
             'traceur': { defaultExtension: 'js' },
-            'immutable': { defaultExtension: 'js' }
+            'seamless-immutable': {main: 'seamless-immutable.development.js', defaultExtension: 'js' },
+            '@ngrx/core': {main: 'index.js', defaultExtension: 'js' },
+            '@ngrx/store': {main: 'index.js', defaultExtension: 'js' }
 
         }
     });

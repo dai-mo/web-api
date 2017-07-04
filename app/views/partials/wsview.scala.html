@@ -51,7 +51,7 @@
                 class="btn btn-secondary"
                 (click)="cbItem.command($event)"
                 [disabled]="!cbItem.enabled"
-                [hidden]="cbItem.hidden">
+                [hidden]="oss.hideContextBarItem(cbItem) | async">
                     <i class="fa {{cbItem.iconClass}}" aria-hidden="true" ></i>
                 </button>
             </div>
