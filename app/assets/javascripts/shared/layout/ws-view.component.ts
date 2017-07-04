@@ -6,6 +6,7 @@ import {MenuItem, OverlayPanel} from "primeng/primeng"
 import {ContextStore} from "../context.store"
 import {UIStateStore} from "../ui.state.store"
 import {UiId} from "../ui.models"
+import {ObservableStateStore} from "../../store/state"
 
 @Component({
     selector: "ws-view",
@@ -17,7 +18,8 @@ export class WsViewComponent {
     uiId = UiId
 
     constructor(private contextStore: ContextStore,
-                private uiStateStore: UIStateStore) {}
+                private uiStateStore: UIStateStore,
+                private oss: ObservableStateStore) {}
 
     maximiseView(event: any, viewName: string) {
         this.uiStateStore.maximiseView(viewName)

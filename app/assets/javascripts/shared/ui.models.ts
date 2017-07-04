@@ -4,6 +4,8 @@ import {
   SchemaProperties
 } from "../analyse/flow.model"
 import {UIStateStore} from "./ui.state.store"
+import * as SI from "seamless-immutable"
+
 /**
  * Created by cmathew on 04.05.17.
  */
@@ -34,6 +36,7 @@ export class UiId {
 export interface ContextMenuItem extends MenuItem {}
 
 export class ContextBarItem {
+  view: string
   entityType: EntityType
   iconClass: string = ""
   enabled: boolean = false
@@ -288,7 +291,8 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
   }
 
   finalise(uiStateStore: UIStateStore): void {
-    this.processor.properties = uiStateStore.getProcessorPropertiesToUpdate()
+    let updateProcessor = SI.from(this.processor)
+      .set("properties", uiStateStore.getProcessorPropertiesToUpdate())
     uiStateStore.setProcessorPropertiesToUpdate(undefined)
     uiStateStore.isProcessorPropertiesDialogVisible = false
   }

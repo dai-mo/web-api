@@ -96,6 +96,9 @@ import {NotificationService} from "./shared/util/notification.service"
 import {FieldsToMapComponent} from "./shared/schema/fields-to-map.component"
 import {FieldActionsComponent} from "./shared/schema/field-actions.component"
 import {DnDStore} from "./shared/dnd.store"
+import {rootReducer} from "./store/reducer"
+import {StoreModule} from "@ngrx/store"
+import {ObservableStateStore} from "./store/state"
 
 
 export const routes: Routes = [ {path: "", component: LayoutComponent}]
@@ -137,8 +140,11 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
     NotificationService,
     MapService,
     FlowGraphService,
-    SchemaService],
-  imports: [// Angular Imports follow ...
+    SchemaService,
+    ObservableStateStore],
+  imports: [// Alambeek Imports follow ...
+    StoreModule.provideStore(rootReducer),
+    // Angular Imports follow ...
     BrowserAnimationsModule,
     HttpModule,
     BrowserModule,

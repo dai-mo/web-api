@@ -42,7 +42,7 @@ export class SchemaPropertyComponent implements OnInit {
   }
 
   dragStart(event:any, parameter: any) {
-    this.dndStore.pSchemaParameter.setState(parameter)
+    this.dndStore.pSchemaParameter = parameter
   }
 
   dragEnd(event:any) {

@@ -3,9 +3,11 @@
  */
 
 import {Injectable, NgZone} from "@angular/core"
-import {FlowGraph} from "../flow.model"
+import {FlowGraph, Processor} from "../flow.model"
 import {UIStateStore} from "../../shared/ui.state.store"
 import {Msg} from "../../shared/ui.models"
+import {Store} from "@ngrx/store"
+import {SELECT_PROCESSOR} from "../../store/reducer"
 
 declare var vis: any
 
@@ -13,6 +15,7 @@ declare var vis: any
 export class FlowGraphService {
 
   constructor(private uiStateStore: UIStateStore,
+              private store:Store<Processor>,
               private ngZone: NgZone) {
 
   }
@@ -53,6 +56,7 @@ export class FlowGraphService {
     }
     let network = this.ngZone.runOutsideAngular(() => new vis.Network(el, data, options))
     let uiss = this.uiStateStore
+    let st = this.store
     let self = this
 
     network.on("resize", function (params: any) {
@@ -64,6 +68,7 @@ export class FlowGraphService {
       if (selectedNodes.length > 0) {
         let pid = selectedNodes[0]
         uiss.setSelectedProcessorId(pid)
+        st.dispatch({type: SELECT_PROCESSOR, payload: {id: pid}})
         // FIXME : Displaying errors every time the
         // processor node is clicked is annoying
         // Much better to have somewhere specific
@@ -71,6 +76,7 @@ export class FlowGraphService {
         // uiss.displayProcessorValidationErrors(pid)
       } else {
         uiss.setSelectedProcessorId(null)
+        st.dispatch({type: SELECT_PROCESSOR, payload: {id: ""}})
       }
     }.bind(this))
 
