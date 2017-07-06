@@ -73,12 +73,11 @@ export const flowTabs: ActionReducer<FlowTab[]> =
           }
         })
       case UPDATE_SELECTED_PROCESSOR:
-        let activeFlowTab = SI.from(state.find(ft => ft.active === true))
+        let activeFlowTab = SI.from(state.find(ft => ft.active))
         let updatedFlowInstance: FlowInstance = flowInstance(activeFlowTab.flowInstance, action)
         let updatedActiveFlowTab: FlowTab =
           activeFlowTab.set("flowInstance", updatedFlowInstance)
-        let newState: FlowTab[] = SI.from(state).filter(ft => ft.active !== true)
-        newState.push(updatedActiveFlowTab)
+        let newState = SI.from(state).filter(ft => !ft.active).concat(updatedActiveFlowTab)
         return newState
       default:
         return state
@@ -141,7 +140,6 @@ export const currentProcessorProperties: ActionReducer<any> =
 
 export const rootReducer = {
   flowTabs,
-  selectedFlowInstance: flowInstance,
   selectedProcessorId,
   currentProcessorProperties
 }

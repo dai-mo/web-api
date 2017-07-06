@@ -38,11 +38,26 @@ export class ObservableState {
   }
 
   selectedProcessor(): Processor {
-    return this.activeFlowTab().flowInstance.processors.find(p => p.id === this.appState().selectedProcessorId)
+    return this.activeFlowTab().flowInstance.processors
+      .find(p => p.type + ":" + p.id === this.appState().selectedProcessorId)
+  }
+
+  selectedProcessor$(): Observable<Processor> {
+    return this.activeFlowTab$()
+      .map(ft =>
+        ft.flowInstance.processors
+          .find(p => p.type + ":" + p.id === this.appState().selectedProcessorId)
+      )
   }
 
   activeFlowTab(): FlowTab {
     return this.appState().flowTabs.find(ft => ft.active)
+  }
+
+  activeFlowTab$(): Observable<FlowTab> {
+    return this.appStore()
+      .select(state => state.flowTabs)
+      .map(fts => fts.find(ft => ft.active))
   }
 
   hideContextBarItem(cbItem: ContextBarItem): Observable<boolean> {

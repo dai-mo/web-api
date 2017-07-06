@@ -7,7 +7,7 @@ import {ErrorService} from "./util/error.service"
 import {UIStateStore} from "./ui.state.store"
 import {DnDStore} from "./dnd.store"
 import {AvroSchema, AvroSchemaField, AvroSchemaType, SchemaAction, SchemaService} from "../service/schema.service"
-import {AppState} from "../store/state"
+import {AppState, ObservableState} from "../store/state"
 import {Store} from "@ngrx/store"
 import {UPDATE_CURRENT_PROCESSOR_PROPERTIES} from "../store/reducers"
 /**
@@ -41,6 +41,7 @@ export class SchemaPanelComponent  implements OnInit {
 
   constructor(private schemaService: SchemaService,
               private uiStateStore: UIStateStore,
+              private oss: ObservableState,
               private store: Store<AppState>,
               private dndStore: DnDStore,
               private errorService:ErrorService) {}
@@ -192,7 +193,7 @@ export class SchemaPanelComponent  implements OnInit {
   }
 
   updateSchema(): Observable<Processor[]> {
-    return this.schemaService.updateSchema(this.uiStateStore.getActiveFlowTab().flowInstance.id,
+    return this.schemaService.updateSchema(this.oss.activeFlowTab().flowInstance.id,
       this.processor.id,
       this.schemaActions())
   }

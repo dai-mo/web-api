@@ -1,6 +1,6 @@
 @()
 <schema-panel
-[processor]="uiStateStore.selectedProcessor | async"
+[processor]="oss.selectedProcessor$() | async"
 [selectionMode]="'checkbox'">
 </schema-panel>
 

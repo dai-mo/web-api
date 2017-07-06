@@ -7,6 +7,7 @@ import {Field} from "./ui.models"
 import {SelectItem} from "primeng/primeng"
 import {SchemaPanelComponent} from "./schema-panel.component"
 import {DnDStore} from "./dnd.store"
+import {ObservableState} from "../store/state"
 
 /**
  * Created by cmathew on 19.05.17.
@@ -28,6 +29,7 @@ export class SchemaPropertyComponent implements OnInit {
   dynamic: boolean = false
 
   constructor(private uiStateStore: UIStateStore,
+              private oss: ObservableState,
               private dndStore: DnDStore) {
     this.parameters = []
   }
