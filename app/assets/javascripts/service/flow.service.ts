@@ -6,8 +6,8 @@ import {Observable} from "rxjs/Rx"
 
 
 import {FlowEdge, FlowGraph, FlowInstance, FlowNode, FlowTemplate, Provenance} from "../analyse/flow.model"
-import {ErrorService} from "./util/error.service"
-import {ApiHttpService} from "./api-http.service"
+import {ErrorService} from "../shared/util/error.service"
+import {ApiHttpService} from "../shared/api-http.service"
 
 
 @Injectable()

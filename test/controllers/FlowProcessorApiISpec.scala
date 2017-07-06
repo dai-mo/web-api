@@ -5,15 +5,18 @@ import java.util.UUID
 import controllers.util.Req
 import org.apache.avro.Schema
 import org.dcs.api.processor.RemoteProcessor
-import org.dcs.api.service.ProcessorServiceDefinition
+import org.dcs.api.service.{ProcessorInstance, ProcessorServiceDefinition}
 import org.dcs.commons.{SchemaAction, SchemaField}
 import org.dcs.commons.serde.JsonPath
 import org.dcs.commons.serde.JsonSerializerImplicits._
 import org.scalatest.Ignore
+import scala.concurrent.duration._
 import org.scalatestplus.play.OneAppPerTest
 import play.api.libs.json.{JsArray, JsObject, Json}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, route, _}
+
+import scala.concurrent.Await
 
 /**
   * Created by cmathew on 07.04.17.
@@ -22,7 +25,7 @@ import play.api.test.Helpers.{GET, route, _}
 //       otherwise this test will be run during the release
 //       process. This should be reverted once the integration
 //       test environment is setup.
-@Ignore
+// @Ignore
 class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
 
 
@@ -88,7 +91,7 @@ class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
 
       val processor =  route(app,
         withDcsCookiesHeaders(FakeRequest(POST, "/api/flow/processor/create/" + flowInstanceId))
-          .withTextBody(psd.toJson)
+          .withJsonBody(Json.parse(psd.toJson))
           .withHeaders((Req.FlowClientId, clientId))).get
 
       status(processor) mustBe OK
@@ -96,7 +99,23 @@ class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
       val createProcessorResponse = contentAsJson(processor).as[JsObject]
 
       val processorInstanceId = (createProcessorResponse \ "id").as[String]
-      val processorInstanceVersion = (createProcessorResponse \ "version").as[Long]
+
+      val processorInstance: ProcessorInstance = createInstanceResponse.toString().toObject[ProcessorInstance]
+
+
+      val updateProcessorProperties =  route(app,
+        withDcsCookiesHeaders(FakeRequest(PUT, "/api/flow/processor/" + processorInstanceId  + "/properties"))
+          .withJsonBody(Json.parse((processorInstance.properties + ("user" -> "Bob")).toJson))
+          .withHeaders((Req.FlowClientId, clientId))
+      ).get
+
+      status(updateProcessorProperties) mustBe OK
+
+      val updateProcessorResponse = contentAsJson(updateProcessorProperties).as[JsObject]
+      val updateProcessorInstance = updateProcessorResponse.toString().toObject[ProcessorInstance]
+
+      assert(updateProcessorInstance.properties("user") == "Bob")
+      val processorInstanceVersion = (updateProcessorResponse \ "version").as[Long]
 
       val removeProcessorResponse =  route(app,
         withDcsCookiesHeaders(FakeRequest(DELETE, "/api/flow/processor/" + processorInstanceId))

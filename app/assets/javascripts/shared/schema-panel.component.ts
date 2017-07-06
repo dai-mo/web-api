@@ -1,12 +1,15 @@
 import {Component, Input, OnInit} from "@angular/core"
 import {Processor, SchemaProperties} from "../analyse/flow.model"
-import {AvroSchema, AvroSchemaField, AvroSchemaType, SchemaAction, SchemaService} from "./schema.service"
+
 import {TreeNode} from "primeng/primeng"
 import {Observable} from "rxjs/Rx"
 import {ErrorService} from "./util/error.service"
 import {UIStateStore} from "./ui.state.store"
 import {DnDStore} from "./dnd.store"
-import * as SI from "seamless-immutable"
+import {AvroSchema, AvroSchemaField, AvroSchemaType, SchemaAction, SchemaService} from "../service/schema.service"
+import {AppState} from "../store/state"
+import {Store} from "@ngrx/store"
+import {UPDATE_CURRENT_PROCESSOR_PROPERTIES} from "../store/reducers"
 /**
  * Created by cmathew on 23.05.17.
  */
@@ -38,13 +41,14 @@ export class SchemaPanelComponent  implements OnInit {
 
   constructor(private schemaService: SchemaService,
               private uiStateStore: UIStateStore,
+              private store: Store<AppState>,
               private dndStore: DnDStore,
               private errorService:ErrorService) {}
 
   ngOnInit(): void {
     this.nodes = []
     this.selectedNodes = []
-    this.uiStateStore.setProcessorPropertiesToUpdate(SI.from(this.processor.properties))
+    this.uiStateStore.setProcessorPropertiesToUpdate(this.processor.properties)
     this.processorSchemaFields = Object.keys(this.processor.properties)
       .filter(k => k === this.mappedFieldName)
       .map(k => JSON.parse(this.processor.properties[k]))
@@ -205,12 +209,12 @@ export class SchemaPanelComponent  implements OnInit {
   updateSchemaFields() {
     let schemaFields: any[] = []
     this.currentSchemaFields(this.rootNode, schemaFields)
-    let currentProperties = this.uiStateStore.getProcessorPropertiesToUpdate()
 
-    this.uiStateStore.setProcessorPropertiesToUpdate(
-      currentProperties.set(this.mappedFieldName, JSON.stringify(schemaFields)
-      )
-    )
+    let props: any = {}
+    props[this.mappedFieldName] = JSON.stringify(schemaFields)
+
+    this.store.dispatch({type: UPDATE_CURRENT_PROCESSOR_PROPERTIES,
+      payload: { properties: props}})
   }
 
   nodeDrop(event: any, node: TreeNode) {

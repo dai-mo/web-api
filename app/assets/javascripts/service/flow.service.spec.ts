@@ -7,7 +7,7 @@ import {inject, fakeAsync, tick, TestBed, async} from "@angular/core/testing"
 import {MockBackend, MockConnection} from "@angular/http/testing"
 import {FlowService} from "./flow.service"
 import {FlowTemplate, FlowInstance, FlowGraph, FlowNode} from "../analyse/flow.model"
-import {ErrorService} from "./util/error.service"
+import {ErrorService} from "../shared/util/error.service"
 import {platformBrowserDynamicTesting, BrowserDynamicTestingModule} from "@angular/platform-browser-dynamic/testing"
 
 

@@ -3,7 +3,7 @@ import {UIStateStore} from "./ui.state.store"
 import {FlowInstance, Processor} from "../analyse/flow.model"
 import {SchemaPanelComponent} from "./schema-panel.component"
 import {ErrorService} from "./util/error.service"
-import {FlowService} from "./flow.service"
+import {FlowService} from "../service/flow.service"
 
 /**
  * Created by cmathew on 19.05.17.

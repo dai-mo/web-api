@@ -2,7 +2,7 @@
  * Created by cmathew on 14/07/16.
  */
 import {Component, OnInit} from "@angular/core"
-import {FlowService} from "../shared/flow.service"
+import {FlowService} from "../service/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {FlowTemplate} from "./flow.model"
 import {UIStateStore} from "../shared/ui.state.store"

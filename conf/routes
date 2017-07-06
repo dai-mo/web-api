@@ -42,6 +42,7 @@ POST    /api/flow/processor/create/:fid  controllers.FlowProcessorApi.create(fid
 PUT     /api/flow/processor/start/:pid   controllers.FlowProcessorApi.start(pid: String)
 PUT     /api/flow/processor/stop/:pid    controllers.FlowProcessorApi.stop(pid: String)
 GET     /api/flow/processor/schema/:sid  controllers.FlowProcessorApi.schema(sid: String)
+PUT     /api/flow/processor/:pid/properties   controllers.FlowProcessorApi.updateProperties(pid: String)
 PUT     /api/flow/processor/schema/:fid/:pid   controllers.FlowProcessorApi.updateSchema(fid:String, pid: String)
 GET     /api/flow/processor/list/:property/:regex    controllers.FlowProcessorApi.list(property: String, regex: String)
 ##- Connection Api

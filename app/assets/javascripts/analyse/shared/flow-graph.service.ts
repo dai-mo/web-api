@@ -7,7 +7,8 @@ import {FlowGraph, Processor} from "../flow.model"
 import {UIStateStore} from "../../shared/ui.state.store"
 import {Msg} from "../../shared/ui.models"
 import {Store} from "@ngrx/store"
-import {SELECT_PROCESSOR} from "../../store/reducer"
+import {SELECT_PROCESSOR} from "../../store/reducers"
+import {AppState} from "../../store/state"
 
 declare var vis: any
 
@@ -15,7 +16,7 @@ declare var vis: any
 export class FlowGraphService {
 
   constructor(private uiStateStore: UIStateStore,
-              private store:Store<Processor>,
+              private store:Store<AppState>,
               private ngZone: NgZone) {
 
   }
@@ -67,7 +68,7 @@ export class FlowGraphService {
       let selectedNodes = params.nodes
       if (selectedNodes.length > 0) {
         let pid = selectedNodes[0]
-        uiss.setSelectedProcessorId(pid)
+        // uiss.setSelectedProcessorId(pid)
         st.dispatch({type: SELECT_PROCESSOR, payload: {id: pid}})
         // FIXME : Displaying errors every time the
         // processor node is clicked is annoying
@@ -75,7 +76,7 @@ export class FlowGraphService {
         // to click / hover to get this info
         // uiss.displayProcessorValidationErrors(pid)
       } else {
-        uiss.setSelectedProcessorId(null)
+        // uiss.setSelectedProcessorId(null)
         st.dispatch({type: SELECT_PROCESSOR, payload: {id: ""}})
       }
     }.bind(this))

@@ -1,12 +1,20 @@
 import {Component, Input, OnInit} from "@angular/core"
 import {DCSError, EntityType, FlowCreation, FlowInstance, FlowTab} from "./flow.model"
-import {FlowService} from "../shared/flow.service"
+import {FlowService} from "../service/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
 import {ContextStore} from "../shared/context.store"
 import {ContextBarItem, ContextMenuItem, ProcessorPropertiesConf, UiId} from "../shared/ui.models"
 import {NotificationService} from "../shared/util/notification.service"
+import {AppState, ObservableState} from "../store/state"
+import {
+  ADD_FLOW_TABS, REMOVE_FLOW_TAB, SELECT_FLOW_TAB, UPDATE_FLOW_INSTANCE,
+  UPDATE_FLOW_INSTANCE_STATE
+} from "../store/reducers"
+import {ProcessorService} from "../service/processor.service"
+import * as SI from "seamless-immutable"
+import {Observable} from "rxjs"
 
 
 @Component({
@@ -23,10 +31,14 @@ export class FlowTabsComponent implements OnInit {
   private stopFlowBarItem: ContextBarItem
   private startFlowBarItem: ContextBarItem
 
+  flowTabs: Observable<FlowTab[]> = this.oss.appStore().select((state: AppState) => state.flowTabs)
+
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
               private notificationService: NotificationService,
+              private oss: ObservableState,
               private uiStateStore: UIStateStore,
+              private processorService: ProcessorService,
               private contextStore: ContextStore) {
     this.nifiUrl = window.location.protocol + "//" +
       window.location.host +
@@ -39,28 +51,48 @@ export class FlowTabsComponent implements OnInit {
     ]
   }
 
+  public isRunning(flowTab: FlowTab) {
+    return flowTab.flowInstance.state === FlowInstance.stateRunning
+  }
+
+  public isStopped(flowTab: FlowTab) {
+    return flowTab.flowInstance.state === FlowInstance.stateStopped
+  }
+
+  public isNotStarted(flowTab: FlowTab) {
+    return flowTab.flowInstance.state === FlowInstance.stateNotStarted
+  }
+
   public activeTab(): FlowTab {
-    return this.uiStateStore.getFlowTabs().find(ft => ft.active)
+    return this.oss.appState().flowTabs.find(ft => ft.active)
   }
 
 
   public selectActiveTab(index: number): void {
-    let at = this.uiStateStore.getFlowTabs()[index]
+    let at = this.oss.appState().flowTabs[index]
     if(at) this.setActiveTab(at)
   }
 
-  public setActiveTab(flowTab: FlowTab):void {
-    flowTab.active = true
-    this.uiStateStore.getFlowTabs().forEach(t => {
-      if(t !== flowTab)
-        t.active = false
+  public setActiveTab(flowTab: FlowTab): void {
+
+    this.oss.dispatch({
+      type: SELECT_FLOW_TAB,
+      payload: {flowTab: flowTab}
     })
+
     this.updateContextBarItems(flowTab)
   }
 
+  selectTab(event: any) {
+    this.oss.dispatch({
+      type: SELECT_FLOW_TAB,
+      payload: this.oss.appState().flowTabs[event.index]
+    })
+  }
+
   updateContextBarItems(flowTab: FlowTab) {
-    this.stopFlowBarItem.enabled = flowTab.isRunning()
-    this.startFlowBarItem.enabled = !flowTab.isRunning()
+    this.stopFlowBarItem.enabled = this.isRunning(flowTab)
+    this.startFlowBarItem.enabled = !this.isRunning(flowTab)
   }
 
   public toggleTabLabel(flowTab: FlowTab) {
@@ -76,11 +108,26 @@ export class FlowTabsComponent implements OnInit {
 
   private addFlowInstance(flowInstance: FlowInstance) {
     if (flowInstance) {
-      let flowTabs: Array<FlowTab> = this.uiStateStore.getFlowTabs()
-      let tab = new FlowTab("#" + (flowTabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
-      this.setActiveTab(tab)
-      this.uiStateStore.addFlowTab(tab)
+      let tab = this.toFlowTab(flowInstance)
+      this.addFlowTabs([tab])
     }
+  }
+
+  private addFlowTabs(flowTabs: FlowTab[]) {
+    if (flowTabs !== undefined && flowTabs.length > 0) {
+
+      this.oss.dispatch({
+        type: ADD_FLOW_TABS,
+        payload: {flowTabs: flowTabs}
+      })
+    }
+  }
+
+  private toFlowTab(flowInstance: FlowInstance): FlowTab {
+    return SI.from(new FlowTab("#",
+      flowInstance.id,
+      flowInstance.name,
+      flowInstance))
   }
 
 
@@ -123,14 +170,15 @@ export class FlowTabsComponent implements OnInit {
             if (!deleteOK)
               alert("Flow Instance could not be deleted")
             else {
-              let flowTabs = this.uiStateStore.getFlowTabs()
+              let flowTabs = this.oss.appState().flowTabs
               let flowTabIndex = flowTabs.indexOf(flowTab)
-              if(flowTabs.length > 1)
-                if(flowTabIndex === 0 )
-                  this.selectActiveTab(1)
-                else
-                  this.selectActiveTab(flowTabIndex - 1)
-              this.uiStateStore.removeFlowTab(flowTab)
+              this.oss.dispatch({
+                type: REMOVE_FLOW_TAB,
+                payload: {
+                  flowTabId: flowTab.id,
+                  index: flowTabIndex
+                }
+              })
             }
           },
           (error: any) => this.errorService.handleError(error)
@@ -145,8 +193,13 @@ export class FlowTabsComponent implements OnInit {
         .subscribe(
           startOK => {
             if (startOK) {
-              flowTab.flowInstance.state = FlowInstance.stateRunning
-              this.uiStateStore.updateFlowTabs()
+              this.oss.dispatch({
+                type: UPDATE_FLOW_INSTANCE_STATE,
+                payload: {
+                  flowInstanceId: flowTab.flowInstance.id,
+                  state: FlowInstance.stateRunning
+                }
+              })
               this.updateContextBarItems(flowTab)
             } else
               alert("Flow Instance failed to start")
@@ -162,9 +215,12 @@ export class FlowTabsComponent implements OnInit {
         .instance(flowTab.id)
         .subscribe(
           (flowInstance: FlowInstance) => {
-            let flowTabs: Array<FlowTab> = this.uiStateStore.getFlowTabs()
-            flowTabs.filter(t => t.id === flowTab.id).forEach(t => t.flowInstance = flowInstance)
-            this.uiStateStore.updateFlowTabs()
+            this.oss.dispatch({
+              type: UPDATE_FLOW_INSTANCE,
+              payload: {
+                flowInstance: flowInstance
+              }
+            })
             this.updateContextBarItems(flowTab)
           },
           (error: any) => this.errorService.handleError(error)
@@ -179,8 +235,13 @@ export class FlowTabsComponent implements OnInit {
         .subscribe(
           stopOK => {
             if (stopOK) {
-              flowTab.flowInstance.state = FlowInstance.stateStopped
-              this.uiStateStore.updateFlowTabs()
+              this.oss.dispatch({
+                type: UPDATE_FLOW_INSTANCE_STATE,
+                payload: {
+                  flowInstanceId: flowTab.flowInstance.id,
+                  state: FlowInstance.stateStopped
+                }
+              })
               this.updateContextBarItems(flowTab)
             } else
               alert("Flow Instance failed to stop")
@@ -190,27 +251,28 @@ export class FlowTabsComponent implements OnInit {
     }
   }
 
+  getSelectedProcessorPropertiesConf(): ProcessorPropertiesConf {
+    let sp = this.oss.selectedProcessor()
+    if (sp !== undefined) {
+      return new ProcessorPropertiesConf(sp,
+        this.oss.appStore(),
+        this.processorService,
+        this.errorService)
+    }
+    return undefined
+  }
+
   ngOnInit() {
     KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
         .instances(rpt)
         .subscribe(
           (instances: Array<FlowInstance>) => {
-            let flowTabs: FlowTab[] = []
-            instances.map((flowInstance: FlowInstance) => {
-              let flowTab = new FlowTab("#" + (flowTabs.length + 1), flowInstance.id, flowInstance.name, flowInstance)
-              flowTabs.push(flowTab)
+            let flowTabs: FlowTab[] = instances.map((flowInstance: FlowInstance) => {
+              return this.toFlowTab(flowInstance)
             })
 
-            if (flowTabs.length > 0) {
-              flowTabs[0].active = true
-              this.emptyTab = undefined
-            } else {
-              this.emptyTab = new FlowTab("...")
-            }
-
-            this.uiStateStore.addFlowTabs(flowTabs)
-            this.selectActiveTab(flowTabs.length - 1)
+            this.addFlowTabs(flowTabs)
           },
           (error: any) => this.errorService.handleError(error)
         )
@@ -268,18 +330,19 @@ export class FlowTabsComponent implements OnInit {
         enabled: true,
         hidden: true,
         command: () => {
-          let conf: ProcessorPropertiesConf =
-            this.uiStateStore.getSelectedProcessorPropertiesConf()
-          if(conf === undefined || !conf.hasEntities()) {
+          let conf = this.getSelectedProcessorPropertiesConf()
+          if (conf !== undefined && !conf.hasEntities()) {
             this.uiStateStore.isProcessorPropertiesDialogVisible = false
             this.notificationService
               .warn({
                 title: "Processor Properties",
-                description: "No configurable properties for chosen processor"})
+                description: "No configurable properties for chosen processor"
+              })
           } else {
             this.uiStateStore.isProcessorPropertiesDialogVisible = true
           }
-        }}
+        }
+      }
     ]
     this.contextStore.addContextBar(UiId.ANALYSE, cbItems)
   }

@@ -47,7 +47,7 @@
 
             <div *ngFor="let cbItem of contextStore.contextBarObs(name) | async"
             class="btn-group btn-group-sm pull-right">
-                <button *ngIf="uiStateStore.store.flowTabs.length > 0"
+                <button *ngIf="(flowTabs | async).length > 0"
                 class="btn btn-secondary"
                 (click)="cbItem.command($event)"
                 [disabled]="!cbItem.enabled"

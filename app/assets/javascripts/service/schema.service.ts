@@ -4,7 +4,7 @@
 
 import {Injectable} from "@angular/core"
 import {Processor} from "../analyse/flow.model"
-import {ApiHttpService} from "./api-http.service"
+import {ApiHttpService} from "../shared/api-http.service"
 import {Http} from "@angular/http"
 import {Observable} from "rxjs/Rx"
 
