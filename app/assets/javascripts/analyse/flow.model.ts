@@ -216,22 +216,6 @@ export class FlowTab {
     this.removable = removable
 
   }
-
-  instanceState() {
-    return this.flowInstance.state
-  }
-
-  isRunning() {
-    return this.flowInstance.state === FlowInstance.stateRunning
-  }
-
-  isStopped() {
-    return this.flowInstance.state === FlowInstance.stateStopped
-  }
-
-  isNotStarted() {
-    return this.flowInstance.state === FlowInstance.stateNotStarted
-  }
 }
 
 

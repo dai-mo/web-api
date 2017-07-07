@@ -1,9 +1,9 @@
 import {Injectable, NgZone} from "@angular/core"
 import {BehaviorSubject, Observable} from "rxjs/Rx"
 import {EntityType, FlowCreation, FlowInstance, FlowTab, Processor, Provenance, VisTab} from "../analyse/flow.model"
-import {Msg, MsgGroup, ProcessorPropertiesConf, UiId, ViewsVisible} from "./ui.models"
+import {Msg, MsgGroup, UiId, ViewsVisible} from "./ui.models"
 import {ContextStore} from "./context.store"
-import * as SI from "seamless-immutable"
+import {ObservableState} from "../store/state"
 
 @Injectable()
 export class UIStateStore {
@@ -14,6 +14,7 @@ export class UIStateStore {
   }
 
   constructor(private contextStore: ContextStore,
+              private oss: ObservableState,
               private ngZone: NgZone) {
     this.store = {
       flowTabs: [],
@@ -108,13 +109,17 @@ export class UIStateStore {
     return this._selectedProcessorId.getValue()
   }
 
-  getSelectedProcessorPropertiesConf(): ProcessorPropertiesConf {
-    let selectedProcessor = this._selectedProcessor.getValue()
-    if (selectedProcessor !== null)
-      return new ProcessorPropertiesConf(selectedProcessor)
-    else
-      return undefined
+  getSelectedProcessor(): Processor {
+    return this._selectedProcessor.getValue()
   }
+
+  // getSelectedProcessorPropertiesConf(): ProcessorPropertiesConf {
+  //   let selectedProcessor = this._selectedProcessor.getValue()
+  //   if (selectedProcessor !== null)
+  //     return new ProcessorPropertiesConf(selectedProcessor, this.appStore, this.processorService, this.errorService)
+  //   else
+  //     return undefined
+  // }
 
   getActiveFlowProcessor(processorId: string): Processor {
     if(processorId)
@@ -256,18 +261,19 @@ export class UIStateStore {
   }
 
   // --- Processor Properties Start
-  private _processorPropertiesToUpdate: BehaviorSubject<SI.ImmutableObject<any>> =
-    new BehaviorSubject(SI.from({}))
-  processorPropertiesToUpdate: Observable<SI.ImmutableObject<any>> =
+  private _processorPropertiesToUpdate: BehaviorSubject<any> =
+    new BehaviorSubject(undefined)
+  processorPropertiesToUpdate: Observable<any> =
     this._processorPropertiesToUpdate.asObservable()
 
-  setProcessorPropertiesToUpdate(properties: SI.ImmutableObject<any>) {
+  setProcessorPropertiesToUpdate(properties: any) {
     this.ngZone.run(() => this._processorPropertiesToUpdate
       .next(properties))
   }
 
-  getProcessorPropertiesToUpdate(): SI.ImmutableObject<any> {
-    return this._processorPropertiesToUpdate.getValue()
+  getProcessorPropertiesToUpdate(): any {
+    return this.oss.appState().currentProcessorProperties
+    // return this._processorPropertiesToUpdate.getValue()
   }
   // --- Processor Properties End
 

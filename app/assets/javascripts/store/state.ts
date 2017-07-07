@@ -1,30 +1,63 @@
-import {BehaviorSubject, Observable} from "rxjs/Rx"
+import {Observable} from "rxjs/Rx"
 import {Injectable, NgZone} from "@angular/core"
-import {Record} from "immutable"
 import {EntityType, FlowInstance, FlowTab, Processor} from "../analyse/flow.model"
-import {Store} from "@ngrx/store"
-import {UIStateStore} from "../shared/ui.state.store"
+import {Action, Store} from "@ngrx/store"
 import {ContextBarItem, UiId} from "../shared/ui.models"
+import {ImmutableArray, ImmutableObject} from "seamless-immutable"
+import * as SI from "seamless-immutable"
 
 /**
  * Created by cmathew on 01.07.17.
  */
 
 @Injectable()
-export class ObservableStateStore {
+export class ObservableState {
 
   selectedProcessorId: Observable<string>
 
   constructor(private store:Store<AppState>,
-              private uiStateStore: UIStateStore) {
-    this.selectedProcessorId = this.store.select("selectedProcessorIdReducer")
+              private ngZone: NgZone) {
+    this.selectedProcessorId = this.store.select("selectedProcessorId")
   }
 
-  selectedProcessor(): Observable<Processor> {
-    return this.selectedProcessorId
-      .withLatestFrom(this.store)
-      .map(([processorId, appState]) =>
-        this.uiStateStore.getActiveFlowProcessor(processorId))
+  appState(): AppState {
+
+    let state: AppState
+
+    this.store.take(1).subscribe((s: AppState) => state = s)
+
+    return state
+  }
+
+  appStore(): Store<AppState> {
+    return this.store
+  }
+
+  dispatch(action: Action) {
+    return  this.ngZone.run(() => this.store.dispatch(action))
+  }
+
+  selectedProcessor(): Processor {
+    return this.activeFlowTab().flowInstance.processors
+      .find(p => p.type + ":" + p.id === this.appState().selectedProcessorId)
+  }
+
+  selectedProcessor$(): Observable<Processor> {
+    return this.activeFlowTab$()
+      .map(ft =>
+        ft.flowInstance.processors
+          .find(p => p.type + ":" + p.id === this.appState().selectedProcessorId)
+      )
+  }
+
+  activeFlowTab(): FlowTab {
+    return this.appState().flowTabs.find(ft => ft.active)
+  }
+
+  activeFlowTab$(): Observable<FlowTab> {
+    return this.appStore()
+      .select(state => state.flowTabs)
+      .map(fts => fts.find(ft => ft.active))
   }
 
   hideContextBarItem(cbItem: ContextBarItem): Observable<boolean> {
@@ -45,13 +78,13 @@ export class ObservableStateStore {
 
 export interface AppState {
   flowTabs: FlowTab[]
-  selectedFlowInstanceId: ""
-  selectedProcessorId: ""
+  selectedProcessorId: string
+  currentProcessorProperties: any
 }
 
 export const initialAppState: AppState = {
   flowTabs: [],
-  selectedFlowInstanceId: "",
-  selectedProcessorId: ""
+  selectedProcessorId: "",
+  currentProcessorProperties: undefined
 }
 

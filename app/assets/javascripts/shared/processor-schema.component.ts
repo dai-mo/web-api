@@ -3,7 +3,9 @@ import {UIStateStore} from "./ui.state.store"
 import {FlowInstance, Processor} from "../analyse/flow.model"
 import {SchemaPanelComponent} from "./schema-panel.component"
 import {ErrorService} from "./util/error.service"
-import {FlowService} from "./flow.service"
+import {FlowService} from "../service/flow.service"
+import {ObservableState} from "../store/state"
+import {UPDATE_FLOW_INSTANCE} from "../store/reducers"
 
 /**
  * Created by cmathew on 19.05.17.
@@ -17,18 +19,25 @@ export class ProcessorSchemaComponent{
   @ViewChild(SchemaPanelComponent) schemaPanelComponent: SchemaPanelComponent
 
   constructor(private uiStateStore: UIStateStore,
+              private oss: ObservableState,
               private flowService: FlowService,
               private errorService:ErrorService) {}
+
+  selectedProcessor$ = this.oss.selectedProcessor$()
 
   save() {
     this.schemaPanelComponent.updateSchema()
       .subscribe(
-        processors => {
-          this.flowService.instance(this.uiStateStore.getActiveFlowTab().flowInstance.id)
+        (processors: Processor[]) => {
+          this.flowService.instance(this.oss.activeFlowTab().flowInstance.id)
             .subscribe(
               (flowInstance: FlowInstance) => {
-                this.uiStateStore.getActiveFlowTab().flowInstance = flowInstance
-                this.uiStateStore.updateFlowTabs()
+                this.oss.dispatch({
+                  type: UPDATE_FLOW_INSTANCE,
+                  payload: {
+                    flowInstance: flowInstance
+                  }
+                })
                 this.uiStateStore.isProcessorSchemaDialogVisible = false
               },
               (error: any) =>  {

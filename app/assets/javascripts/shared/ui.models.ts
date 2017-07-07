@@ -1,10 +1,15 @@
 import {MenuItem, Message, SelectItem} from "primeng/primeng"
 import {
-  CoreProperties, EntityType, FlowTemplate, Processor, PropertyDefinition,
+  CoreProperties, DCSError, EntityType, FlowTemplate, Processor, PropertyDefinition,
   SchemaProperties
 } from "../analyse/flow.model"
 import {UIStateStore} from "./ui.state.store"
 import * as SI from "seamless-immutable"
+import {ProcessorService} from "../service/processor.service"
+import {ErrorService} from "./util/error.service"
+import {AppState} from "../store/state"
+import {Store} from "@ngrx/store"
+import {UPDATE_SELECTED_PROCESSOR} from "../store/reducers"
 
 /**
  * Created by cmathew on 04.05.17.
@@ -258,7 +263,10 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
 
   processor: Processor
 
-  constructor(processor: Processor) {
+  constructor(processor: Processor,
+              private store:Store<AppState>,
+              private processorService: ProcessorService,
+              private errorService: ErrorService) {
     super()
     this.processor = processor
     this.selectedFlowEntityId = processor.id
@@ -291,8 +299,17 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
   }
 
   finalise(uiStateStore: UIStateStore): void {
-    let updateProcessor = SI.from(this.processor)
-      .set("properties", uiStateStore.getProcessorPropertiesToUpdate())
+
+    this.processorService.updateProperties(this.processor.id, uiStateStore.getProcessorPropertiesToUpdate())
+      .subscribe(
+        (processor: Processor) => {
+          this.store.dispatch({type: UPDATE_SELECTED_PROCESSOR, payload: {processor: processor}})
+
+        },
+        (error: any) => {
+          this.errorService.handleError(error)
+        }
+      )
     uiStateStore.setProcessorPropertiesToUpdate(undefined)
     uiStateStore.isProcessorPropertiesDialogVisible = false
   }

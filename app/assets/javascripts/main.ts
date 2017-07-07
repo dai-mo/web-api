@@ -3,7 +3,7 @@ import {ModuleWithProviders, NgModule} from "@angular/core"
 import {HttpModule} from "@angular/http"
 import {App} from "./app.component"
 import {ErrorService} from "./shared/util/error.service"
-import {FlowService} from "./shared/flow.service"
+import {FlowService} from "./service/flow.service"
 import {BrowserModule} from "@angular/platform-browser"
 import {DataTableModule, SharedModule} from "primeng/primeng"
 import {OverlayPanelModule} from "primeng/components/overlaypanel/overlaypanel"
@@ -90,15 +90,16 @@ import {FlowEntityComponent} from "./shared/flow-entity.component"
 import {FlowEntityInfoComponent} from "./shared/flow-entity-info.component"
 import {ProcessorSchemaComponent} from "./shared/processor-schema.component"
 import {SchemaPanelComponent} from "./shared/schema-panel.component"
-import {SchemaService} from "./shared/schema.service"
+import {SchemaService} from "./service/schema.service"
 import {SchemaPropertyComponent} from "./shared/schema-property.component"
 import {NotificationService} from "./shared/util/notification.service"
 import {FieldsToMapComponent} from "./shared/schema/fields-to-map.component"
 import {FieldActionsComponent} from "./shared/schema/field-actions.component"
 import {DnDStore} from "./shared/dnd.store"
-import {rootReducer} from "./store/reducer"
+import {rootReducer} from "./store/reducers"
 import {StoreModule} from "@ngrx/store"
-import {ObservableStateStore} from "./store/state"
+import {ObservableState} from "./store/state"
+import {ProcessorService} from "./service/processor.service"
 
 
 export const routes: Routes = [ {path: "", component: LayoutComponent}]
@@ -132,6 +133,7 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
   ],
   providers:[{provide: Window, useValue: window},
     FlowService,
+    ProcessorService,
     UIStateStore,
     DnDStore,
     ContextStore,
@@ -141,7 +143,7 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
     MapService,
     FlowGraphService,
     SchemaService,
-    ObservableStateStore],
+    ObservableState],
   imports: [// Alambeek Imports follow ...
     StoreModule.provideStore(rootReducer),
     // Angular Imports follow ...

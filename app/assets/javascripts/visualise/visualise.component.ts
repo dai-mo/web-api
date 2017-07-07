@@ -4,7 +4,7 @@
 import {Component, OnInit} from "@angular/core"
 import {ErrorService} from "../shared/util/error.service"
 import {UIStateStore} from "../shared/ui.state.store"
-import {FlowService} from "../shared/flow.service"
+import {FlowService} from "../service/flow.service"
 import {VisTab} from "../analyse/flow.model"
 import {ContextMenuItem, UiId} from "../shared/ui.models"
 import {ContextStore} from "../shared/context.store"

@@ -5,7 +5,7 @@ import javax.inject.{Inject, Singleton}
 import controllers.routing.ResourceRouter
 import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
 import global.ResultSerialiserImplicits._
-import org.dcs.api.service.ProcessorServiceDefinition
+import org.dcs.api.service.{ProcessorInstance, ProcessorServiceDefinition}
 import org.dcs.commons.SchemaAction
 import org.dcs.commons.error.{ErrorConstants, ErrorResponse}
 import org.dcs.commons.serde.AvroSchemaStore
@@ -37,8 +37,9 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActi
     ProcessorApi.instance(id).map(_.toResult)
   }
 
-  override def update(id: String): EssentialAction =  Action {
-    NotImplemented
+  override def update(id: String): EssentialAction =  csrfCheckAction async { implicit request =>
+    ProcessorApi.update(Req.body.toObject[ProcessorInstance], Req.clientId)
+    .map(_.toResult)
   }
 
   override def destroy(id: String): EssentialAction =  csrfCheckAction async { implicit request =>
@@ -60,6 +61,11 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActi
     AvroSchemaStore.add(schemaId)
     AvroSchemaStore.get(schemaId).map(s => Ok(s.toString)).
       getOrElse(ErrorConstants.DCS002.toResult)
+  }
+
+  def updateProperties(processorId: String): EssentialAction = csrfCheckAction async { implicit request =>
+    ProcessorApi.updateProperties(processorId, Req.body.toMapOf[String], Req.clientId).
+      map(_.toResult)
   }
 
   def updateSchema(flowInstanceId: String, processorId: String): EssentialAction = csrfCheckAction async { implicit request =>

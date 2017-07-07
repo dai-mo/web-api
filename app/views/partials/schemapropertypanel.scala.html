@@ -1,7 +1,7 @@
 @()
 <div class="ui-g">
     <schema-panel class="ui-g-8"
-    [processor]="uiStateStore.selectedProcessor | async"
+    [processor]="oss.selectedProcessor$() | async"
     [mappedFieldName]="fieldName"
     [selectionMode]="'single'">
     </schema-panel>

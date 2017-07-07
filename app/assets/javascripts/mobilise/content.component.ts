@@ -2,7 +2,7 @@
  * Created by cmathew on 15/08/16.
  */
 
-import {FlowService} from "../shared/flow.service"
+import {FlowService} from "../service/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {ChangeDetectionStrategy, Component, Input, ViewChild} from "@angular/core"
 import {Provenance, Action} from "../analyse/flow.model"
