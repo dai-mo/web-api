@@ -25,7 +25,7 @@ import scala.concurrent.Await
 //       otherwise this test will be run during the release
 //       process. This should be reverted once the integration
 //       test environment is setup.
-// @Ignore
+@Ignore
 class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
 
 
