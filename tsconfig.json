@@ -13,7 +13,8 @@
     "noFallthroughCasesInSwitch":true,
     "noImplicitReturns":true,
     "lib": ["es6", "dom"],
-    "outDir": "./target/typescript/main/javascripts"
+    "outDir": "./target/typescript/main/javascripts",
+    "typeRoots" : ["node_modules/@types", "typings"]
   },
   "exclude": [
     "node_modules",
