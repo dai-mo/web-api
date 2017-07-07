@@ -81,31 +81,46 @@ describe("Flow Service", () => {
               "id": "31893b7f-2b44-48d6-b07f-174edde34745",
               "type": "some.type",
               "status": "STOPPED",
-              "processorType": "type"
+              "processorType": "type",
+              "properties": {},
+              "propertyDefinitions": [],
+              "validationErrors": []
             },
             {
               "id": "623f3887-cc72-412e-82d8-e21ee0d7705f",
               "type": "some.type",
               "status": "STOPPED",
-              "processorType": "type"
+              "processorType": "type",
+              "properties": {},
+              "propertyDefinitions": [],
+              "validationErrors": []
             },
             {
               "id": "555bde07-8282-4719-aec6-6a64ce227c60",
               "type": "some.type",
               "status": "STOPPED",
-              "processorType": "type"
+              "processorType": "type",
+              "properties": {},
+              "propertyDefinitions": [],
+              "validationErrors": []
             },
             {
               "id": "9b9620fe-3c40-4263-82eb-f49853a6ef79",
               "type": "some.type",
               "status": "STOPPED",
-              "processorType": "type"
+              "processorType": "type",
+              "properties": {},
+              "propertyDefinitions": [],
+              "validationErrors": []
             },
             {
               "id": "ee25be65-4479-4528-b5f7-dc24a75eaf22",
               "type": "some.type",
               "status": "STOPPED",
-              "processorType": "type"
+              "processorType": "type",
+              "properties": {},
+              "propertyDefinitions": [],
+              "validationErrors": []
             }
           ],
           "connections": [
@@ -172,22 +187,27 @@ describe("Flow Service", () => {
             nodes.push(new FlowNode("555bde07-8282-4719-aec6-6a64ce227c60",
               "some.type",
               "ptype",
+              [],
               "label"))
             nodes.push(new FlowNode("623f3887-cc72-412e-82d8-e21ee0d7705f",
               "some.type",
               "ptype",
+              [],
               "label"))
             nodes.push(new FlowNode("9b9620fe-3c40-4263-82eb-f49853a6ef79",
               "some.type",
               "ptype",
+              [],
               "label"))
             nodes.push(new FlowNode("31893b7f-2b44-48d6-b07f-174edde34745",
               "some.type",
               "ptype",
+              [],
               "label"))
             nodes.push(new FlowNode("ee25be65-4479-4528-b5f7-dc24a75eaf22",
               "some.type",
               "ptype",
+              [],
               "label"))
             let expFlowGraph: FlowGraph = {
               "nodes": nodes,
