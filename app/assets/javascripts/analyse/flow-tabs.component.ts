@@ -255,7 +255,7 @@ export class FlowTabsComponent implements OnInit {
     let sp = this.oss.selectedProcessor()
     if (sp !== undefined) {
       return new ProcessorPropertiesConf(sp,
-        this.oss.appStore(),
+        this.oss,
         this.processorService,
         this.errorService)
     }

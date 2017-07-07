@@ -1,27 +1,43 @@
-
 import {
-  ResponseOptions, Response, Http, BaseRequestOptions, ConnectionBackend, HttpModule,
+  BaseRequestOptions,
+  ConnectionBackend,
+  Http,
+  HttpModule,
+  RequestOptions,
+  Response,
+  ResponseOptions,
   XHRBackend
 } from "@angular/http"
-import {inject, fakeAsync, tick, TestBed, async} from "@angular/core/testing"
+import {async, fakeAsync, inject, TestBed} from "@angular/core/testing"
 import {MockBackend, MockConnection} from "@angular/http/testing"
 import {FlowService} from "./flow.service"
-import {FlowTemplate, FlowInstance, FlowGraph, FlowNode} from "../analyse/flow.model"
+import {FlowGraph, FlowInstance, FlowNode, FlowTemplate} from "../analyse/flow.model"
 import {ErrorService} from "../shared/util/error.service"
-import {platformBrowserDynamicTesting, BrowserDynamicTestingModule} from "@angular/platform-browser-dynamic/testing"
+import {UIStateStore} from "../shared/ui.state.store"
+import {ContextStore} from "../shared/context.store"
+import {ServiceLocator} from "../app.component"
+import {ReflectiveInjector} from "@angular/core"
 
 
-// FIXME: Move to ng2 rc5 makes these tests which mock http resquests fail
-// with error "No NgModule metadata found for 'DynamicTestModule'"
 describe("Flow Service", () => {
+
+  ServiceLocator.injector = ReflectiveInjector.resolveAndCreate([
+    {provide: ConnectionBackend, useClass: MockBackend},
+    {provide: RequestOptions, useClass: BaseRequestOptions},
+    Http])
 
   // setup
   beforeEach(() => {
+
     TestBed.configureTestingModule({
-      imports: [HttpModule],
+      imports: [// StoreModule.provideStore(rootReducer),
+        HttpModule],
       providers: [
         FlowService,
         ErrorService,
+        UIStateStore,
+        ContextStore,
+        // ObservableState,
         { provide: XHRBackend, useClass: MockBackend },
       ]
     })
@@ -31,6 +47,7 @@ describe("Flow Service", () => {
   it("should retrieve templates",
     inject([XHRBackend, FlowService],
       fakeAsync((mockbackend: MockBackend, flowService: FlowService) => {
+
         let ts: Array<FlowTemplate>
         mockbackend.connections.subscribe((connection: MockConnection) => {
 

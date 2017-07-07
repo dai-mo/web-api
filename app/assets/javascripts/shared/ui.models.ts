@@ -7,7 +7,7 @@ import {UIStateStore} from "./ui.state.store"
 import * as SI from "seamless-immutable"
 import {ProcessorService} from "../service/processor.service"
 import {ErrorService} from "./util/error.service"
-import {AppState} from "../store/state"
+import {AppState, ObservableState} from "../store/state"
 import {Store} from "@ngrx/store"
 import {UPDATE_SELECTED_PROCESSOR} from "../store/reducers"
 
@@ -264,7 +264,7 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
   processor: Processor
 
   constructor(processor: Processor,
-              private store:Store<AppState>,
+              private oss: ObservableState,
               private processorService: ProcessorService,
               private errorService: ErrorService) {
     super()
@@ -300,10 +300,10 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
 
   finalise(uiStateStore: UIStateStore): void {
 
-    this.processorService.updateProperties(this.processor.id, uiStateStore.getProcessorPropertiesToUpdate())
+    this.processorService.updateProperties(this.processor.id, this.oss.appState().currentProcessorProperties)
       .subscribe(
         (processor: Processor) => {
-          this.store.dispatch({type: UPDATE_SELECTED_PROCESSOR, payload: {processor: processor}})
+          this.oss.dispatch({type: UPDATE_SELECTED_PROCESSOR, payload: {processor: processor}})
 
         },
         (error: any) => {
