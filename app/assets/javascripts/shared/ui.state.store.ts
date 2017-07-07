@@ -14,7 +14,6 @@ export class UIStateStore {
   }
 
   constructor(private contextStore: ContextStore,
-              private oss: ObservableState,
               private ngZone: NgZone) {
     this.store = {
       flowTabs: [],
@@ -271,10 +270,10 @@ export class UIStateStore {
       .next(properties))
   }
 
-  getProcessorPropertiesToUpdate(): any {
-    return this.oss.appState().currentProcessorProperties
-    // return this._processorPropertiesToUpdate.getValue()
-  }
+  // getProcessorPropertiesToUpdate(): any {
+  //   return this.oss.appState().currentProcessorProperties
+  //   // return this._processorPropertiesToUpdate.getValue()
+  // }
   // --- Processor Properties End
 
 // --- Processor Schema State Start ---

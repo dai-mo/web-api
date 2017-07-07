@@ -47,7 +47,7 @@ module.exports = function(config) {
         port: 9876,
 
 
-        logLevel: config.LOG_INFO,
+        logLevel: config.LOG_DEBUG,
         client: {
             captureConsole: true
         },
@@ -59,6 +59,9 @@ module.exports = function(config) {
 
         browsers: ['PhantomJS'],
 
+        browserDisconnectTimeout : 10000, // default 2000
+        browserDisconnectTolerance : 1, // default 0
+        browserNoActivityTimeout : 60000, //default 10000
 
         phantomjsLauncher: {
             // Have phantomjs exit if a ResourceError is encountered (useful if karma exits without killing phantom)
