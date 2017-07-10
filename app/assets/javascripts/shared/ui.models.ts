@@ -66,6 +66,7 @@ export enum FieldUIType {
 }
 
 export class Field {
+  name: string
   label: string
   description: string
   defaultValue: string
@@ -75,21 +76,27 @@ export class Field {
   value: string
   isEditable: boolean
   selectItems: SelectItem[]
+  isRequired: boolean
+  collector: () => any
 
-  constructor(label: string,
+  constructor(name: string,
+              label: string,
               description: string = "",
               defaultValue: string = "",
               possibleValues: string[] = [],
               type: FieldType = FieldType.STRING,
               value: string = "",
-              isEditable: boolean = false) {
+              isEditable: boolean = false,
+              isRequired: boolean = false) {
+    this.name = name
     this.label = label
     this.description = description
     this.defaultValue = defaultValue
     this.possibleValues = possibleValues
     this.type = type
-    this.isEditable = isEditable
     this.value = value
+    this.isEditable = isEditable
+    this.isRequired = isRequired
   }
 
   valueToString(value: string | number | boolean): string {
@@ -111,6 +118,11 @@ export class Field {
   updateValue(value: string) {
     this.value = value
   }
+
+  setCollector(collector: () => any) {
+    this.collector = collector
+  }
+
 
   static fieldType(type: string): FieldType {
     switch(type) {
@@ -150,7 +162,8 @@ export class Field {
     let pvs: string[] = []
     if(pd.possibleValues !== undefined)
       pvs = pd.possibleValues.map(pv => pv.value)
-    return new Field(pd.displayName,
+    return new Field(pd.name,
+      pd.displayName,
       pd.description,
       pd.defaultValue,
       pvs,
@@ -164,6 +177,7 @@ export class Field {
 export class FieldGroup {
   label: string
   fields: Field[] = []
+  collector: () => any
 
   constructor(label: string,
               fields: Field[] = []) {
@@ -177,6 +191,11 @@ export class FieldGroup {
   add(field: Field) {
     this.fields.push(field)
   }
+
+  setCollector(collector: () => any) {
+    this.collector = collector
+  }
+
 }
 
 export enum FlowEntityStatus {
@@ -223,14 +242,10 @@ export abstract class  FlowEntityConf {
     return this.flowEntities.length > 0
   }
 
-  abstract finalise(uiStateStore: UIStateStore): void
+  abstract finalise(uiStateStore: UIStateStore, data?: any): void
   abstract cancel(uiStateStore: UIStateStore): void
 }
 
-export enum DialogType {
-  TEMPLATE_INFO,
-  PROCESSOR_CONF
-}
 
 export class TemplateInfo extends FlowEntityConf {
 
@@ -259,9 +274,17 @@ export class TemplateInfo extends FlowEntityConf {
   }
 }
 
+// export class ProcessorInfo extends FlowEntityConf {
+//
+//   constructor()
+// }
+
 export class ProcessorPropertiesConf extends FlowEntityConf {
 
-  processor: Processor
+  private processor: Processor
+  private properties: any
+  private propertiesFieldGroup: FieldGroup
+  private propertySpecificFields: Field[]
 
   constructor(processor: Processor,
               private oss: ObservableState,
@@ -270,37 +293,37 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
     super()
     this.processor = processor
     this.selectedFlowEntityId = processor.id
-    let properties = processor.properties
-    let propertiesFieldGroup: FieldGroup = new FieldGroup("properties")
-    let propertySpecificFields: Field[] = []
+    this.properties = processor.properties
+    this.propertiesFieldGroup= new FieldGroup("properties")
+    this.propertySpecificFields = []
 
     processor.propertyDefinitions.forEach(pd => {
       let pvs: string[] = []
       if(pd.possibleValues !== undefined)
         pvs = pd.possibleValues.map(pv => pv.value)
 
-      let field: Field = Field.fromPDef(pd, properties[pd.name], true)
+      let field: Field = Field.fromPDef(pd, this.properties[pd.name], true)
 
       if(!field.isCorePropertyField()) {
         if (field.isSchemaField())
-          propertySpecificFields.push(field)
+          this.propertySpecificFields.push(field)
         else
-          propertiesFieldGroup.add(field)
+          this.propertiesFieldGroup.add(field)
       }
     })
 
-    if(propertiesFieldGroup.fields.length > 0 || propertySpecificFields.length > 0) {
-      this.flowEntities.push(new FlowEntity(processor.id, processor.id, ""))
-      if(propertiesFieldGroup.fields.length > 0)
-        this.flowEntityFieldGroupsMap.set(processor.id, [propertiesFieldGroup])
-      if(propertySpecificFields.length > 0)
-        this.flowEntitySpecificFieldsMap.set(processor.id, propertySpecificFields)
+    if(this.propertiesFieldGroup.fields.length > 0 || this.propertySpecificFields.length > 0) {
+      this.flowEntities.push(new FlowEntity(processor.id, processor.processorType, ""))
+      if(this.propertiesFieldGroup.fields.length > 0)
+        this.flowEntityFieldGroupsMap.set(processor.id, [this.propertiesFieldGroup])
+      if(this.propertySpecificFields.length > 0)
+        this.flowEntitySpecificFieldsMap.set(processor.id, this.propertySpecificFields)
     }
   }
 
-  finalise(uiStateStore: UIStateStore): void {
+  finalise(uiStateStore: UIStateStore, data?: any): void {
 
-    this.processorService.updateProperties(this.processor.id, this.oss.appState().currentProcessorProperties)
+    this.processorService.updateProperties(this.processor.id, data)
       .subscribe(
         (processor: Processor) => {
           this.oss.dispatch({type: UPDATE_SELECTED_PROCESSOR, payload: {processor: processor}})
