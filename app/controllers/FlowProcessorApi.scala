@@ -57,7 +57,7 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActi
       .map(_.toResult)
   }
 
-  def details(stateful: Boolean, processorServiceClassName: String): EssentialAction =  csrfCheckAction  { implicit request =>
+  def details(processorServiceClassName: String, stateful: Boolean): EssentialAction =  csrfCheckAction  { implicit request =>
 
     val service: RemoteProcessorService =
       if(stateful)
@@ -65,7 +65,7 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActi
       else
         ZkRemoteService.loadService[RemoteProcessorService](processorServiceClassName)
 
-    ProcessorDetails(service.metadata(), service.configuration, service.relationships()).toResult
+    service.details().toResult
   }
 
   def schema(schemaId: String): EssentialAction = csrfCheckAction { implicit request =>

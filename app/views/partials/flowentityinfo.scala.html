@@ -4,7 +4,7 @@
         <div *ngFor="let field of fields" [ngSwitch]="field.fieldUIType()">
             <div class="ui-g" *ngSwitchCase="fieldUIType.TEXT_NOT_EDITABLE">
                 @*<div class="ui-g-4"><h4><span class="label label-default pull-right">{{field.label}}</span></h4></div>*@
-                <div class="ui-g-4"><label [attr.for]="field.name">{{field.label}}</label></div>
+                <div class="ui-g-4"><i class="text-primary" [attr.for]="field.name">{{field.label}}</i></div>
                 <div class="ui-g-8"><span [id]="field.name">{{field.value}}</span></div>
             </div>
             <div class="ui-g" *ngSwitchCase="fieldUIType.TEXT_EDITABLE">

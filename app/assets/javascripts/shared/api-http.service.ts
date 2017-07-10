@@ -25,7 +25,8 @@ export class ApiHttpService {
 
     if(ro.headers == null)
       ro.headers = new Headers()
-    ro.headers.append("Authorization", "Bearer " + rpt)
+    if(rpt !== undefined)
+      ro.headers.append("Authorization", "Bearer " + rpt)
     if(this.flowClientId)
       ro.headers.append("flow-client-id", this.flowClientId)
     if(version !== "")
@@ -41,11 +42,22 @@ export class ApiHttpService {
       )
   }
 
-  get<T>(url: string, options?: RequestOptionsArgs): Observable<T> {
-    return this.http.get(url, options).map(response => response.json())
+  get<T>(url: string, rpt?: string, options?: RequestOptions): Observable<T> {
+    return this.http.get(url,
+      this.updateHeaders(options, rpt)).map(response => response.json())
   }
 
-  put<T>(url: string, body: any, options?: RequestOptions): Observable<T> {
-    return this.http.put(url, body, this.updateHeaders(options, "")).map(response => response.json())
+  post<T>(url: string, body: any, rpt?: string, options?: RequestOptions): Observable<T> {
+    return this.http.post(url,
+      body,
+      this.updateHeaders(options, rpt)).map(response => response.json())
   }
+
+  put<T>(url: string, body: any, rpt?: string, options?: RequestOptions): Observable<T> {
+    return this.http.post(url,
+      body,
+      this.updateHeaders(options, rpt)).map(response => response.json())
+  }
+
+
 }

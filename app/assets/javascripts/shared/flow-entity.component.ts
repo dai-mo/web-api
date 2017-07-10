@@ -59,6 +59,7 @@ export class FlowEntityComponent implements OnInit {
   }
 
   select(flowEntityId: string) {
+    this.entityInfo.select(flowEntityId)
     this.selectedEntityFieldGroups = this.entityInfo.fieldGroups(flowEntityId)
     this.selectedEntitySpecificFields = this.entityInfo.specificFields(flowEntityId)
     this.entityInfo.selectedFlowEntityId = flowEntityId

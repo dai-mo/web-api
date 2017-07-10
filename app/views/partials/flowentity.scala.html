@@ -20,13 +20,13 @@
         <div class="entity-tab-view">
             <p-tabView>
                 <p-tabPanel
-                *ngFor="let fieldGroup of selectedEntityFieldGroups; let select = first"
+                *ngFor="let fieldGroup of entityInfo.selectedEntityFieldGroups(); let select = first"
                 [header]="fieldGroup.label"
                 selected="true">
                     <flow-entity-info [entityFieldGroup]="fieldGroup"></flow-entity-info>
                 </p-tabPanel>
                 <p-tabPanel
-                *ngFor="let field of selectedEntitySpecificFields"
+                *ngFor="let field of entityInfo.selectedEntitySpecificFields()"
                 [header]="field.label"
                 selected="true">
                     <schema-property *ngIf="field.isSchemaField()"

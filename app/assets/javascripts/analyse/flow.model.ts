@@ -67,11 +67,50 @@ export class ConnectionPort {
   id: string
   type: string
 }
+
 export class Connection {
   id: string
   source: ConnectionPort
   destination: ConnectionPort
+}
 
+export class RemoteRelationship {
+  id: string
+  description: string
+}
+
+export class MetaData {
+  description: string
+  tags: string[]
+  related: string[]
+}
+
+export class TriggerType {
+  public static readonly DEFAULT = "DEFAULT"
+  public static readonly SERIALLY = "SERIALLY"
+  public static readonly WHEN_ANY_DESTINATION_AVAILABLE = "WHEN_ANY_DESTINATION_AVAILABLE"
+  public static readonly WHEN_EMPTY = "WHEN_EMPTY"
+}
+
+export class InputRequirementType {
+  public static readonly INPUT_REQUIRED = "INPUT_REQUIRED"
+  public static readonly INPUT_ALLOWED = "INPUT_ALLOWED"
+  public static readonly INPUT_FORBIDDEN = "INPUT_FORBIDDEN"
+}
+
+export class Configuration {
+  inputMimeType: string
+  outputMimeType: string
+  processorClassName: string
+  stateful: boolean = false
+  triggerType: string = TriggerType.DEFAULT
+  inputRequirementType: string = InputRequirementType.INPUT_ALLOWED
+}
+
+export class ProcessorDetails {
+  metadata: MetaData
+  configuration: Configuration
+  relationships: RemoteRelationship[]
 }
 
 export class Processor {
@@ -84,7 +123,11 @@ export class Processor {
   validationErrors: string[]
 }
 
-
+export class ProcessorServiceDefinition {
+  processorServiceClassName: string
+  processorType: string
+  stateful: boolean
+}
 
 export class FlowInstance {
   id: string
@@ -256,6 +299,6 @@ export class ProcessorUIState {
   }
 }
 
-export class FlowCreation {
-  instantiationId: string
+export class FlowInstantiation {
+  id: string
 }

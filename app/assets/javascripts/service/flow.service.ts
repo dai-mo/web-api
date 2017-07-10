@@ -27,7 +27,7 @@ export class FlowService extends ApiHttpService {
     super()
   }
 
-  updateHeaders(options: RequestOptions, rpt: string, version: string = ""): RequestOptions  {
+  updateFlowHeaders(options: RequestOptions, rpt: string, version: string = ""): RequestOptions  {
     if(options.headers == null)
       options.headers = new Headers()
     options.headers.append("Authorization", "Bearer " + rpt)
@@ -38,13 +38,13 @@ export class FlowService extends ApiHttpService {
     return options
   }
 
-  genClientId(): void {
-    this.http.get(this.clientIdUrl)
-      .map(response => response.json())
-      .subscribe(
-        (cid: string) => this.flowClientId = cid
-      )
-  }
+  // genClientId(): void {
+  //   this.http.get(this.clientIdUrl)
+  //     .map(response => response.json())
+  //     .subscribe(
+  //       (cid: string) => this.flowClientId = cid
+  //     )
+  // }
 
   templates(): Observable<Array<FlowTemplate>> {
     return this.http.get(this.templatesUrl).map(response => response.json())
@@ -53,7 +53,11 @@ export class FlowService extends ApiHttpService {
   instantiateTemplate(templateId: string, rpt: string): Observable<FlowInstance> {
     return this.http.post(this.instantiateFlowBaseUrl + templateId,
       {},
-      this.updateHeaders(new RequestOptions(), rpt)).map(response => response.json())
+      this.updateFlowHeaders(new RequestOptions(), rpt)).map(response => response.json())
+  }
+
+  create(name: string, rpt: string): Observable<FlowInstance> {
+    return super.post(this.createInstanceBaseUrl + name, {}, rpt)
   }
 
   instance(flowInstanceId: string): Observable<FlowInstance> {
@@ -61,7 +65,7 @@ export class FlowService extends ApiHttpService {
   }
   instances(rpt: string): Observable<Array<FlowInstance>> {
     return this.http.get(this.instancesBaseUrl,
-      this.updateHeaders(new RequestOptions(), rpt)).map(response => response.json())
+      this.updateFlowHeaders(new RequestOptions(), rpt)).map(response => response.json())
   }
 
   startInstance(flowInstanceId: string): Observable<boolean> {
@@ -74,7 +78,7 @@ export class FlowService extends ApiHttpService {
 
   destroyInstance(flowInstanceId: string, rpt: string, version: string): Observable<boolean> {
     return this.http.delete(this.instancesBaseUrl + flowInstanceId,
-      this.updateHeaders(new RequestOptions(), rpt, version)).map(response => response.json())
+      this.updateFlowHeaders(new RequestOptions(), rpt, version)).map(response => response.json())
   }
 
   provenance(processorId: string): Observable<Array<Provenance>> {

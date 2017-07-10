@@ -20,6 +20,20 @@ width="900"
 
 <p-dialog
 class="dialog-panel"
+header="Create Flow"
+width="900"
+[resizable]="false"
+[closable]="false"
+[(visible)]="uiStateStore.isFlowCreationDialogVisible"
+*ngIf="uiStateStore.isFlowCreationDialogVisible">
+    <flow-entity
+    [entityInfo]="flowCreation"
+    finaliseLabel="Create">
+    </flow-entity>
+</p-dialog>
+
+<p-dialog
+class="dialog-panel"
 header="Output Schema"
 width="500"
 [resizable]="true"
