@@ -1,7 +1,7 @@
 package controllers
 
-import org.dcs.commons.serde.JsonSerializerImplicits._
 import org.dcs.commons.error.ErrorResponse
+import org.dcs.commons.serde.JsonSerializerImplicits._
 import play.api.http.Status._
 import play.api.mvc.Results.Forbidden
 import play.api.mvc.{RequestHeader, Result}

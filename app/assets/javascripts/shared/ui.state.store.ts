@@ -1,6 +1,6 @@
 import {Injectable, NgZone} from "@angular/core"
 import {BehaviorSubject, Observable} from "rxjs/Rx"
-import {EntityType, FlowCreation, FlowInstance, FlowTab, Processor, Provenance, VisTab} from "../analyse/flow.model"
+import {EntityType, FlowInstantiation, FlowInstance, FlowTab, Processor, Provenance, VisTab} from "../analyse/flow.model"
 import {Msg, MsgGroup, UiId, ViewsVisible} from "./ui.models"
 import {ContextStore} from "./context.store"
 import {ObservableState} from "../store/state"
@@ -253,10 +253,10 @@ export class UIStateStore {
   }
 
 
-  private _flowInstantiation: BehaviorSubject<FlowCreation> = new BehaviorSubject({instantiationId: undefined})
-  flowInstantiationObs: Observable<FlowCreation> = this._flowInstantiation.asObservable()
+  private _flowInstantiation: BehaviorSubject<FlowInstantiation> = new BehaviorSubject({id: undefined})
+  flowInstantiationObs: Observable<FlowInstantiation> = this._flowInstantiation.asObservable()
   updateFlowInstantiationId(flowInstantiationId: string) {
-    this.ngZone.run(() => this._flowInstantiation.next({instantiationId: flowInstantiationId}))
+    this.ngZone.run(() => this._flowInstantiation.next({id: flowInstantiationId}))
   }
 
   // --- Processor Properties Start
@@ -302,6 +302,12 @@ export class UIStateStore {
   public isTemplateInfoDialogVisible: boolean = false
   public isProcessorSchemaDialogVisible: boolean = false
   public isProcessorPropertiesDialogVisible: boolean = false
+  public isProcessorDetailsDialogVisible: boolean = false
+  public isFlowCreationDialogVisible: boolean = false
+
+  setFlowCreationDialogVisible(isFlowCreationDialogVisible: boolean) {
+    this.ngZone.run(() => this.isFlowCreationDialogVisible = isFlowCreationDialogVisible)
+  }
 // ---- Dialog Flags End   ----
 
 }

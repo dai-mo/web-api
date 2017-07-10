@@ -1,6 +1,9 @@
 import {MenuItem, Message, SelectItem} from "primeng/primeng"
 import {
-  CoreProperties, DCSError, EntityType, FlowTemplate, Processor, PropertyDefinition,
+  Configuration,
+  CoreProperties, DCSError, EntityType, FlowInstance, FlowTemplate, MetaData, Processor, ProcessorDetails,
+  ProcessorServiceDefinition,
+  PropertyDefinition,
   SchemaProperties
 } from "../analyse/flow.model"
 import {UIStateStore} from "./ui.state.store"
@@ -9,7 +12,10 @@ import {ProcessorService} from "../service/processor.service"
 import {ErrorService} from "./util/error.service"
 import {AppState, ObservableState} from "../store/state"
 import {Store} from "@ngrx/store"
-import {UPDATE_SELECTED_PROCESSOR} from "../store/reducers"
+import {ADD_FLOW_TABS, UPDATE_SELECTED_PROCESSOR} from "../store/reducers"
+import {FlowService} from "../service/flow.service"
+import {KeycloakService} from "./keycloak.service"
+import {UIUtils} from "./util/ui.utils"
 
 /**
  * Created by cmathew on 04.05.17.
@@ -66,6 +72,7 @@ export enum FieldUIType {
 }
 
 export class Field {
+  name: string
   label: string
   description: string
   defaultValue: string
@@ -75,21 +82,27 @@ export class Field {
   value: string
   isEditable: boolean
   selectItems: SelectItem[]
+  isRequired: boolean
+  collector: () => any
 
-  constructor(label: string,
+  constructor(name: string,
+              label: string,
               description: string = "",
               defaultValue: string = "",
               possibleValues: string[] = [],
               type: FieldType = FieldType.STRING,
               value: string = "",
-              isEditable: boolean = false) {
+              isEditable: boolean = false,
+              isRequired: boolean = false) {
+    this.name = name
     this.label = label
     this.description = description
     this.defaultValue = defaultValue
     this.possibleValues = possibleValues
     this.type = type
-    this.isEditable = isEditable
     this.value = value
+    this.isEditable = isEditable
+    this.isRequired = isRequired
   }
 
   valueToString(value: string | number | boolean): string {
@@ -111,6 +124,11 @@ export class Field {
   updateValue(value: string) {
     this.value = value
   }
+
+  setCollector(collector: () => any) {
+    this.collector = collector
+  }
+
 
   static fieldType(type: string): FieldType {
     switch(type) {
@@ -150,7 +168,8 @@ export class Field {
     let pvs: string[] = []
     if(pd.possibleValues !== undefined)
       pvs = pd.possibleValues.map(pv => pv.value)
-    return new Field(pd.displayName,
+    return new Field(pd.name,
+      pd.displayName,
       pd.description,
       pd.defaultValue,
       pvs,
@@ -159,11 +178,14 @@ export class Field {
       isEditable
     )
   }
+
+
 }
 
 export class FieldGroup {
   label: string
   fields: Field[] = []
+  collector: () => any
 
   constructor(label: string,
               fields: Field[] = []) {
@@ -177,6 +199,29 @@ export class FieldGroup {
   add(field: Field) {
     this.fields.push(field)
   }
+
+  setCollector(collector: () => any) {
+    this.collector = collector
+  }
+
+  static fromMetaData(metadata: MetaData): FieldGroup {
+    let fields: Field[] = []
+
+    fields.push(new Field("description", "description", "", "", [], FieldType.STRING,metadata.description))
+
+    let tagsStr = metadata.tags.reduce(function(agg, value) {
+      return agg === "" ? value : agg + " , " + value
+    }, "")
+
+    fields.push(new Field("tags", "tags", "", "", [], FieldType.STRING, tagsStr))
+
+    let relatedStr = metadata.related.reduce(function(agg, value) {
+      return agg === "" ? value : agg + " , " + value
+    }, "")
+
+    fields.push(new Field("related", "related", "", "", [], FieldType.STRING, relatedStr))
+    return  new FieldGroup("metadata", fields)
+  }
 }
 
 export enum FlowEntityStatus {
@@ -189,15 +234,18 @@ export class FlowEntity {
   name: string
   description: string
   status: FlowEntityStatus
+  state?: any
 
   constructor(id: string,
               name: string,
               description: string,
-              status: FlowEntityStatus = FlowEntityStatus.OK) {
+              status: FlowEntityStatus = FlowEntityStatus.OK,
+              state?: any) {
     this.id = id
     this.name = name
     this.description = description
     this.status = status
+    this.state = state
   }
 }
 
@@ -215,22 +263,30 @@ export abstract class  FlowEntityConf {
     return this.flowEntityFieldGroupsMap.get(flowEntityId)
   }
 
+  selectedEntityFieldGroups(): FieldGroup[] {
+    return this.fieldGroups(this.selectedFlowEntityId)
+  }
+
   specificFields(flowEntityId: string): Field[] {
     return this.flowEntitySpecificFieldsMap.get(flowEntityId)
+  }
+
+  selectedEntitySpecificFields(): Field[] {
+    return this.specificFields(this.selectedFlowEntityId)
   }
 
   hasEntities(): boolean {
     return this.flowEntities.length > 0
   }
 
-  abstract finalise(uiStateStore: UIStateStore): void
+  select(flowEntityId: string): void {
+    // do nothing
+  }
+
+  abstract finalise(uiStateStore: UIStateStore, data?: any): void
   abstract cancel(uiStateStore: UIStateStore): void
 }
 
-export enum DialogType {
-  TEMPLATE_INFO,
-  PROCESSOR_CONF
-}
 
 export class TemplateInfo extends FlowEntityConf {
 
@@ -259,9 +315,98 @@ export class TemplateInfo extends FlowEntityConf {
   }
 }
 
+export class FlowCreation extends FlowEntityConf {
+
+  private readonly FLOW_NAME = "name"
+
+  constructor(private oss: ObservableState,
+              private flowService: FlowService,
+              private errorService: ErrorService) {
+    super()
+
+    this.selectedFlowEntityId = this.FLOW_NAME
+    this.flowEntities.push(new FlowEntity(this.FLOW_NAME, this.FLOW_NAME, ""))
+
+    let name: Field = new Field(this.FLOW_NAME, this.FLOW_NAME, "Flow Name", "", [], FieldType.STRING, "", true, true)
+    this.flowEntityFieldGroupsMap.set(this.FLOW_NAME, [new FieldGroup("Flow Details", [name])])
+  }
+
+  finalise(uiStateStore: UIStateStore, data?: any): void {
+    KeycloakService.withTokenUpdate(function (rpt: string) {
+      this.flowService.create(data.name, rpt)
+        .subscribe(
+          (flowInstance: FlowInstance) => {
+            let tab = UIUtils.toFlowTab(flowInstance)
+            this.oss.dispatch({
+              type: ADD_FLOW_TABS,
+              payload: {flowTabs: [tab]}
+            })
+            uiStateStore.setFlowCreationDialogVisible(false)
+          },
+          (error: any) => {
+            this.errorService.handleError(error)
+          }
+        )
+    }.bind(this))
+  }
+
+  cancel(uiStateStore: UIStateStore): void {
+    uiStateStore.isFlowCreationDialogVisible = false
+  }
+}
+
+export class ProcessorInfo extends FlowEntityConf {
+
+
+  constructor(defs: ProcessorServiceDefinition[],
+              private processorService: ProcessorService,
+              private errorService: ErrorService) {
+    super()
+    defs.forEach(d => this.flowEntities
+      .push(
+        new FlowEntity(d.processorServiceClassName,
+          d.processorServiceClassName,
+          "",
+          FlowEntityStatus.OK,
+          {stateful: d.stateful})))
+  }
+
+  select(flowEntityId: string): void {
+    let selectedFlowEntity = this.flowEntities.find(fe => fe.id === flowEntityId)
+    if(selectedFlowEntity !== undefined) {
+      this.selectedFlowEntityId = flowEntityId
+      this.processorService.details(flowEntityId, selectedFlowEntity.state.stateful)
+        .subscribe(
+          (details: ProcessorDetails) => {
+            this.flowEntityFieldGroupsMap.set(this.selectedFlowEntityId, [FieldGroup.fromMetaData(details.metadata)])
+          },
+          (error: any) => {
+            this.errorService.handleError(error)
+          }
+        )
+    }
+  }
+
+
+  finalise(uiStateStore: UIStateStore, data?: any): void {
+
+   uiStateStore.isProcessorDetailsDialogVisible = false
+
+  }
+
+  cancel(uiStateStore: UIStateStore): void {
+
+    uiStateStore.isProcessorDetailsDialogVisible = false
+  }
+
+}
+
 export class ProcessorPropertiesConf extends FlowEntityConf {
 
-  processor: Processor
+  private processor: Processor
+  private properties: any
+  private propertiesFieldGroup: FieldGroup
+  private propertySpecificFields: Field[]
 
   constructor(processor: Processor,
               private oss: ObservableState,
@@ -270,37 +415,37 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
     super()
     this.processor = processor
     this.selectedFlowEntityId = processor.id
-    let properties = processor.properties
-    let propertiesFieldGroup: FieldGroup = new FieldGroup("properties")
-    let propertySpecificFields: Field[] = []
+    this.properties = processor.properties
+    this.propertiesFieldGroup= new FieldGroup("properties")
+    this.propertySpecificFields = []
 
     processor.propertyDefinitions.forEach(pd => {
       let pvs: string[] = []
       if(pd.possibleValues !== undefined)
         pvs = pd.possibleValues.map(pv => pv.value)
 
-      let field: Field = Field.fromPDef(pd, properties[pd.name], true)
+      let field: Field = Field.fromPDef(pd, this.properties[pd.name], true)
 
       if(!field.isCorePropertyField()) {
         if (field.isSchemaField())
-          propertySpecificFields.push(field)
+          this.propertySpecificFields.push(field)
         else
-          propertiesFieldGroup.add(field)
+          this.propertiesFieldGroup.add(field)
       }
     })
 
-    if(propertiesFieldGroup.fields.length > 0 || propertySpecificFields.length > 0) {
-      this.flowEntities.push(new FlowEntity(processor.id, processor.id, ""))
-      if(propertiesFieldGroup.fields.length > 0)
-        this.flowEntityFieldGroupsMap.set(processor.id, [propertiesFieldGroup])
-      if(propertySpecificFields.length > 0)
-        this.flowEntitySpecificFieldsMap.set(processor.id, propertySpecificFields)
+    if(this.propertiesFieldGroup.fields.length > 0 || this.propertySpecificFields.length > 0) {
+      this.flowEntities.push(new FlowEntity(processor.id, processor.processorType, ""))
+      if(this.propertiesFieldGroup.fields.length > 0)
+        this.flowEntityFieldGroupsMap.set(processor.id, [this.propertiesFieldGroup])
+      if(this.propertySpecificFields.length > 0)
+        this.flowEntitySpecificFieldsMap.set(processor.id, this.propertySpecificFields)
     }
   }
 
-  finalise(uiStateStore: UIStateStore): void {
+  finalise(uiStateStore: UIStateStore, data?: any): void {
 
-    this.processorService.updateProperties(this.processor.id, this.oss.appState().currentProcessorProperties)
+    this.processorService.updateProperties(this.processor.id, data)
       .subscribe(
         (processor: Processor) => {
           this.oss.dispatch({type: UPDATE_SELECTED_PROCESSOR, payload: {processor: processor}})

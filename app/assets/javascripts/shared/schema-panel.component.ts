@@ -218,6 +218,17 @@ export class SchemaPanelComponent  implements OnInit {
       payload: { properties: props}})
   }
 
+  collect = function():any {
+      let schemaFields: any[] = []
+      this.currentSchemaFields(this.rootNode, schemaFields)
+
+      let props: any = {}
+      props[this.mappedFieldName] = JSON.stringify(schemaFields)
+
+      return props
+
+  }.bind(this)
+
   nodeDrop(event: any, node: TreeNode) {
     let param = this.dndStore.pSchemaParameter
     param.jsonPath = this.schemaFieldPath(node)

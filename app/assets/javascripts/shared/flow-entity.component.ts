@@ -2,10 +2,11 @@
  * Created by cmathew on 05.05.17.
  */
 
-import {AfterViewInit, Component, Input, OnChanges, OnInit, SimpleChanges} from "@angular/core"
+import {Component, Input, OnInit} from "@angular/core"
 import {SelectItem} from "primeng/primeng"
 import {Field, FieldGroup, FlowEntityConf, FlowEntityStatus} from "./ui.models"
 import {UIStateStore} from "./ui.state.store"
+import * as SI from "seamless-immutable"
 
 @Component({
   selector: "flow-entity",
@@ -58,13 +59,31 @@ export class FlowEntityComponent implements OnInit {
   }
 
   select(flowEntityId: string) {
+    this.entityInfo.select(flowEntityId)
     this.selectedEntityFieldGroups = this.entityInfo.fieldGroups(flowEntityId)
     this.selectedEntitySpecificFields = this.entityInfo.specificFields(flowEntityId)
     this.entityInfo.selectedFlowEntityId = flowEntityId
   }
 
   finalise() {
-    this.entityInfo.finalise(this.uiStateStore)
+    let initial: any = {}
+    let updatedProperties = SI.from(initial)
+
+    if (this.selectedEntitySpecificFields !== undefined &&
+      this.selectedEntitySpecificFields.length > 0)
+      this.selectedEntitySpecificFields
+        .forEach(sesf => {
+          updatedProperties = updatedProperties.merge(sesf.collector())
+        })
+
+    if(this.selectedEntityFieldGroups !== undefined &&
+      this.selectedEntityFieldGroups. length > 0)
+      this.selectedEntityFieldGroups
+        .forEach(sefg => {
+          updatedProperties =  updatedProperties.merge(sefg.collector())
+        })
+
+    this.entityInfo.finalise(this.uiStateStore, updatedProperties)
   }
 
   cancel() {

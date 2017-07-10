@@ -5,8 +5,8 @@ import {Http} from "@angular/http"
 import {ErrorService} from "./util/error.service"
 
 
-declare var Keycloak: any
-declare var KeycloakAuthorization: any
+declare let Keycloak: any
+declare let KeycloakAuthorization: any
 
 @Injectable()
 export class KeycloakService {
@@ -19,12 +19,9 @@ export class KeycloakService {
 
   static ApiResourceId: string = "alambeek-api"
 
-  constructor(private http: Http,
-              private errorService: ErrorService) {
-
-  }
 
   static init(): Observable<any> {
+
     KeycloakService.authConfig = new Keycloak("/assets/keycloak.json")
     KeycloakService.loggedIn = false
 

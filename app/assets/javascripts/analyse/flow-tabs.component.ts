@@ -1,11 +1,14 @@
 import {Component, Input, OnInit} from "@angular/core"
-import {DCSError, EntityType, FlowCreation, FlowInstance, FlowTab} from "./flow.model"
+import {DCSError, EntityType, FlowInstantiation, FlowInstance, FlowTab, ProcessorServiceDefinition} from "./flow.model"
 import {FlowService} from "../service/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
 import {ContextStore} from "../shared/context.store"
-import {ContextBarItem, ContextMenuItem, ProcessorPropertiesConf, UiId} from "../shared/ui.models"
+import {
+  ContextBarItem, ContextMenuItem, FlowEntity, FlowEntityStatus, ProcessorInfo, ProcessorPropertiesConf,
+  UiId
+} from "../shared/ui.models"
 import {NotificationService} from "../shared/util/notification.service"
 import {AppState, ObservableState} from "../store/state"
 import {
@@ -15,6 +18,7 @@ import {
 import {ProcessorService} from "../service/processor.service"
 import * as SI from "seamless-immutable"
 import {Observable} from "rxjs"
+import {UIUtils} from "../shared/util/ui.utils"
 
 
 @Component({
@@ -30,6 +34,8 @@ export class FlowTabsComponent implements OnInit {
 
   private stopFlowBarItem: ContextBarItem
   private startFlowBarItem: ContextBarItem
+
+  private processorInfo: ProcessorInfo
 
   flowTabs: Observable<FlowTab[]> = this.oss.appStore().select((state: AppState) => state.flowTabs)
 
@@ -108,7 +114,7 @@ export class FlowTabsComponent implements OnInit {
 
   private addFlowInstance(flowInstance: FlowInstance) {
     if (flowInstance) {
-      let tab = this.toFlowTab(flowInstance)
+      let tab = UIUtils.toFlowTab(flowInstance)
       this.addFlowTabs([tab])
     }
   }
@@ -123,18 +129,12 @@ export class FlowTabsComponent implements OnInit {
     }
   }
 
-  private toFlowTab(flowInstance: FlowInstance): FlowTab {
-    return SI.from(new FlowTab("#",
-      flowInstance.id,
-      flowInstance.name,
-      flowInstance))
-  }
 
 
   @Input()
-  set instantiateFlow(flowCreation: FlowCreation) {
-    if(flowCreation.instantiationId) {
-      if(flowCreation.instantiationId === ""){
+  set instantiateFlow(flowCreation: FlowInstantiation) {
+    if(flowCreation.id) {
+      if(flowCreation.id === ""){
         // do nothing
       }
       else {
@@ -143,10 +143,10 @@ export class FlowTabsComponent implements OnInit {
     }
   }
 
-  private instantiateTemplate(flowCreation: FlowCreation): void {
+  private instantiateTemplate(flowCreation: FlowInstantiation): void {
     KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
-        .instantiateTemplate(flowCreation.instantiationId, rpt)
+        .instantiateTemplate(flowCreation.id, rpt)
         .subscribe(
           (flowInstance: FlowInstance) => {
             this.addFlowInstance(flowInstance)
@@ -262,6 +262,19 @@ export class FlowTabsComponent implements OnInit {
     return undefined
   }
 
+  updateProcessorInfo() {
+    this.processorService.list()
+      .subscribe(
+        (defs: ProcessorServiceDefinition[]) => {
+         this.processorInfo = new ProcessorInfo(defs, this.processorService, this.errorService)
+          this.uiStateStore.isProcessorDetailsDialogVisible = true
+        },
+        (error: any) => {
+          this.errorService.handleError(error)
+        }
+      )
+  }
+
   ngOnInit() {
     KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
@@ -269,7 +282,7 @@ export class FlowTabsComponent implements OnInit {
         .subscribe(
           (instances: Array<FlowInstance>) => {
             let flowTabs: FlowTab[] = instances.map((flowInstance: FlowInstance) => {
-              return this.toFlowTab(flowInstance)
+              return UIUtils.toFlowTab(flowInstance)
             })
 
             this.addFlowTabs(flowTabs)
@@ -277,6 +290,13 @@ export class FlowTabsComponent implements OnInit {
           (error: any) => this.errorService.handleError(error)
         )
     }.bind(this))
+
+    let cmItems: ContextMenuItem[] = [
+      {label: "Add Processor", command: (event) => {
+        this.updateProcessorInfo()
+      }}
+    ]
+    this.contextStore.addContextMenuItems(UiId.ANALYSE, cmItems)
 
     this.stopFlowBarItem =  {
       view: UiId.ANALYSE,

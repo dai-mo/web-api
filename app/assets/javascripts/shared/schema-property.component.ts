@@ -35,7 +35,8 @@ export class SchemaPropertyComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.fieldName = this.schemaField.label
+    this.schemaField.setCollector(this.schemaPanelComponent.collect)
+    this.fieldName = this.schemaField.name
     this.parameters = []
     let sfs:[{
       name: string
