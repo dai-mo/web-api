@@ -2,7 +2,7 @@ import {Observable} from "rxjs/Rx"
 import {Injectable, NgZone} from "@angular/core"
 import {EntityType, FlowInstance, FlowTab, Processor} from "../analyse/flow.model"
 import {Action, Store} from "@ngrx/store"
-import {ContextBarItem, UiId} from "../shared/ui.models"
+import {ContextBarItem, FlowEntityConf, UiId} from "../shared/ui.models"
 import {ImmutableArray, ImmutableObject} from "seamless-immutable"
 import * as SI from "seamless-immutable"
 
@@ -80,11 +80,13 @@ export interface AppState {
   flowTabs: FlowTab[]
   selectedProcessorId: string
   currentProcessorProperties: any
+  selectedFlowEntityConf: FlowEntityConf
 }
 
 export const initialAppState: AppState = {
   flowTabs: [],
   selectedProcessorId: "",
-  currentProcessorProperties: undefined
+  currentProcessorProperties: undefined,
+  selectedFlowEntityConf: undefined
 }
 

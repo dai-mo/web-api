@@ -7,6 +7,8 @@ import {SelectItem} from "primeng/primeng"
 import {Field, FieldGroup, FlowEntityConf, FlowEntityStatus} from "./ui.models"
 import {UIStateStore} from "./ui.state.store"
 import * as SI from "seamless-immutable"
+import {AppState, ObservableState} from "../store/state"
+import {Observable} from "rxjs"
 
 @Component({
   selector: "flow-entity",
@@ -23,7 +25,7 @@ import * as SI from "seamless-immutable"
 
 export class FlowEntityComponent implements OnInit {
 
-  @Input() entityInfo: FlowEntityConf
+  entityInfo: FlowEntityConf
   @Input() finaliseLabel: string
 
   private flowEntityStatus = FlowEntityStatus
@@ -32,9 +34,13 @@ export class FlowEntityComponent implements OnInit {
   selectedEntityFieldGroups: FieldGroup[]
   selectedEntitySpecificFields: Field[]
 
-  constructor(private uiStateStore: UIStateStore) {}
+  selectedFlowEntityConf: Observable<FlowEntityConf> = this.oss.appStore().select((state: AppState) => state.selectedFlowEntityConf)
+
+  constructor(private oss: ObservableState,
+              private uiStateStore: UIStateStore) {}
 
   ngOnInit() {
+    this.entityInfo = this.oss.appState().selectedFlowEntityConf
     this.entities = []
     if(this.entityInfo !== undefined) {
       this.entityInfo

@@ -33,9 +33,7 @@ width="900"
 [closable]="false"
 [(visible)]="uiStateStore.isProcessorPropertiesDialogVisible"
 *ngIf="uiStateStore.isProcessorPropertiesDialogVisible">
-    <flow-entity
-    [entityInfo]="getSelectedProcessorPropertiesConf()"
-    finaliseLabel="Update">
+    <flow-entity finaliseLabel="Update">
     </flow-entity>
 </p-dialog>
 
@@ -47,8 +45,6 @@ width="900"
 [closable]="false"
 [(visible)]="uiStateStore.isProcessorDetailsDialogVisible"
 *ngIf="uiStateStore.isProcessorDetailsDialogVisible">
-    <flow-entity
-    [entityInfo]="processorInfo"
-    finaliseLabel="Add">
+    <flow-entity finaliseLabel="Add">
     </flow-entity>
 </p-dialog>

@@ -55,23 +55,24 @@ export class SchemaPanelComponent  implements OnInit {
       .map(k => JSON.parse(this.processor.properties[k]))
 
     this.baseSchema = this.schemaService.baseSchema(this.processor.properties)
-    let outputSchema = this.schemaService.outputSchema(this.processor.properties)
-    this.rootNode = {label: "$"}
-    this.rootNode.expanded = true
-    this.addSelectedNode(this.rootNode)
+    if (this.baseSchema !== undefined) {
+      let outputSchema = this.schemaService.outputSchema(this.processor.properties)
+      this.rootNode = {label: "$"}
+      this.rootNode.expanded = true
+      this.addSelectedNode(this.rootNode)
 
-    this.baseSchema.flatMap(bs => outputSchema.map(ws => [bs,ws])).
-    subscribe(
-      (bws: [AvroSchema, AvroSchema]) => {
-        this.schemaNamespace = bws[0].namespace
-        this.schemaName = bws[0].name
-        this.buildTree(bws[0], bws[1], this.rootNode)
-      },
-      (error: any) =>  {
-        this.errorService.handleError(error)
-      }
-    )
-    this.nodes.push(this.rootNode)
+      this.baseSchema.flatMap(bs => outputSchema.map(ws => [bs, ws])).subscribe(
+        (bws: [AvroSchema, AvroSchema]) => {
+          this.schemaNamespace = bws[0].namespace
+          this.schemaName = bws[0].name
+          this.buildTree(bws[0], bws[1], this.rootNode)
+        },
+        (error: any) => {
+          this.errorService.handleError(error)
+        }
+      )
+      this.nodes.push(this.rootNode)
+    }
   }
 
   addSelectedNode(node: TreeNode) {
@@ -209,23 +210,28 @@ export class SchemaPanelComponent  implements OnInit {
 
   updateSchemaFields() {
     let schemaFields: any[] = []
-    this.currentSchemaFields(this.rootNode, schemaFields)
+    if (this.rootNode !== undefined) {
 
-    let props: any = {}
-    props[this.mappedFieldName] = JSON.stringify(schemaFields)
-
-    this.store.dispatch({type: UPDATE_CURRENT_PROCESSOR_PROPERTIES,
-      payload: { properties: props}})
-  }
-
-  collect = function():any {
-      let schemaFields: any[] = []
       this.currentSchemaFields(this.rootNode, schemaFields)
 
       let props: any = {}
       props[this.mappedFieldName] = JSON.stringify(schemaFields)
 
-      return props
+      this.store.dispatch({
+        type: UPDATE_CURRENT_PROCESSOR_PROPERTIES,
+        payload: {properties: props}
+      })
+    }
+  }
+
+  collect = function():any {
+    let schemaFields: any[] = []
+    let props: any = {}
+    if (this.rootNode !== undefined) {
+      this.currentSchemaFields(this.rootNode, schemaFields)
+      props[this.mappedFieldName] = JSON.stringify(schemaFields)
+    }
+    return props
 
   }.bind(this)
 

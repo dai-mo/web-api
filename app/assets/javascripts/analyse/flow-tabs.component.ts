@@ -6,14 +6,14 @@ import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
 import {ContextStore} from "../shared/context.store"
 import {
-  ContextBarItem, ContextMenuItem, FlowEntity, FlowEntityStatus, ProcessorInfo, ProcessorPropertiesConf,
+  ContextBarItem, ContextMenuItem, FlowEntity, FlowEntityConf, FlowEntityStatus, ProcessorInfo, ProcessorPropertiesConf,
   UiId
 } from "../shared/ui.models"
 import {NotificationService} from "../shared/util/notification.service"
 import {AppState, ObservableState} from "../store/state"
 import {
   ADD_FLOW_TABS, REMOVE_FLOW_TAB, SELECT_FLOW_TAB, UPDATE_FLOW_INSTANCE,
-  UPDATE_FLOW_INSTANCE_STATE
+  UPDATE_FLOW_INSTANCE_STATE, UPDATE_SELECTED_FLOW_ENTITY_CONF
 } from "../store/reducers"
 import {ProcessorService} from "../service/processor.service"
 import * as SI from "seamless-immutable"
@@ -35,9 +35,8 @@ export class FlowTabsComponent implements OnInit {
   private stopFlowBarItem: ContextBarItem
   private startFlowBarItem: ContextBarItem
 
-  private processorInfo: ProcessorInfo
-
   flowTabs: Observable<FlowTab[]> = this.oss.appStore().select((state: AppState) => state.flowTabs)
+  selectedFlowEntityConf: Observable<FlowEntityConf> = this.oss.appStore().select((state: AppState) => state.selectedFlowEntityConf)
 
   constructor(private flowService: FlowService,
               private errorService: ErrorService,
@@ -251,22 +250,49 @@ export class FlowTabsComponent implements OnInit {
     }
   }
 
-  getSelectedProcessorPropertiesConf(): ProcessorPropertiesConf {
+  showProcessorPropertiesDialog() {
     let sp = this.oss.selectedProcessor()
+    let ppc
+
     if (sp !== undefined) {
-      return new ProcessorPropertiesConf(sp,
+      ppc =  new ProcessorPropertiesConf(sp,
         this.oss,
         this.processorService,
         this.errorService)
     }
-    return undefined
+
+    if(ppc !== undefined && !ppc.hasEntities()) {
+      this.uiStateStore.isProcessorPropertiesDialogVisible = false
+      this.notificationService
+        .warn({
+          title: "Processor Properties",
+          description: "No configurable properties for chosen processor"
+        })
+    } else {
+      this.oss.dispatch({
+        type: UPDATE_SELECTED_FLOW_ENTITY_CONF,
+        payload: {flowEntityConf:  ppc}
+      })
+      this.uiStateStore.isProcessorPropertiesDialogVisible = true
+    }
+
+
   }
 
-  updateProcessorInfo() {
+  showProcessorInfoDialog() {
     this.processorService.list()
       .subscribe(
         (defs: ProcessorServiceDefinition[]) => {
-         this.processorInfo = new ProcessorInfo(defs, this.processorService, this.errorService)
+          let processorInfo =
+            new ProcessorInfo(defs,
+              this.oss,
+              this.flowService,
+              this.processorService,
+              this.errorService)
+          this.oss.dispatch({
+            type: UPDATE_SELECTED_FLOW_ENTITY_CONF,
+            payload: {flowEntityConf:  processorInfo}
+          })
           this.uiStateStore.isProcessorDetailsDialogVisible = true
         },
         (error: any) => {
@@ -293,7 +319,7 @@ export class FlowTabsComponent implements OnInit {
 
     let cmItems: ContextMenuItem[] = [
       {label: "Add Processor", command: (event) => {
-        this.updateProcessorInfo()
+        this.showProcessorInfoDialog()
       }}
     ]
     this.contextStore.addContextMenuItems(UiId.ANALYSE, cmItems)
@@ -350,17 +376,7 @@ export class FlowTabsComponent implements OnInit {
         enabled: true,
         hidden: true,
         command: () => {
-          let conf = this.getSelectedProcessorPropertiesConf()
-          if (conf !== undefined && !conf.hasEntities()) {
-            this.uiStateStore.isProcessorPropertiesDialogVisible = false
-            this.notificationService
-              .warn({
-                title: "Processor Properties",
-                description: "No configurable properties for chosen processor"
-              })
-          } else {
-            this.uiStateStore.isProcessorPropertiesDialogVisible = true
-          }
+          this.showProcessorPropertiesDialog()
         }
       }
     ]

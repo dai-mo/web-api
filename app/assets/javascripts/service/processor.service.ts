@@ -29,4 +29,8 @@ export class ProcessorService extends ApiHttpService {
   list(): Observable<ProcessorServiceDefinition[]> {
     return super.get(this.processorBaseUrl)
   }
+
+  create(flowInstanceId: string, psd: ProcessorServiceDefinition): Observable<Processor> {
+    return super.post(this.processorBaseUrl + "create/" + flowInstanceId, psd)
+  }
 }
