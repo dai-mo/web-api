@@ -2,33 +2,42 @@ package controllers.util
 
 import javax.inject.{Inject, Singleton}
 
+import com.google.inject.ImplementedBy
 import global.AuthorisationService
 import io.jsonwebtoken.Claims
-import org.apache.ws.commons.schema.XmlSchemaException
-import org.dcs.api.service.{RemoteProcessorService, StatefulRemoteProcessorService}
 import org.dcs.commons.error.{ErrorConstants, RESTException}
-import org.dcs.remote.ZkRemoteService
+import org.dcs.remote.{RemoteService, ZkRemoteService}
 import org.keycloak.authorization.client.representation.PermissionRequest
 import play.api.inject.ApplicationLifecycle
 import play.api.mvc.{ActionBuilder, Request, Result, _}
 import play.filters.csrf.{CSRFAddToken, CSRFCheck}
 
 import scala.concurrent.Future
-import scala.util.control.NonFatal
 
 /**
   * Created by cmathew on 08/07/16.
   */
 
+@ImplementedBy(classOf[Remote])
+trait RemoteClient {
+  init()
+  def init(): Unit
+
+  def broker: ZkRemoteService.type
+}
 
 @Singleton
-class Remote @Inject() (lifecycle: ApplicationLifecycle) {
-  val broker = ZkRemoteService
-  broker.loadServiceCaches()
+class Remote @Inject() (lifecycle: ApplicationLifecycle) extends RemoteClient {
 
 
-  lifecycle.addStopHook { () =>
-    Future.successful(broker.dispose)
+  override def broker: ZkRemoteService.type = ZkRemoteService
+
+  override def init(): Unit = {
+    broker.loadServiceCaches()
+
+    lifecycle.addStopHook { () =>
+      Future.successful(broker.dispose)
+    }
   }
 
 }

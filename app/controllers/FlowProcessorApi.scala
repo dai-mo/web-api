@@ -3,7 +3,7 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import controllers.routing.ResourceRouter
-import controllers.util.{CSRFCheckAction, CSRFTokenAction, Remote, Req}
+import controllers.util._
 import global.ResultSerialiserImplicits._
 import org.dcs.api.service._
 import org.dcs.commons.SchemaAction
@@ -21,7 +21,7 @@ import play.api.mvc.{Action, EssentialAction}
 @Singleton
 class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction,
                                  csrfTokenAction: CSRFTokenAction,
-                                 remote: Remote)
+                                 remote: RemoteClient)
   extends ResourceRouter[String] {
 
   override def list: EssentialAction = csrfCheckAction { implicit request =>
