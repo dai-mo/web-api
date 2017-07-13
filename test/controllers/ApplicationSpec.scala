@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.util.RemoteClient
 import global.AuthorisationService
 import org.scalatest.TestData
 import org.scalatestplus.play._
@@ -15,6 +16,7 @@ class ApplicationSpec extends WebBaseSpec with OneAppPerTest {
   override def newAppForTest(testData: TestData): Application =
     new GuiceApplicationBuilder()
       .overrides(bind[AuthorisationService].to[MockAuthorisationService])
+      .overrides(bind[RemoteClient].to[MockRemote])
       .build
 
   "Routes" should {
@@ -40,7 +42,4 @@ class ApplicationSpec extends WebBaseSpec with OneAppPerTest {
       contentAsString(home) must include ("/api/doc")
     }
   }
-
-
-
 }

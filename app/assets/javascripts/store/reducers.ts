@@ -5,6 +5,7 @@
 import {FlowInstance, FlowTab, Processor} from "../analyse/flow.model"
 import {Action, ActionReducer} from "@ngrx/store"
 import * as SI from "seamless-immutable"
+import {FlowEntityConf} from "../shared/ui.models"
 
 
 export const SELECT_PROCESSOR: string = "SELECT_PROCESSOR"
@@ -19,6 +20,9 @@ export const UPDATE_FLOW_INSTANCE_STATE: string = "UPDATE_FLOW_INSTANCE_STATE"
 
 export const UPDATE_SELECTED_PROCESSOR: string = "UPDATE_SELECTED_PROCESSOR"
 export const UPDATE_CURRENT_PROCESSOR_PROPERTIES: string = "UPDATE_CURRENT_PROCESSOR_PROPERTIES"
+
+export const UPDATE_SELECTED_FLOW_ENTITY_CONF: string = "UPDATE_SELECTED_FLOW_ENTITY_CONF"
+export const CLEAR_FLOW_ENTITY_CONF: string = "CLEAR_FLOW_ENTITY_CONF"
 
 
 export const flowTabs: ActionReducer<FlowTab[]> =
@@ -138,10 +142,23 @@ export const currentProcessorProperties: ActionReducer<any> =
     }
   }
 
+export const selectedFlowEntityConf: ActionReducer<FlowEntityConf> =
+  (state = undefined, action: Action) => {
+    switch (action.type) {
+      case UPDATE_SELECTED_FLOW_ENTITY_CONF:
+        return action.payload.flowEntityConf
+      case CLEAR_FLOW_ENTITY_CONF:
+        return undefined
+      default:
+        return state
+    }
+  }
+
 export const rootReducer = {
   flowTabs,
   selectedProcessorId,
-  currentProcessorProperties
+  currentProcessorProperties,
+  selectedFlowEntityConf
 }
 
 

@@ -116,6 +116,7 @@ export class ProcessorDetails {
 export class Processor {
   id: string
   type: string
+  version: string
   processorType: string
   status: string
   properties: any

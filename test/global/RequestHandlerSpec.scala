@@ -1,6 +1,7 @@
 package global
 
-import controllers.{MockAuthorisationService, WebBaseSpec}
+import controllers.util.RemoteClient
+import controllers.{MockAuthorisationService, MockRemote, WebBaseSpec}
 import org.dcs.web.BuildInfo
 import org.scalatest.TestData
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
@@ -19,6 +20,7 @@ class RequestHandlerSpec extends WebBaseSpec with OneAppPerSuite {
   override implicit lazy val app: Application =
     new GuiceApplicationBuilder()
       .overrides(bind[AuthorisationService].to[MockAuthorisationService])
+      .overrides(bind[RemoteClient].to[MockRemote])
       .build
 
   "Serialized response for requested extension with query param - json" should {

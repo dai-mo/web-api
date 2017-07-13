@@ -3,30 +3,29 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import controllers.routing.ResourceRouter
-import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
+import controllers.util._
 import global.ResultSerialiserImplicits._
 import org.dcs.api.service._
 import org.dcs.commons.SchemaAction
-import org.dcs.commons.error.ErrorConstants
+import org.dcs.commons.error.{ErrorConstants, RESTException}
 import org.dcs.commons.serde.AvroSchemaStore
 import org.dcs.commons.serde.JsonSerializerImplicits._
 import org.dcs.flow.ProcessorApi
-import org.dcs.remote.{RemoteService, ZkRemoteService}
+import org.dcs.remote.cxf.CxfEndpointUtils
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.{Action, EssentialAction}
-
-import scala.reflect.ClassTag
 
 /**
   * Created by cmathew on 05.04.17.
   */
 @Singleton
-class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAction: CSRFTokenAction)
+class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction,
+                                 csrfTokenAction: CSRFTokenAction,
+                                 remote: RemoteClient)
   extends ResourceRouter[String] {
 
   override def list: EssentialAction = csrfCheckAction { implicit request =>
-    ZkRemoteService.loadServiceCaches()
-    ZkRemoteService.services().toResult
+    remote.broker.services().toResult
   }
 
   override def create: EssentialAction =  Action {
@@ -48,8 +47,7 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActi
   }
 
   def list(property: String, regex: String): EssentialAction = csrfCheckAction { implicit request =>
-    ZkRemoteService.loadServiceCaches()
-    ZkRemoteService.filterServiceByProperty(property, regex).toResult
+    remote.broker.filterServiceByProperty(property, regex).toResult
   }
 
   def create(flowInstanceId: String): EssentialAction =  csrfCheckAction async { implicit request =>
@@ -57,15 +55,21 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActi
       .map(_.toResult)
   }
 
-  def details(processorServiceClassName: String, stateful: Boolean): EssentialAction =  csrfCheckAction  { implicit request =>
+  def detailsForDef(processorServiceClassName: String, stateful: Boolean): EssentialAction =  csrfCheckAction  { implicit request =>
+    serviceDetails(processorServiceClassName, stateful).toResult
+  }
 
-    val service: RemoteProcessorService =
-      if(stateful)
-        ZkRemoteService.loadService[StatefulRemoteProcessorService](processorServiceClassName)
-      else
-        ZkRemoteService.loadService[RemoteProcessorService](processorServiceClassName)
+  def details(processorServiceClassName: String): EssentialAction =  csrfCheckAction  { implicit request =>
 
-    service.details().toResult
+    val psds: List[ProcessorServiceDefinition] =
+      remote.broker.filterServiceByProperty(CxfEndpointUtils.ClassNameKey, processorServiceClassName)
+
+    if(psds.isEmpty)
+      throw new RESTException(ErrorConstants.DCS301)
+    else {
+      val psd = psds.head
+      serviceDetails(psd.processorServiceClassName, psd.stateful).toResult
+    }
   }
 
   def schema(schemaId: String): EssentialAction = csrfCheckAction { implicit request =>
@@ -90,5 +94,15 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenActi
 
   def stop(id: String): EssentialAction = csrfCheckAction async { implicit request =>
     ProcessorApi.stop(id, Req.version, Req.clientId).map(_.toResult)
+  }
+
+
+  def serviceDetails(processorServiceClassName: String, stateful: Boolean): ProcessorDetails = {
+    val service: RemoteProcessorService =
+      if(stateful)
+        remote.broker.loadService[StatefulRemoteProcessorService](processorServiceClassName)
+      else
+        remote.broker.loadService[RemoteProcessorService](processorServiceClassName)
+    service.details()
   }
 }

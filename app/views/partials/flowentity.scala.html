@@ -17,18 +17,18 @@
         </p-listbox>
     </div>
     <div [ngClass]="{'flex-panel-70': !hasSingleEntity(), 'flex-panel': hasSingleEntity()}">
-        <div class="entity-tab-view">
-            <p-tabView>
+        <div class="entity-tab-view" *ngIf="selectedFlowEntityConf | async as flowEntity">
+            <p-tabView *ngIf="flowEntity.isSelected()">
                 <p-tabPanel
-                *ngFor="let fieldGroup of entityInfo.selectedEntityFieldGroups(); let select = first"
+                *ngFor="let fieldGroup of flowEntity.selectedEntityFieldGroups()"
                 [header]="fieldGroup.label"
-                selected="true">
+                [selected]="fieldGroup.active">
                     <flow-entity-info [entityFieldGroup]="fieldGroup"></flow-entity-info>
                 </p-tabPanel>
                 <p-tabPanel
-                *ngFor="let field of entityInfo.selectedEntitySpecificFields()"
+                *ngFor="let field of flowEntity.selectedEntitySpecificFields()"
                 [header]="field.label"
-                selected="true">
+                [selected]="field.active">
                     <schema-property *ngIf="field.isSchemaField()"
                     [schemaField]="field">
                     </schema-property>
@@ -43,12 +43,13 @@
         <button pButton
         type="button"
         (click)="finalise()"
-        [disabled]="entityInfo.selectedFlowEntityId === undefined"
+        [disabled]="(selectedFlowEntityConf | async).selectedFlowEntityId === undefined"
         label="{{finaliseLabel}}">
         </button>
         <button pButton
         type="button"
         (click)="cancel()"
+        [hidden]="(selectedFlowEntityConf | async).hideCancel"
         label="Cancel">
         </button>
     </div>

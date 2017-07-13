@@ -12,9 +12,7 @@ width="900"
 [closable]="false"
 [(visible)]="uiStateStore.isTemplateInfoDialogVisible"
 *ngIf="uiStateStore.isTemplateInfoDialogVisible">
-    <flow-entity
-    [entityInfo]="templateEntityInfo"
-    finaliseLabel="Instantiate Flow">
+    <flow-entity finaliseLabel="Instantiate Flow">
     </flow-entity>
 </p-dialog>
 
@@ -26,9 +24,7 @@ width="900"
 [closable]="false"
 [(visible)]="uiStateStore.isFlowCreationDialogVisible"
 *ngIf="uiStateStore.isFlowCreationDialogVisible">
-    <flow-entity
-    [entityInfo]="flowCreation"
-    finaliseLabel="Create">
+    <flow-entity finaliseLabel="Create">
     </flow-entity>
 </p-dialog>
 

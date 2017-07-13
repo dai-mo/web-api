@@ -8,7 +8,9 @@ import {FlowTemplate} from "./flow.model"
 import {UIStateStore} from "../shared/ui.state.store"
 import {ContextMenuItem, FlowCreation, FlowEntityConf, TemplateInfo, UiId} from "../shared/ui.models"
 import {ContextStore} from "../shared/context.store"
-import {ObservableState} from "../store/state"
+import {AppState, ObservableState} from "../store/state"
+import {Observable} from "rxjs"
+import {UPDATE_SELECTED_FLOW_ENTITY_CONF} from "../store/reducers"
 
 
 @Component({
@@ -19,8 +21,8 @@ export class AnalyseComponent  implements OnInit {
 
   public status: { isopen:boolean } = { isopen: false }
   public templates: Array<any>
-  public templateEntityInfo: FlowEntityConf
-  private flowCreation: FlowCreation
+
+  selectedFlowEntityConf: Observable<FlowEntityConf> = this.oss.appStore().select((state: AppState) => state.selectedFlowEntityConf)
 
   constructor(private flowService: FlowService,
               private oss: ObservableState,
@@ -36,7 +38,11 @@ export class AnalyseComponent  implements OnInit {
       .subscribe(
         templates => {
           this.templates = templates
-          this.templateEntityInfo = new TemplateInfo(templates)
+          let templateEntityInfo = new TemplateInfo(templates, this.oss)
+          this.oss.dispatch({
+            type: UPDATE_SELECTED_FLOW_ENTITY_CONF,
+            payload: {flowEntityConf:  templateEntityInfo}
+          })
           this.uiStateStore.isTemplateInfoDialogVisible = true
         },
         (error: any) =>  {
@@ -45,22 +51,30 @@ export class AnalyseComponent  implements OnInit {
       )
   }
 
-
   ngOnInit() {
-    this.flowCreation = new FlowCreation(this.oss, this.flowService, this.errorService)
     let cmItems: ContextMenuItem[] = [
       {label: "Instantiate Flow", command: (event) => {
         this.showTemplateInfoDialog()
       }},
       {label: "Create Flow", command: (event) => {
-        this.uiStateStore.isFlowCreationDialogVisible = true
+        this.showFlowCreationDialog()
       }}
     ]
     this.contextStore.addContextMenu(UiId.ANALYSE, cmItems)
   }
 
+
   showTemplateInfoDialog() {
     this.getTemplates()
+  }
+
+  showFlowCreationDialog() {
+    let flowCreation = new FlowCreation(this.oss, this.flowService, this.errorService)
+    this.oss.dispatch({
+      type: UPDATE_SELECTED_FLOW_ENTITY_CONF,
+      payload: {flowEntityConf:  flowCreation}
+    })
+    this.uiStateStore.isFlowCreationDialogVisible = true
   }
 
 
