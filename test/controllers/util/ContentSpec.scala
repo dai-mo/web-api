@@ -1,6 +1,6 @@
 package controllers.util
 
-import controllers.{MockAuthorisationService, WebBaseSpec}
+import controllers.{MockAuthorisationService, MockRemote, WebBaseSpec}
 import global.AuthorisationService
 import org.dcs.web.BuildInfo
 import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
@@ -19,6 +19,7 @@ class ContentSpec extends WebBaseSpec with OneAppPerSuite {
   override implicit lazy val app: Application =
     new GuiceApplicationBuilder()
       .overrides(bind[AuthorisationService].to(new MockAuthorisationService))
+      .overrides(bind[RemoteClient].to[MockRemote])
       .build
 
   "Default serialized response content type" should {

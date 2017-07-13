@@ -4,9 +4,10 @@ import java.security.KeyPair
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64
 import controllers.WebBaseSpec.{AuthorizationHeaderName, XsrfTokenCookieName, XsrfTokenHeaderName}
-import controllers.util.Req
+import controllers.util.{RemoteClient, Req}
 import global.AuthorisationService
 import org.dcs.commons.config.Configurator
+import org.dcs.remote.ZkRemoteService
 import org.keycloak.authorization.client.AuthzClient
 import org.scalatest.{SuiteMixin, Tag}
 import org.scalatest.mock.MockitoSugar
@@ -81,6 +82,13 @@ class MockAuthorisationService extends AuthorisationService {
 
   override def initAuthzClient(): AuthzClient = null
 
+}
+
+
+class MockRemote extends RemoteClient {
+  override def init: Unit = {}
+
+  override def broker: ZkRemoteService.type = null
 }
 
 object IT extends Tag("IT")
