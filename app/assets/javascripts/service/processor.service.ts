@@ -19,11 +19,16 @@ export class ProcessorService extends ApiHttpService {
     return super.put(this.processorPropertiesUrl(processorId), properties)
   }
 
-  details(processorServiceClassName: string, stateful: boolean): Observable<ProcessorDetails> {
-    return super.get(this.processorBaseUrl + "details/" +
-      processorServiceClassName +
-      "/" +
-      stateful)
+  details(processorServiceClassName: string, stateful?: boolean): Observable<ProcessorDetails> {
+
+    if(stateful !== undefined)
+      return super.get(this.processorBaseUrl + "details/" +
+        processorServiceClassName +
+        "/" +
+        stateful)
+    else
+      return super.get(this.processorBaseUrl + "details/" +
+        processorServiceClassName)
   }
 
   list(): Observable<ProcessorServiceDefinition[]> {
@@ -32,5 +37,9 @@ export class ProcessorService extends ApiHttpService {
 
   create(flowInstanceId: string, psd: ProcessorServiceDefinition): Observable<Processor> {
     return super.post(this.processorBaseUrl + "create/" + flowInstanceId, psd)
+  }
+
+  destroy(processorId: string, version: string): Observable<boolean> {
+    return super.delete(this.processorBaseUrl + processorId, version)
   }
 }

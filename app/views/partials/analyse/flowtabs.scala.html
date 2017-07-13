@@ -43,8 +43,20 @@ header="Processors"
 width="900"
 [resizable]="false"
 [closable]="false"
-[(visible)]="uiStateStore.isProcessorDetailsDialogVisible"
-*ngIf="uiStateStore.isProcessorDetailsDialogVisible">
+[(visible)]="uiStateStore.isProcessorConfDialogVisible"
+*ngIf="uiStateStore.isProcessorConfDialogVisible">
     <flow-entity finaliseLabel="Add">
+    </flow-entity>
+</p-dialog>
+
+<p-dialog
+class="dialog-panel"
+header="Processor Details"
+width="900"
+[resizable]="false"
+[closable]="false"
+[(visible)]="uiStateStore.isProcessorInfoDialogVisible"
+*ngIf="uiStateStore.isProcessorInfoDialogVisible">
+    <flow-entity finaliseLabel="Ok">
     </flow-entity>
 </p-dialog>

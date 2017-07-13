@@ -26,6 +26,9 @@ export class ObservableState {
 
     this.store.take(1).subscribe((s: AppState) => state = s)
 
+    // You can always rely on subscribe()
+    // running synchronously if you have
+    // to get the state value
     return state
   }
 

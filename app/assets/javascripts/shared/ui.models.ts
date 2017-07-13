@@ -1,24 +1,32 @@
 import {MenuItem, Message, SelectItem} from "primeng/primeng"
 import {
   Configuration,
-  CoreProperties, DCSError, EntityType, FlowInstance, FlowTemplate, MetaData, Processor, ProcessorDetails,
+  CoreProperties,
+  EntityType,
+  FlowInstance,
+  FlowTemplate,
+  MetaData,
+  Processor,
+  ProcessorDetails,
   ProcessorServiceDefinition,
-  PropertyDefinition, RemoteRelationship,
+  PropertyDefinition,
+  RemoteRelationship,
   SchemaProperties
 } from "../analyse/flow.model"
 import {UIStateStore} from "./ui.state.store"
-import * as SI from "seamless-immutable"
 import {ProcessorService} from "../service/processor.service"
 import {ErrorService} from "./util/error.service"
-import {AppState, ObservableState} from "../store/state"
-import {Store} from "@ngrx/store"
+import {ObservableState} from "../store/state"
 import {
-  ADD_FLOW_TABS, UPDATE_SELECTED_FLOW_ENTITY_CONF, UPDATE_FLOW_INSTANCE,
+  ADD_FLOW_TABS,
+  UPDATE_FLOW_INSTANCE,
+  UPDATE_SELECTED_FLOW_ENTITY_CONF,
   UPDATE_SELECTED_PROCESSOR
 } from "../store/reducers"
 import {FlowService} from "../service/flow.service"
 import {KeycloakService} from "./keycloak.service"
 import {JSUtils, UIUtils} from "./util/ui.utils"
+import {Observable} from "rxjs"
 
 /**
  * Created by cmathew on 04.05.17.
@@ -278,6 +286,8 @@ export abstract class  FlowEntityConf {
   flowEntitySpecificFieldsMap: Map<string, Field[]> = new Map<string, Field[]>()
   flowEntities: FlowEntity[] = []
 
+  hideCancel: boolean = false
+
   constructor(private osstate: ObservableState) {}
 
   list(): FlowEntity[] {
@@ -404,7 +414,7 @@ export class FlowCreation extends FlowEntityConf {
   }
 }
 
-export class ProcessorInfo extends FlowEntityConf {
+export class ProcessorConf extends FlowEntityConf {
 
 
   constructor(defs: ProcessorServiceDefinition[],
@@ -420,25 +430,31 @@ export class ProcessorInfo extends FlowEntityConf {
           "",
           FlowEntityStatus.OK,
           d)))
+    if(this.flowEntities.length === 1)
+      this.select(this.flowEntities[0].id)
   }
 
   select(flowEntityId: string): void {
     let selectedFlowEntity = this.flowEntities.find(fe => fe.id === flowEntityId)
     if(selectedFlowEntity !== undefined) {
-      this.processorService.details(flowEntityId, selectedFlowEntity.state.stateful)
-        .subscribe(
-          (details: ProcessorDetails) => {
-            this.flowEntityFieldGroupsMap
-              .set(flowEntityId,
-                [FieldGroup.fromMetaData(details.metadata),
-                  FieldGroup.fromConfiguration(details.configuration),
-                  FieldGroup.fromRelationships(details.relationships)])
-            super.select(flowEntityId)
-          },
-          (error: any) => {
-            this.errorService.handleError(error)
-          }
-        )
+      let details: Observable<ProcessorDetails>
+      if(selectedFlowEntity.state.stateful !== undefined)
+        details = this.processorService.details(flowEntityId, selectedFlowEntity.state.stateful)
+      else
+        details = this.processorService.details(flowEntityId)
+      details.subscribe(
+        (details: ProcessorDetails) => {
+          this.flowEntityFieldGroupsMap
+            .set(flowEntityId,
+              [FieldGroup.fromMetaData(details.metadata),
+                FieldGroup.fromConfiguration(details.configuration),
+                FieldGroup.fromRelationships(details.relationships)])
+          super.select(flowEntityId)
+        },
+        (error: any) => {
+          this.errorService.handleError(error)
+        }
+      )
     }
   }
 
@@ -451,7 +467,7 @@ export class ProcessorInfo extends FlowEntityConf {
       this.processorService.create(flowInstanceId, selectedFlowEntity.state)
         .subscribe(
           (processor: Processor) => {
-            uiStateStore.isProcessorDetailsDialogVisible = false
+            uiStateStore.isProcessorConfDialogVisible = false
             this.flowService.instance(this.oss.activeFlowTab().flowInstance.id)
               .subscribe(
                 (flowInstance: FlowInstance) => {
@@ -474,7 +490,42 @@ export class ProcessorInfo extends FlowEntityConf {
   }
 
   cancel(uiStateStore: UIStateStore): void {
-    uiStateStore.isProcessorDetailsDialogVisible = false
+    uiStateStore.isProcessorConfDialogVisible = false
+  }
+
+}
+
+export class ProcessorInfo extends FlowEntityConf {
+
+  constructor(processorServiceClassName: string,
+              processorDetails: ProcessorDetails,
+              private oss: ObservableState,
+              private processorService: ProcessorService,
+              private errorService: ErrorService) {
+    super(oss)
+    this.flowEntities
+      .push(
+        new FlowEntity(processorServiceClassName,
+          processorServiceClassName,
+          "",
+          FlowEntityStatus.OK,
+          processorServiceClassName))
+    this.flowEntityFieldGroupsMap
+      .set(processorServiceClassName,
+        [FieldGroup.fromMetaData(processorDetails.metadata),
+          FieldGroup.fromConfiguration(processorDetails.configuration),
+          FieldGroup.fromRelationships(processorDetails.relationships)])
+    this.hideCancel = true
+    super.select(processorServiceClassName)
+  }
+
+
+  finalise(uiStateStore: UIStateStore): void {
+    uiStateStore.isProcessorInfoDialogVisible = false
+  }
+
+  cancel(uiStateStore: UIStateStore): void {
+    uiStateStore.isProcessorInfoDialogVisible = false
   }
 
 }

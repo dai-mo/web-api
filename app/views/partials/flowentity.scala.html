@@ -49,6 +49,7 @@
         <button pButton
         type="button"
         (click)="cancel()"
+        [hidden]="(selectedFlowEntityConf | async).hideCancel"
         label="Cancel">
         </button>
     </div>

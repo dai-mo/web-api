@@ -1,6 +1,7 @@
 import {Headers, Http, RequestOptions, RequestOptionsArgs} from "@angular/http"
 import {Observable} from "rxjs/Rx"
 import {ServiceLocator} from "../app.component"
+import {ObservableState} from "../store/state"
 
 /**
  * Created by cmathew on 21.06.17.
@@ -42,6 +43,7 @@ export class ApiHttpService {
       )
   }
 
+
   get<T>(url: string, rpt?: string, options?: RequestOptions): Observable<T> {
     return this.http.get(url,
       this.updateHeaders(options, rpt)).map(response => response.json())
@@ -57,6 +59,10 @@ export class ApiHttpService {
     return this.http.post(url,
       body,
       this.updateHeaders(options, rpt)).map(response => response.json())
+  }
+
+  delete(url: string, version: string, rpt?: string,  options?: RequestOptions): Observable<boolean> {
+    return this.http.delete(url, this.updateHeaders(options, rpt, version)).map(response => response.json())
   }
 
 

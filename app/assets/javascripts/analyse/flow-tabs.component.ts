@@ -1,18 +1,22 @@
 import {Component, Input, OnInit} from "@angular/core"
-import {DCSError, EntityType, FlowInstantiation, FlowInstance, FlowTab, ProcessorServiceDefinition} from "./flow.model"
+import {
+  DCSError, EntityType, FlowInstantiation, FlowInstance, FlowTab, ProcessorServiceDefinition,
+  CoreProperties, ProcessorDetails
+} from "./flow.model"
 import {FlowService} from "../service/flow.service"
 import {ErrorService} from "../shared/util/error.service"
 import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
 import {ContextStore} from "../shared/context.store"
 import {
-  ContextBarItem, ContextMenuItem, FlowEntity, FlowEntityConf, FlowEntityStatus, ProcessorInfo, ProcessorPropertiesConf,
+  ContextBarItem, ContextMenuItem, FlowEntity, FlowEntityConf, FlowEntityStatus, ProcessorConf, ProcessorInfo,
+  ProcessorPropertiesConf,
   UiId
 } from "../shared/ui.models"
 import {NotificationService} from "../shared/util/notification.service"
 import {AppState, ObservableState} from "../store/state"
 import {
-  ADD_FLOW_TABS, REMOVE_FLOW_TAB, SELECT_FLOW_TAB, UPDATE_FLOW_INSTANCE,
+  ADD_FLOW_TABS, REMOVE_FLOW_TAB, SELECT_FLOW_TAB, SELECT_PROCESSOR, UPDATE_FLOW_INSTANCE,
   UPDATE_FLOW_INSTANCE_STATE, UPDATE_SELECTED_FLOW_ENTITY_CONF
 } from "../store/reducers"
 import {ProcessorService} from "../service/processor.service"
@@ -279,21 +283,70 @@ export class FlowTabsComponent implements OnInit {
 
   }
 
-  showProcessorInfoDialog() {
+  showProcessorConfDialog() {
     this.processorService.list()
       .subscribe(
         (defs: ProcessorServiceDefinition[]) => {
-          let processorInfo =
-            new ProcessorInfo(defs,
+          let processorConf =
+            new ProcessorConf(defs,
               this.oss,
               this.flowService,
               this.processorService,
               this.errorService)
           this.oss.dispatch({
             type: UPDATE_SELECTED_FLOW_ENTITY_CONF,
-            payload: {flowEntityConf:  processorInfo}
+            payload: {flowEntityConf:  processorConf}
           })
-          this.uiStateStore.isProcessorDetailsDialogVisible = true
+          this.uiStateStore.isProcessorConfDialogVisible = true
+        },
+        (error: any) => {
+          this.errorService.handleError(error)
+        }
+      )
+  }
+
+  showProcessorInfoDialog() {
+    let processorServiceClassName = this.oss.selectedProcessor().properties[CoreProperties._PROCESSOR_CLASS]
+    this.processorService.details(processorServiceClassName)
+      .subscribe(
+        (processorDetails: ProcessorDetails) => {
+          let processorInfo =
+            new ProcessorInfo(processorServiceClassName,
+              processorDetails,
+              this.oss,
+              this.processorService,
+              this.errorService)
+          this.oss.dispatch({
+            type: UPDATE_SELECTED_FLOW_ENTITY_CONF,
+            payload: {flowEntityConf: processorInfo}
+          })
+          this.uiStateStore.isProcessorInfoDialogVisible = true
+        }
+      )
+  }
+
+  deleteSelectedProcessor() {
+    let sp = this.oss.selectedProcessor()
+    this.processorService.destroy(sp.id, sp.version)
+      .subscribe(
+        (deleteOk: boolean) => {
+          if(deleteOk) {
+            this.oss.dispatch({type: SELECT_PROCESSOR, payload: {id: ""}})
+            this.flowService.instance(this.oss.activeFlowTab().flowInstance.id)
+              .subscribe(
+                (flowInstance: FlowInstance) => {
+                  this.oss.dispatch({
+                    type: UPDATE_FLOW_INSTANCE,
+                    payload: {
+                      flowInstance: flowInstance
+                    }
+                  })
+                },
+                (error: any) => {
+                  this.errorService.handleError(error)
+                }
+              )
+          }
         },
         (error: any) => {
           this.errorService.handleError(error)
@@ -319,7 +372,7 @@ export class FlowTabsComponent implements OnInit {
 
     let cmItems: ContextMenuItem[] = [
       {label: "Add Processor", command: (event) => {
-        this.showProcessorInfoDialog()
+        this.showProcessorConfDialog()
       }}
     ]
     this.contextStore.addContextMenuItems(UiId.ANALYSE, cmItems)
@@ -359,7 +412,17 @@ export class FlowTabsComponent implements OnInit {
         enabled: true,
         command: (event) => {
           this.refreshFlow(this.activeTab())
-        }},
+        }
+      },
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.PROCESSOR,
+        iconClass: "fa-trash",
+        enabled: true,
+        command: (event) => {
+          this.deleteSelectedProcessor()
+        }
+      },
       {
         view: UiId.ANALYSE,
         entityType: EntityType.PROCESSOR,
@@ -368,7 +431,8 @@ export class FlowTabsComponent implements OnInit {
         hidden: true,
         command: () => {
           this.uiStateStore.isProcessorSchemaDialogVisible = true
-        }},
+        }
+      },
       {
         view: UiId.ANALYSE,
         entityType: EntityType.PROCESSOR,
@@ -377,6 +441,16 @@ export class FlowTabsComponent implements OnInit {
         hidden: true,
         command: () => {
           this.showProcessorPropertiesDialog()
+        }
+      },
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.PROCESSOR,
+        iconClass: "fa-info-circle",
+        enabled: true,
+        hidden: true,
+        command: () => {
+          this.showProcessorInfoDialog()
         }
       }
     ]

@@ -34,18 +34,19 @@ POST    /api/flow/instances/create/:name            controllers.FlowInstanceApi.
 PUT     /api/flow/instances/start/:fid              controllers.FlowInstanceApi.start(fid: String)
 PUT     /api/flow/instances/stop/:fid               controllers.FlowInstanceApi.stop(fid: String)
 ##- Provenance Api
-->      /api/flow/provenance             controllers.FlowProvenanceApi
-GET     /api/flow/provenance/list/:pid   controllers.FlowProvenanceApi.list(pid: String)
+->      /api/flow/provenance                            controllers.FlowProvenanceApi
+GET     /api/flow/provenance/list/:pid                  controllers.FlowProvenanceApi.list(pid: String)
 ##- Processor Api
-->      /api/flow/processor              controllers.FlowProcessorApi
-POST    /api/flow/processor/create/:fid  controllers.FlowProcessorApi.create(fid: String)
-PUT     /api/flow/processor/start/:pid   controllers.FlowProcessorApi.start(pid: String)
-PUT     /api/flow/processor/stop/:pid    controllers.FlowProcessorApi.stop(pid: String)
-GET     /api/flow/processor/schema/:sid  controllers.FlowProcessorApi.schema(sid: String)
-GET     /api/flow/processor/details/:pscn/:iss  controllers.FlowProcessorApi.details(pscn: String, iss: Boolean)
-PUT     /api/flow/processor/:pid/properties   controllers.FlowProcessorApi.updateProperties(pid: String)
-PUT     /api/flow/processor/schema/:fid/:pid   controllers.FlowProcessorApi.updateSchema(fid:String, pid: String)
-GET     /api/flow/processor/list/:property/:regex    controllers.FlowProcessorApi.list(property: String, regex: String)
+->      /api/flow/processor                             controllers.FlowProcessorApi
+POST    /api/flow/processor/create/:fid                 controllers.FlowProcessorApi.create(fid: String)
+PUT     /api/flow/processor/start/:pid                  controllers.FlowProcessorApi.start(pid: String)
+PUT     /api/flow/processor/stop/:pid                   controllers.FlowProcessorApi.stop(pid: String)
+GET     /api/flow/processor/schema/:sid                 controllers.FlowProcessorApi.schema(sid: String)
+GET     /api/flow/processor/details/:pscn               controllers.FlowProcessorApi.details(pscn: String)
+GET     /api/flow/processor/details/:pscn/:iss          controllers.FlowProcessorApi.detailsForDef(pscn: String, iss: Boolean)
+PUT     /api/flow/processor/:pid/properties             controllers.FlowProcessorApi.updateProperties(pid: String)
+PUT     /api/flow/processor/schema/:fid/:pid            controllers.FlowProcessorApi.updateSchema(fid:String, pid: String)
+GET     /api/flow/processor/list/:property/:regex       controllers.FlowProcessorApi.list(property: String, regex: String)
 ##- Connection Api
 ->      /api/flow/connection             controllers.FlowConnectionApi
 

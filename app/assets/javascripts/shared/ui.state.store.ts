@@ -302,7 +302,8 @@ export class UIStateStore {
   public isTemplateInfoDialogVisible: boolean = false
   public isProcessorSchemaDialogVisible: boolean = false
   public isProcessorPropertiesDialogVisible: boolean = false
-  public isProcessorDetailsDialogVisible: boolean = false
+  public isProcessorConfDialogVisible: boolean = false
+  public isProcessorInfoDialogVisible: boolean = false
   public isFlowCreationDialogVisible: boolean = false
 
   setFlowCreationDialogVisible(isFlowCreationDialogVisible: boolean) {
