@@ -12,7 +12,7 @@ import scala.concurrent.Future
 class CSRFFilterError extends play.filters.csrf.CSRF.ErrorHandler {
 
   override def handle(req: RequestHeader, msg: String): Future[Result] = {
-    val response = ErrorResponse("DCS000", "Unauthorised CSRF Access", FORBIDDEN, msg)
+    val response = ErrorResponse("DCS000", "Unauthorised CSRF Access", msg)
     val result = Forbidden(response.toJson)
     Future.successful(result)
   }

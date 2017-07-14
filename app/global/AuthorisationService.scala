@@ -8,9 +8,9 @@ import javax.inject.Singleton
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64
 import controllers.{AuthPolicy, Permission}
 import io.jsonwebtoken.{Claims, Jws, Jwts}
-import org.dcs.commons.serde.YamlSerializerImplicits._
 import org.dcs.commons.config.Configurator
-import org.dcs.commons.error.{ErrorConstants, RESTException}
+import org.dcs.commons.error.{ErrorConstants, HttpException}
+import org.dcs.commons.serde.YamlSerializerImplicits._
 import org.keycloak.authorization.client.representation.{EntitlementRequest, PermissionRequest, ResourceRepresentation, ScopeRepresentation}
 import org.keycloak.authorization.client.resource.ProtectionResource
 import org.keycloak.authorization.client.{AuthzClient, Configuration}
@@ -51,7 +51,7 @@ class AuthorisationService {
 
     } catch {
       case NonFatal(t) =>
-        throw new RESTException(ErrorConstants.DCS503.withErrorMessage(t.getMessage))
+        throw new HttpException(ErrorConstants.DCS503.withDescription(t.getMessage).http(401))
     }
   }
 
@@ -70,7 +70,7 @@ class AuthorisationService {
         }
         claims(entitlementResponse.getRpt)
       }
-      case _ => throw new RESTException(ErrorConstants.DCS501)
+      case _ => throw new HttpException(ErrorConstants.DCS501.http(401))
     }
   }
 
@@ -80,7 +80,7 @@ class AuthorisationService {
         val bearerToken = token.split(" ").tail.head
         claims(bearerToken)
       }
-      case _ => throw new RESTException(ErrorConstants.DCS501)
+      case _ => throw new HttpException(ErrorConstants.DCS501.http(401))
     }
   }
 
@@ -94,19 +94,19 @@ class AuthorisationService {
       val claims: Claims = parsedJwt.getBody
 
       if(claims.getExpiration.before(new Date()))
-        throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Token has expired"))
+        throw new HttpException(ErrorConstants.DCS502.withDescription("Token has expired").http(401))
 
       if(!authPolicy.clients.contains(claims.getAudience))
-        throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Client '" + claims.getAudience + "' not recognised"))
+        throw new HttpException(ErrorConstants.DCS502.withDescription("Client '" + claims.getAudience + "' not recognised").http(401))
 
       if(claims.getIssuer != keycloakConfig.getAuthServerUrl + "/realms/" + keycloakConfig.getRealm)
-        throw new RESTException(ErrorConstants.DCS502.withErrorMessage("Token issuer is not valid"))
+        throw new HttpException(ErrorConstants.DCS502.withDescription("Token issuer is not valid").http(401))
 
       claims
 
     } catch {
-      case re: RESTException => throw re
-      case NonFatal(t) => throw new RESTException(ErrorConstants.DCS502.withErrorMessage(t.getMessage))
+      case re: HttpException => throw re
+      case NonFatal(t) => throw new HttpException(ErrorConstants.DCS502.withDescription(t.getMessage).http(401))
     }
   }
 
@@ -116,7 +116,7 @@ class AuthorisationService {
   def userId(claims: Claims): String = {
     val userId = claims.getSubject
     if(userId.isEmpty)
-      throw new RESTException(ErrorConstants.DCS501)
+      throw new HttpException(ErrorConstants.DCS501.http(401))
     userId
   }
 
@@ -174,7 +174,7 @@ class AuthorisationService {
           p => policyPath.get.name.r.pattern.matcher(p.resourceName).matches()
         )
         if (filteredPerms.isEmpty)
-          throw new RESTException(ErrorConstants.DCS503.withErrorMessage("No permissions to access resource (" + policyPath.head.name + ")"))
+          throw new HttpException(ErrorConstants.DCS503.withDescription("No permissions to access resource (" + policyPath.head.name + ")").http(401))
 
         val policyScopes = policyPathMethod.get.scopes
         val permissionScopes = filteredPerms.get.scopes
@@ -203,7 +203,7 @@ class AuthorisationService {
       authzClient.protection().resource().create(resource);
     } catch {
       case NonFatal(t) =>
-        throw new RESTException(ErrorConstants.DCS503.withErrorMessage(t.getMessage))
+        throw new HttpException(ErrorConstants.DCS503.withDescription(t.getMessage).http(401))
     }
   }
 
@@ -213,13 +213,13 @@ class AuthorisationService {
       val resources: java.util.Set[String]  = protection.resource().findByFilter("uri=" + uri);
 
       if (resources.isEmpty()) {
-        throw new RESTException(ErrorConstants.DCS503.withErrorMessage("Could not find protected resource with URI [" + uri + "]"))
+        throw new HttpException(ErrorConstants.DCS503.withDescription("Could not find protected resource with URI [" + uri + "]").http(501))
       }
 
       protection.resource().delete(resources.iterator().next());
     } catch {
       case NonFatal(t) =>
-        throw new RESTException(ErrorConstants.DCS503.withErrorMessage(t.getMessage))
+        throw new HttpException(ErrorConstants.DCS503.withDescription(t.getMessage).http(501))
     }
   }
 
