@@ -1,10 +1,7 @@
 package controllers.util
 
-import org.dcs.commons.error.{ErrorConstants, RESTException}
+import org.dcs.commons.error.{ErrorConstants, HttpException}
 import play.api.mvc.{AnyContent, Request, RequestHeader}
-import org.dcs.commons.serde.JsonSerializerImplicits._
-
-import scala.reflect.ClassTag
 
 /**
   * Created by cmathew on 09/07/16.
@@ -25,7 +22,7 @@ object Req {
   def tokenOrError(tokenKey: String)(implicit request: RequestHeader): String = {
     token(tokenKey)(request) match {
       case Some(tokenValue) => tokenValue
-      case None => throw new RESTException(ErrorConstants.DCS003)
+      case None => throw new HttpException(ErrorConstants.DCS003.http(401))
     }
   }
 

@@ -7,7 +7,7 @@ import controllers.util._
 import global.ResultSerialiserImplicits._
 import org.dcs.api.service._
 import org.dcs.commons.SchemaAction
-import org.dcs.commons.error.{ErrorConstants, RESTException}
+import org.dcs.commons.error.{DCSException, ErrorConstants, HttpException}
 import org.dcs.commons.serde.AvroSchemaStore
 import org.dcs.commons.serde.JsonSerializerImplicits._
 import org.dcs.flow.ProcessorApi
@@ -65,7 +65,7 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction,
       remote.broker.filterServiceByProperty(CxfEndpointUtils.ClassNameKey, processorServiceClassName)
 
     if(psds.isEmpty)
-      throw new RESTException(ErrorConstants.DCS301)
+      throw new HttpException(ErrorConstants.DCS301.http(400))
     else {
       val psd = psds.head
       serviceDetails(psd.processorServiceClassName, psd.stateful).toResult

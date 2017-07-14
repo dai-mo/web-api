@@ -1,7 +1,7 @@
 package controllers
 
 import org.dcs.api.service._
-import org.dcs.commons.error.ErrorResponse
+import org.dcs.commons.error.{ErrorResponse, HttpErrorResponse}
 import play.api.libs.json.{Json, Writes}
 
 /**
@@ -18,12 +18,6 @@ object ModelImplicits {
 
   implicit val testWrites = Json.writes[TestResponse]
   implicit val errorWrites = Json.writes[ErrorResponse]
-
-//  implicit val connectionWrites = Json.writes[Connection]
-//  implicit val flowInstanceWrites = Json.writes[FlowInstance]
-//  implicit val flowTemplateWrites = Json.writes[FlowTemplate]
-//  implicit val processorInstanceWrites = Json.writes[ProcessorInstance]
-//  implicit val listProcessorInstanceWrites = Json.writes[List[ProcessorInstance]]
-//  implicit val processorTypeWrites = Json.writes[ProcessorType]
+  implicit val httpErrorWrites = Json.writes[HttpErrorResponse]
 
 }

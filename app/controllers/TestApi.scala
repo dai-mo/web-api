@@ -5,8 +5,8 @@ import javax.inject.{Inject, Singleton}
 import controllers.routing.ResourceRouter
 import controllers.util.{CSRFCheckAction, CSRFTokenAction}
 import org.dcs.api.service.{TestApiService, TestResponse}
+import org.dcs.commons.error.{DCSException, ErrorConstants}
 import org.dcs.commons.serde.JsonSerializerImplicits._
-import org.dcs.commons.error.{ErrorConstants, RESTException}
 import org.dcs.remote.ZkRemoteService
 import play.api.mvc.EssentialAction
 
@@ -36,7 +36,7 @@ class TestApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAction: CSRFT
         val testResponse = ZkRemoteService.loadService[TestApiService].hello("World")
         Ok(testResponse.toJson).as(JSON)
       }
-      case "error" => throw new RESTException(ErrorConstants.DCS001)
+      case "error" => throw new DCSException(ErrorConstants.DCS001)
     }
   }
 

@@ -6,8 +6,8 @@ import javax.inject.{Inject, Singleton}
 import controllers.routing.ResourceRouter
 import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
 import org.dcs.api.service.{User, UserApiService}
+import org.dcs.commons.error.{ErrorConstants, HttpException}
 import org.dcs.commons.serde.JsonSerializerImplicits._
-import org.dcs.commons.error.{ErrorConstants, RESTException}
 import play.api.mvc.{Cookie, EssentialAction}
 
 /**
@@ -31,7 +31,7 @@ class UserApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAction: CSRFT
       case "0" => anon
       case "1" => bob
       case "2" => bri
-      case _ => throw new RESTException(ErrorConstants.DCS108)
+      case _ => throw new HttpException(ErrorConstants.DCS108.http(400))
     }
   }
 

@@ -5,8 +5,8 @@ import javax.inject.{Inject, Singleton}
 import com.google.inject.ImplementedBy
 import global.AuthorisationService
 import io.jsonwebtoken.Claims
-import org.dcs.commons.error.{ErrorConstants, RESTException}
-import org.dcs.remote.{RemoteService, ZkRemoteService}
+import org.dcs.commons.error.{ErrorConstants, HttpException}
+import org.dcs.remote.ZkRemoteService
 import org.keycloak.authorization.client.representation.PermissionRequest
 import play.api.inject.ApplicationLifecycle
 import play.api.mvc.{ActionBuilder, Request, Result, _}
@@ -90,10 +90,10 @@ class AuthorisationAction @Inject()(authService: AuthorisationService) extends A
     if (auth.isDefined) {
       val claims = authService.claims(auth, request.permissions)
       if(!authService.checkPermissions(request.path, request.method, claims))
-        throw new RESTException(ErrorConstants.DCS503.withErrorMessage("Insufficient permissions to execute request"))
+        throw new HttpException(ErrorConstants.DCS503.withDescription("Insufficient permissions to execute request").http(401))
       new AuthorisationRequest(claims, request)
     } else
-      throw new RESTException(ErrorConstants.DCS503.withErrorMessage("No Authorization header"))
+      throw new HttpException(ErrorConstants.DCS503.withDescription("No Authorization header").http(401))
   }
 }
 

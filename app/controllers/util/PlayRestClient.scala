@@ -6,11 +6,11 @@ package org.dcs.commons.ws
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import org.dcs.commons.error.{HttpErrorResponse, HttpException}
 import org.dcs.commons.serde.JsonSerializerImplicits._
-import org.dcs.commons.error.{ErrorResponse, RESTException}
 import play.api.http.MimeTypes
-import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.libs.ws.ahc.AhcWSClient
+import play.api.libs.ws.{WSRequest, WSResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -34,7 +34,7 @@ trait PlayRestClient extends ApiConfig {
       .withHeaders(headers:_*)
 
 
-  private def responseOrError(response: WSResponse): Either[ErrorResponse, WSResponse] =
+  private def responseOrError(response: WSResponse): Either[HttpErrorResponse, WSResponse] =
     if(response.status >= 400 && response.status < 600)
       Left(error(response.status, response.body))
     else
@@ -43,14 +43,14 @@ trait PlayRestClient extends ApiConfig {
 
   private def responseOrException(response: WSResponse): WSResponse =
     if(response.status >= 400 && response.status < 600)
-      throw new RESTException(error(response.status, response.body))
+      throw new HttpException(error(response.status, response.body))
     else
       response
 
 
   def getAsEither(path: String,
                   queryParams: List[(String, String)] = List(),
-                  headers: List[(String, String)] = List()): Future[Either[ErrorResponse, WSResponse]] =
+                  headers: List[(String, String)] = List()): Future[Either[HttpErrorResponse, WSResponse]] =
     request(path, queryParams, headers)
       .get
       .map(responseOrError)
@@ -76,7 +76,7 @@ trait PlayRestClient extends ApiConfig {
   def putAsEither[B](path: String,
                      body: B = AnyRef,
                      queryParams: List[(String, String)] = List(),
-                     headers: List[(String, String)] = List()): Future[Either[ErrorResponse, WSResponse]] =
+                     headers: List[(String, String)] = List()): Future[Either[HttpErrorResponse, WSResponse]] =
     request(path, queryParams, headers)
       .put(body.toJson)
       .map(responseOrError)
@@ -103,7 +103,7 @@ trait PlayRestClient extends ApiConfig {
   def postAsEither[B](path: String,
                       body: B = AnyRef,
                       queryParams: List[(String, String)] = List(),
-                      headers: List[(String, String)] = List()): Future[Either[ErrorResponse, WSResponse]] =
+                      headers: List[(String, String)] = List()): Future[Either[HttpErrorResponse, WSResponse]] =
     request(endpoint(path), queryParams, headers)
       .post(body.toJson)
       .map(responseOrError)
@@ -129,7 +129,7 @@ trait PlayRestClient extends ApiConfig {
 
   def deleteAsEither(path: String,
                      queryParams: List[(String, String)] = List(),
-                     headers: List[(String, String)] = List()): Future[Either[ErrorResponse, WSResponse]] =
+                     headers: List[(String, String)] = List()): Future[Either[HttpErrorResponse, WSResponse]] =
     request(endpoint(path), queryParams, headers)
       .delete
       .map(responseOrError)
