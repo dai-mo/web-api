@@ -18,8 +18,9 @@ export class ErrorService {
             let msg: Msg = {
                 severity: "error",
                 summary: errorBody.message,
-                detail: errorBody.errorMessage
+                detail: errorBody.description
             }
+
             let msgGroup: MsgGroup = {
                 messages: [msg],
                 sticky: false,
@@ -30,11 +31,49 @@ export class ErrorService {
         }
     }
 
+    handleValidationErrors(errors: ValidationErrorResponse[]) {
+
+        let msgs: Msg[] = errors.map((ver: ValidationErrorResponse) => {
+            let msg: Msg = {
+                severity: "error",
+                summary: ver.message,
+                detail: ver.description
+            }
+            return msg})
+
+
+        let msgGroup: MsgGroup = {
+            messages: msgs,
+            sticky: false,
+            delay: 3000
+        }
+        this.uiStateStore
+          .setDisplayMessages(msgGroup)
+    }
 }
 
 export class ErrorResponse {
     code: string
     message: string
+    description: string
     httpStatusCode: number
-    errorMessage: string
+}
+
+export class ValidationErrorResponse {
+    code: string
+    message: string
+    description: string
+    validationInfo: Validation[]
+}
+
+export class Validation {
+    code: string
+    message: string
+    processorName: string
+    processorId: string
+    processorPropertyName: string
+    processorPropertyType: string
+    processorSchemaFieldName: string
+    processorSchemaFieldJsonPath: string
+    processorSchemaFieldType: string
 }

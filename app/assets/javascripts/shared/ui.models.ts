@@ -468,6 +468,8 @@ export class ProcessorConf extends FlowEntityConf {
         .subscribe(
           (processor: Processor) => {
             uiStateStore.isProcessorConfDialogVisible = false
+            if(processor.validationErrors !== undefined)
+              this.errorService.handleValidationErrors([processor.validationErrors])
             this.flowService.instance(this.oss.activeFlowTab().flowInstance.id)
               .subscribe(
                 (flowInstance: FlowInstance) => {

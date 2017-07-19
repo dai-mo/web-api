@@ -2,7 +2,7 @@ import {Component, Input, OnInit, ViewChild} from "@angular/core"
 import {UIStateStore} from "./ui.state.store"
 import {FlowInstance, Processor} from "../analyse/flow.model"
 import {SchemaPanelComponent} from "./schema-panel.component"
-import {ErrorService} from "./util/error.service"
+import {ErrorService, ValidationErrorResponse} from "./util/error.service"
 import {FlowService} from "../service/flow.service"
 import {ObservableState} from "../store/state"
 import {UPDATE_FLOW_INSTANCE} from "../store/reducers"
@@ -29,21 +29,30 @@ export class ProcessorSchemaComponent{
     this.schemaPanelComponent.updateSchema()
       .subscribe(
         (processors: Processor[]) => {
-          this.flowService.instance(this.oss.activeFlowTab().flowInstance.id)
-            .subscribe(
-              (flowInstance: FlowInstance) => {
-                this.oss.dispatch({
-                  type: UPDATE_FLOW_INSTANCE,
-                  payload: {
-                    flowInstance: flowInstance
-                  }
-                })
-                this.uiStateStore.isProcessorSchemaDialogVisible = false
-              },
-              (error: any) =>  {
-                this.errorService.handleError(error)
-              }
-            )
+          let vers: ValidationErrorResponse[] =
+            processors.map(p => p.validationErrors)
+              .filter(ver => ver !== undefined && ver.validationInfo.find(vi => vi.code === "DCS310") !== undefined)
+          if(vers.length > 0) {
+            this.errorService.handleValidationErrors(vers)
+          } else {
+            this.flowService.instance(this.oss.activeFlowTab().flowInstance.id)
+              .subscribe(
+                (flowInstance: FlowInstance) => {
+
+                  this.oss.dispatch({
+                    type: UPDATE_FLOW_INSTANCE,
+                    payload: {
+                      flowInstance: flowInstance
+                    }
+                  })
+                  this.uiStateStore.isProcessorSchemaDialogVisible = false
+
+                },
+                (error: any) => {
+                  this.errorService.handleError(error)
+                }
+              )
+          }
         },
         (error: any) =>  {
           this.errorService.handleError(error)

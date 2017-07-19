@@ -2,6 +2,7 @@
  * Created by cmathew on 14/07/16.
  */
 
+import {ValidationErrorResponse} from "../shared/util/error.service"
 export enum EntityType {
   FLOW_INSTANCE,
   PROCESSOR
@@ -113,6 +114,8 @@ export class ProcessorDetails {
   relationships: RemoteRelationship[]
 }
 
+
+
 export class Processor {
   id: string
   type: string
@@ -121,7 +124,7 @@ export class Processor {
   status: string
   properties: any
   propertyDefinitions: PropertyDefinition[]
-  validationErrors: string[]
+  validationErrors: ValidationErrorResponse
 }
 
 export class ProcessorServiceDefinition {
@@ -142,6 +145,10 @@ export class FlowInstance {
   static stateRunning = "RUNNING"
   static stateStopped = "STOPPED"
   static stateNotStarted = "NOT_STARTED"
+
+  validationErrors(): ValidationErrorResponse[] {
+    return this.processors.map(p => p.validationErrors)
+  }
 }
 
 export class FlowNode {
@@ -160,7 +167,7 @@ export class FlowNode {
     background: "white",
     highlight: {background: "white"}
   }
-  valMessages: string[] = []
+  validationErrors: ValidationErrorResponse
 
 
   private baseUrl: string = window.location.protocol + "//" +
@@ -169,7 +176,7 @@ export class FlowNode {
   constructor(uuid: string,
               type: string,
               ptype: string,
-              validationErrors: string[] = [],
+              validationErrors: ValidationErrorResponse,
               label: string = "") {
     this.uuid = uuid
     this.id = type + ":" + uuid
@@ -181,11 +188,11 @@ export class FlowNode {
     this.validate(validationErrors)
   }
 
-  validate(validationErrors: string[]) {
-    if (validationErrors !== undefined && validationErrors.length > 0) {
+  validate(validationErrors: ValidationErrorResponse) {
+    if (validationErrors !== undefined && validationErrors.validationInfo.length > 0) {
       this.color.background = "#8e2f33"
       this.color.highlight.background = "#8e2f33"
-      this.valMessages = validationErrors
+      this.validationErrors = validationErrors
     }
   }
 
