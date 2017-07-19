@@ -145,7 +145,7 @@ class FlowProcessorApiISpec  extends WebBaseSpec with OneAppPerTest {
       status(templates) mustBe OK
 
       val templatesResponse = contentAsJson(templates).as[JsArray]
-      val flowTemplate = templatesResponse.value.find(ft => (ft \ "name").as[String] == "CleanGBIFDataScratch1")
+      val flowTemplate = templatesResponse.value.find(ft => (ft \ "name").as[String] == "CleanGBIFDataWithPFields")
 
       assert(flowTemplate.isDefined)
 

@@ -56,7 +56,7 @@ export class ApiHttpService {
   }
 
   put<T>(url: string, body: any, rpt?: string, options?: RequestOptions): Observable<T> {
-    return this.http.post(url,
+    return this.http.put(url,
       body,
       this.updateHeaders(options, rpt)).map(response => response.json())
   }
