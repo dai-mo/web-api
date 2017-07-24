@@ -56,10 +56,11 @@ class FlowConnectionApiISpec extends WebBaseSpec with OneAppPerTest {
       val createProcessor2Response = contentAsJson(processor2).as[JsObject]
       val processor2InstanceId = (createProcessor2Response \ "id").as[String]
 
-      val connectionCreate = ConnectionCreate(flowInstanceId,
+      val connectionCreate = ConnectionConfig(flowInstanceId,
         Connectable(processor1InstanceId, FlowComponent.ProcessorType, flowInstanceId),
         Connectable(processor2InstanceId, FlowComponent.ProcessorType, flowInstanceId),
-        Set("success"))
+        Set("success"),
+        Set("success", "failure"))
 
       val createConnection = route(app,
         withDcsCookiesHeaders(FakeRequest(POST, "/api/flow/connection"))
