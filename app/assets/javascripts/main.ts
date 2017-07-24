@@ -71,9 +71,7 @@ import {ResizeDirective} from "./shared/layout/resize.directive"
 import {WsViewComponent} from "./shared/layout/ws-view.component"
 import {FlowTabsComponent} from "./analyse/flow-tabs.component"
 import {FlowGraphDirective} from "./analyse/flow-graph.directive"
-import {ProcessorPanelComponent} from "./mobilise/processor-panel.component"
 import {ContentComponent} from "./mobilise/content.component"
-import {ConfigureProcessorComponent} from "./shared/configure-processor.component"
 import {VisualiseComponent} from "./visualise/visualise.component"
 import {MobiliseComponent} from "./mobilise/mobilise.component"
 import {AnalyseComponent} from "./analyse/analyse.component"
@@ -100,6 +98,8 @@ import {rootReducer} from "./store/reducers"
 import {StoreModule} from "@ngrx/store"
 import {ObservableState} from "./store/state"
 import {ProcessorService} from "./service/processor.service"
+import {RelationshipsComponent} from "./shared/relationships.component"
+import {ConnectionService} from "./service/connection.service"
 
 
 export const routes: Routes = [ {path: "", component: LayoutComponent}]
@@ -113,9 +113,7 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
     WsViewComponent,
     ResizeDirective,
     FlowTabsComponent,
-    ProcessorPanelComponent,
     ContentComponent,
-    ConfigureProcessorComponent,
     VisualiseComponent,
     MobiliseComponent,
     AnalyseComponent,
@@ -129,11 +127,13 @@ export const AppRoutes: ModuleWithProviders = RouterModule.forRoot(routes)
     SchemaPanelComponent,
     SchemaPropertyComponent,
     FieldsToMapComponent,
-    FieldActionsComponent
+    FieldActionsComponent,
+    RelationshipsComponent
   ],
   providers:[{provide: Window, useValue: window},
     FlowService,
     ProcessorService,
+    ConnectionService,
     UIStateStore,
     DnDStore,
     ContextStore,

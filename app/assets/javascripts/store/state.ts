@@ -1,6 +1,6 @@
 import {Observable} from "rxjs/Rx"
 import {Injectable, NgZone} from "@angular/core"
-import {EntityType, FlowInstance, FlowTab, Processor} from "../analyse/flow.model"
+import {ComponentType, Connection, EntityType, FlowInstance, FlowTab, Processor} from "../analyse/flow.model"
 import {Action, Store} from "@ngrx/store"
 import {ContextBarItem, FlowEntityConf, UiId} from "../shared/ui.models"
 import {ImmutableArray, ImmutableObject} from "seamless-immutable"
@@ -42,15 +42,30 @@ export class ObservableState {
 
   selectedProcessor(): Processor {
     return this.activeFlowTab().flowInstance.processors
-      .find(p => p.type + ":" + p.id === this.appState().selectedProcessorId)
+      .find(p => p.id === this.appState().selectedProcessorId)
+  }
+
+  processorToConnect(): Processor {
+    return this.activeFlowTab().flowInstance.processors
+      .find(p => p.id === this.appState().processorToConnectId)
   }
 
   selectedProcessor$(): Observable<Processor> {
     return this.activeFlowTab$()
       .map(ft =>
         ft.flowInstance.processors
-          .find(p => p.type + ":" + p.id === this.appState().selectedProcessorId)
+          .find(p => p.id === this.appState().selectedProcessorId)
       )
+  }
+
+  connectionsForSourceProcessor(processorId: string): Connection[] {
+    return this.activeFlowTab()
+      .flowInstance.connections.filter(
+        c => c.config.source.componentType === ComponentType.PROCESSOR && c.config.source.id === processorId)
+  }
+
+  processor(processorId: string): Processor {
+    return this.activeFlowTab().flowInstance.processors.find(p => p.id === processorId)
   }
 
   activeFlowTab(): FlowTab {
@@ -82,6 +97,7 @@ export class ObservableState {
 export interface AppState {
   flowTabs: FlowTab[]
   selectedProcessorId: string
+  processorToConnectId: string
   currentProcessorProperties: any
   selectedFlowEntityConf: FlowEntityConf
 }
@@ -89,6 +105,7 @@ export interface AppState {
 export const initialAppState: AppState = {
   flowTabs: [],
   selectedProcessorId: "",
+  processorToConnectId: "",
   currentProcessorProperties: undefined,
   selectedFlowEntityConf: undefined
 }

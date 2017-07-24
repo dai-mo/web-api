@@ -25,7 +25,7 @@ import {
 } from "../store/reducers"
 import {FlowService} from "../service/flow.service"
 import {KeycloakService} from "./keycloak.service"
-import {JSUtils, UIUtils} from "./util/ui.utils"
+import {FlowUtils, JSUtils, UIUtils} from "./util/ui.utils"
 import {Observable} from "rxjs"
 
 /**
@@ -468,8 +468,6 @@ export class ProcessorConf extends FlowEntityConf {
         .subscribe(
           (processor: Processor) => {
             uiStateStore.isProcessorConfDialogVisible = false
-            if(processor.validationErrors !== undefined)
-              this.errorService.handleValidationErrors([processor.validationErrors])
             this.flowService.instance(this.oss.activeFlowTab().flowInstance.id)
               .subscribe(
                 (flowInstance: FlowInstance) => {
@@ -576,19 +574,25 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
 
   finalise(uiStateStore: UIStateStore, data?: any): void {
 
-    if(!JSUtils.isUndefinedOrEmpty(data))
-      this.processorService.updateProperties(this.processor.id, data)
+    if(!JSUtils.isUndefinedOrEmpty(data)) {
+      let properties = FlowUtils.addCoreProperties(this.processor, data)
+      this.processorService
+        .updateProperties(FlowUtils.processorServiceClassName(this.processor), this.processor.id, properties)
         .subscribe(
           (processor: Processor) => {
-            this.oss.dispatch({type: UPDATE_SELECTED_PROCESSOR, payload: {processor: processor}})
-
+            if (processor.validationErrors !== undefined)
+              this.errorService.handleValidationErrors([processor.validationErrors])
+            else {
+              this.oss.dispatch({type: UPDATE_SELECTED_PROCESSOR, payload: {processor: processor}})
+              uiStateStore.isProcessorPropertiesDialogVisible = false
+              uiStateStore.setProcessorPropertiesToUpdate(undefined)
+            }
           },
           (error: any) => {
             this.errorService.handleError(error)
           }
         )
-    uiStateStore.setProcessorPropertiesToUpdate(undefined)
-    uiStateStore.isProcessorPropertiesDialogVisible = false
+    }
   }
 
   cancel(uiStateStore: UIStateStore): void {
@@ -603,8 +607,8 @@ export class ViewsVisible {
   visualise: boolean
 
   constructor(analyse: boolean = true,
-              mobilise: boolean = true,
-              visualise: boolean = true) {
+              mobilise: boolean = false,
+              visualise: boolean = false) {
     this.analyse = analyse
     this.mobilise = mobilise
     this.visualise = visualise

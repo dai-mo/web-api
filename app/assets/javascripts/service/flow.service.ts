@@ -91,10 +91,10 @@ export class FlowService extends ApiHttpService {
       new FlowNode(p.id, p.type, p.processorType, p.validationErrors)
     )
     flowInstance.connections.forEach(c => {
-      let sourceNodes: FlowNode[] = nodes.filter(p =>  p.uuid === c.source.id)
-      let targetNodes: FlowNode[] = nodes.filter(p =>  p.uuid === c.destination.id)
+      let sourceNodes: FlowNode[] = nodes.filter(p =>  p.uuid === c.config.source.id)
+      let targetNodes: FlowNode[] = nodes.filter(p =>  p.uuid === c.config.destination.id)
       if(sourceNodes !== null && sourceNodes.length === 1 && targetNodes !== null && targetNodes.length === 1)
-        links.push(new FlowEdge(sourceNodes[0].id, targetNodes[0].id))
+        links.push(new FlowEdge(sourceNodes[0].id, targetNodes[0].id, c))
       else
         this.errorService.handleError("Flow Instance with id " + flowInstance.id + " is not valid")
     })
