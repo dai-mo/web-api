@@ -5,7 +5,8 @@ import javax.inject.{Inject, Singleton}
 import controllers.routing.ResourceRouter
 import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
 import global.ResultSerialiserImplicits._
-import org.dcs.api.service.{Connection, ConnectionCreate}
+import org.dcs.api.processor.ConnectionValidation
+import org.dcs.api.service.{Connection, ConnectionConfig}
 import org.dcs.commons.serde.JsonSerializerImplicits._
 import org.dcs.flow.ConnectionApi
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -23,7 +24,10 @@ class FlowConnectionApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAct
   }
 
   override def create: EssentialAction = csrfCheckAction async { implicit request =>
-    ConnectionApi.create(Req.body.toObject[ConnectionCreate], Req.clientId)
+    val connectionConfig: ConnectionConfig = Req.body.toObject[ConnectionConfig]
+    ConnectionValidation.validate(connectionConfig)
+
+    ConnectionApi.create(connectionConfig, Req.clientId)
       .map(_.toResult)
   }
 

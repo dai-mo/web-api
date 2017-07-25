@@ -11,12 +11,12 @@ export class ProcessorService extends ApiHttpService {
 
   private readonly processorBaseUrl = "/api/flow/processor/"
 
-  processorPropertiesUrl(processorId: string): string {
-    return  this.processorBaseUrl + processorId + "/properties"
+  processorPropertiesUrl(processorServiceClassName: string, processorId: string): string {
+    return  this.processorBaseUrl + processorServiceClassName + "/" + processorId + "/properties"
   }
 
-  updateProperties(processorId: string, properties: any): Observable<Processor> {
-    return super.put(this.processorPropertiesUrl(processorId), properties)
+  updateProperties(processorServiceClassName: string, processorId: string, properties: any): Observable<Processor> {
+    return super.put(this.processorPropertiesUrl(processorServiceClassName, processorId), properties)
   }
 
   details(processorServiceClassName: string, stateful?: boolean): Observable<ProcessorDetails> {

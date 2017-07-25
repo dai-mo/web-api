@@ -8,6 +8,10 @@ export enum EntityType {
   PROCESSOR
 }
 
+export class ComponentType {
+  static PROCESSOR = "PROCESSOR"
+}
+
 export class FlowTemplate {
   id: string
   name: string
@@ -64,20 +68,34 @@ export class PropertyDefinition {
   level: number
 }
 
-export class ConnectionPort {
+export class Connectable {
   id: string
-  type: string
+  componentType: string
+  flowInstanceId: string
+  properties: any
 }
+
+export class ConnectionConfig {
+  flowInstanceId: string
+  source: Connectable
+  destination: Connectable
+  selectedRelationships: string[]
+  availableRelationships: string[]
+}
+
+
 
 export class Connection {
   id: string
-  source: ConnectionPort
-  destination: ConnectionPort
+  name: string
+  version: string
+  config: ConnectionConfig
 }
 
 export class RemoteRelationship {
   id: string
   description: string
+  autoTerminate: boolean
 }
 
 export class MetaData {
@@ -124,7 +142,9 @@ export class Processor {
   status: string
   properties: any
   propertyDefinitions: PropertyDefinition[]
+  relationships: RemoteRelationship[]
   validationErrors: ValidationErrorResponse
+
 }
 
 export class ProcessorServiceDefinition {
@@ -179,7 +199,7 @@ export class FlowNode {
               validationErrors: ValidationErrorResponse,
               label: string = "") {
     this.uuid = uuid
-    this.id = type + ":" + uuid
+    this.id = uuid
     this.label = label
     this.type = type
     this.ptype = ptype
@@ -213,15 +233,20 @@ export class FlowNode {
 }
 
 export class FlowEdge {
+  id: string
   from: string
   to: string
   arrows: string
+  connection: Connection
 
   constructor(from: string,
               to: string,
+              connection: Connection,
               arrows: string = "to") {
+    this.id = connection.id
     this.from = from
     this.to = to
+    this.connection = connection
     this.arrows = arrows
   }
 }

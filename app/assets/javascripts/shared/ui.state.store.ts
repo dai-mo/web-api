@@ -128,27 +128,6 @@ export class UIStateStore {
       return null
   }
 
-  displayProcessorValidationErrors(processorId: string) {
-    if (processorId !== undefined) {
-      let errors: Msg[] = []
-      let processor = this.getActiveFlowProcessor(processorId)
-
-      if (processor !== null) {
-        if (processor.validationErrors !== undefined &&
-          processor.validationErrors.length > 0) {
-          processor.validationErrors
-            .forEach((e: string) => errors.push({
-              severity: "error",
-              summary: "Processor Invalid",
-              detail: e
-            }))
-        }
-        if (errors.length > 0) {
-          this.setDisplayMessages({messages: errors, sticky: true, delay: 1000})
-        }
-      }
-    }
-  }
 
   private _flowInstanceToAdd: BehaviorSubject<FlowInstance> = new BehaviorSubject(null)
 
@@ -305,6 +284,8 @@ export class UIStateStore {
   public isProcessorConfDialogVisible: boolean = false
   public isProcessorInfoDialogVisible: boolean = false
   public isFlowCreationDialogVisible: boolean = false
+  public isRelationshipsInfoDialogVisible: boolean = false
+  public isRelationshipsSettingsDialogVisible: boolean = false
 
   setFlowCreationDialogVisible(isFlowCreationDialogVisible: boolean) {
     this.ngZone.run(() => this.isFlowCreationDialogVisible = isFlowCreationDialogVisible)

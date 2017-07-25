@@ -325,6 +325,10 @@ export class FlowTabsComponent implements OnInit {
       )
   }
 
+  showRelationshipsInfoDialog() {
+    this.uiStateStore.isRelationshipsInfoDialogVisible = true
+  }
+
   deleteSelectedProcessor() {
     let sp = this.oss.selectedProcessor()
     this.processorService.destroy(sp.id, sp.version)
@@ -423,6 +427,14 @@ export class FlowTabsComponent implements OnInit {
           this.deleteSelectedProcessor()
         }
       },
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.PROCESSOR,
+        iconClass: "fa-link",
+        enabled: true,
+        command: (event) => {
+          this.showRelationshipsInfoDialog()
+        }},
       {
         view: UiId.ANALYSE,
         entityType: EntityType.PROCESSOR,

@@ -9,6 +9,7 @@ import {FlowEntityConf} from "../shared/ui.models"
 
 
 export const SELECT_PROCESSOR: string = "SELECT_PROCESSOR"
+export const SELECT_PROCESSOR_TO_CONNECT: string = "SELECT_PROCESSOR_TO_CONNECT"
 
 export const ADD_FLOW_TABS: string = "ADD_FLOW_TABS"
 export const REMOVE_FLOW_TAB: string = "REMOVE_FLOW_TAB"
@@ -132,6 +133,16 @@ export const selectedProcessorId: ActionReducer<string> =
     }
   }
 
+export const processorToConnectId: ActionReducer<string> =
+  (state = "", action: Action) => {
+    switch (action.type) {
+      case SELECT_PROCESSOR_TO_CONNECT:
+        return action.payload.id
+      default:
+        return state
+    }
+  }
+
 export const currentProcessorProperties: ActionReducer<any> =
   (state = undefined, action: Action) => {
     switch (action.type) {
@@ -157,6 +168,7 @@ export const selectedFlowEntityConf: ActionReducer<FlowEntityConf> =
 export const rootReducer = {
   flowTabs,
   selectedProcessorId,
+  processorToConnectId,
   currentProcessorProperties,
   selectedFlowEntityConf
 }
