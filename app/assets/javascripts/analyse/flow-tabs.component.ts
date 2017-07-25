@@ -401,14 +401,6 @@ export class FlowTabsComponent implements OnInit {
     let cbItems: ContextBarItem[] = [
       {
         view: UiId.ANALYSE,
-        entityType: EntityType.PROCESSOR,
-        iconClass: "fa-link",
-        enabled: true,
-        command: (event) => {
-          this.showRelationshipsInfoDialog()
-        }},
-      {
-        view: UiId.ANALYSE,
         entityType: EntityType.FLOW_INSTANCE,
         iconClass: "fa-trash",
         enabled: true,
@@ -435,6 +427,14 @@ export class FlowTabsComponent implements OnInit {
           this.deleteSelectedProcessor()
         }
       },
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.PROCESSOR,
+        iconClass: "fa-link",
+        enabled: true,
+        command: (event) => {
+          this.showRelationshipsInfoDialog()
+        }},
       {
         view: UiId.ANALYSE,
         entityType: EntityType.PROCESSOR,

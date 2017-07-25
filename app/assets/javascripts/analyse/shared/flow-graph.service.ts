@@ -82,7 +82,6 @@ export class FlowGraphService {
         deleteEdge: function (data: any, callback: any) {
           data.edges.forEach((seid: any) => {
             let connection = graph.edges.find(e => e.id === seid).connection
-            console.log(JSON.stringify(connection))
             cs.delete(connection.id, connection.version)
               .subscribe(
                 (deleteOk: boolean) => {
