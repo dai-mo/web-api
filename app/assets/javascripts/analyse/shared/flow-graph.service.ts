@@ -96,12 +96,12 @@ export class FlowGraphService {
                           })
                         },
                         (error: any) => {
-                          this.errorService.handleError(error)
+                          es.handleError(error)
                         }
                       )
                 },
                 (error: any) => {
-                  this.errorService.handleError(error)
+                  es.handleError(error)
                 }
               )
           })

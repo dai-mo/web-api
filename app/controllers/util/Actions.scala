@@ -14,33 +14,9 @@ import play.filters.csrf.{CSRFAddToken, CSRFCheck}
 
 import scala.concurrent.Future
 
-/**
-  * Created by cmathew on 08/07/16.
-  */
-
-@ImplementedBy(classOf[Remote])
-trait RemoteClient {
-  init()
-  def init(): Unit
-
-  def broker: ZkRemoteService.type
-}
-
-@Singleton
-class Remote @Inject() (lifecycle: ApplicationLifecycle) extends RemoteClient {
 
 
-  override def broker: ZkRemoteService.type = ZkRemoteService
 
-  override def init(): Unit = {
-    broker.loadServiceCaches()
-
-    lifecycle.addStopHook { () =>
-      Future.successful(broker.dispose)
-    }
-  }
-
-}
 
 @Singleton
 class CSRFCheckAction @Inject()(checkToken: CSRFCheck) extends ActionBuilder[Request] {
