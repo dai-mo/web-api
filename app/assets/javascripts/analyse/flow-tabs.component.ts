@@ -374,12 +374,6 @@ export class FlowTabsComponent implements OnInit {
         )
     }.bind(this))
 
-    let cmItems: ContextMenuItem[] = [
-      {label: "Add Processor", command: (event) => {
-        this.showProcessorConfDialog()
-      }}
-    ]
-    this.contextStore.addContextMenuItems(UiId.ANALYSE, cmItems)
 
     this.stopFlowBarItem =  {
       view: UiId.ANALYSE,
@@ -407,6 +401,15 @@ export class FlowTabsComponent implements OnInit {
         command: (event) => {
           this.deleteTab(this.activeTab())
         }},
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.FLOW_INSTANCE,
+        iconClass: "fa-plus-circle",
+        enabled: true,
+        command: (event) => {
+          this.showProcessorConfDialog()
+        }
+      },
       this.stopFlowBarItem,
       this.startFlowBarItem,
       {

@@ -53,7 +53,6 @@ export class FlowGraphService {
           useBorderWithImage: true
         }
       },
-
       edges: {
         width: 2,
         shadow: true
@@ -97,12 +96,12 @@ export class FlowGraphService {
                           })
                         },
                         (error: any) => {
-                          this.errorService.handleError(error)
+                          es.handleError(error)
                         }
                       )
                 },
                 (error: any) => {
-                  this.errorService.handleError(error)
+                  es.handleError(error)
                 }
               )
           })

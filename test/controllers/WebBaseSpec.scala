@@ -6,6 +6,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64
 import controllers.WebBaseSpec.{AuthorizationHeaderName, XsrfTokenCookieName, XsrfTokenHeaderName}
 import controllers.util.{RemoteClient, Req}
 import global.AuthorisationService
+import org.dcs.api.service.{ProcessorDetails, RemoteProcessorService}
 import org.dcs.commons.config.Configurator
 import org.dcs.remote.ZkRemoteService
 import org.keycloak.authorization.client.AuthzClient
@@ -89,6 +90,12 @@ class MockRemote extends RemoteClient {
   override def init: Unit = {}
 
   override def broker: ZkRemoteService.type = null
+
+  override def serviceDetails(processorServiceClassName: String, stateful: Boolean): ProcessorDetails = null
+
+  override def service(processorServiceClassName: String, stateful: Boolean): RemoteProcessorService = null
+
+  override def service(processorServiceClassName: String): RemoteProcessorService = null
 }
 
 object IT extends Tag("IT")

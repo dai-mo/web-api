@@ -59,11 +59,11 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction,
   }
 
   def detailsForDef(processorServiceClassName: String, stateful: Boolean): EssentialAction =  csrfCheckAction  { implicit request =>
-    serviceDetails(processorServiceClassName, stateful).toResult
+    remote.serviceDetails(processorServiceClassName, stateful).toResult
   }
 
   def details(processorServiceClassName: String): EssentialAction =  csrfCheckAction  { implicit request =>
-    service(processorServiceClassName).details().toResult
+    remote.service(processorServiceClassName).details().toResult
   }
 
   def schema(schemaId: String): EssentialAction = csrfCheckAction { implicit request =>
@@ -76,7 +76,7 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction,
     val properties = Req.body.toMapOf[String]
     val validation = ProcessorValidation.validate(processorId,
       properties,
-      service(processorServiceClassName).properties().asScala.toList)
+      remote.service(processorServiceClassName).properties().asScala.toList)
     val withoutCoreProperties = CoreProperties.without(properties)
     if(validation.isDefined) {
       val propertiesToUpdate =
@@ -110,26 +110,4 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction,
   }
 
 
-  def serviceDetails(processorServiceClassName: String, stateful: Boolean): ProcessorDetails = {
-    service(processorServiceClassName, stateful).details()
-  }
-
-  def service(processorServiceClassName: String, stateful: Boolean): RemoteProcessorService = {
-    if (stateful)
-      remote.broker.loadService[StatefulRemoteProcessorService](processorServiceClassName)
-    else
-      remote.broker.loadService[RemoteProcessorService](processorServiceClassName)
-  }
-
-  def service(processorServiceClassName: String): RemoteProcessorService = {
-    val psds: List[ProcessorServiceDefinition] =
-      remote.broker.filterServiceByProperty(CxfEndpointUtils.ClassNameKey, processorServiceClassName)
-
-    if(psds.isEmpty)
-      throw new HttpException(ErrorConstants.DCS301.http(400))
-    else {
-      val psd = psds.head
-      service(psd.processorServiceClassName, psd.stateful)
-    }
-  }
 }
