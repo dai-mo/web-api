@@ -53,7 +53,6 @@ export class FlowGraphService {
           useBorderWithImage: true
         }
       },
-
       edges: {
         width: 2,
         shadow: true
