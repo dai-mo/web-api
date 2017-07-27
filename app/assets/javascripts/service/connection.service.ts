@@ -20,7 +20,7 @@ export class ConnectionService extends ApiHttpService {
     return super.post(this.connectionBaseUrl, connectionCreate)
   }
 
-  delete(connectionId: string, version: string): Observable<boolean> {
+  delete(connectionId: string): Observable<boolean> {
     return super.delete(this.connectionBaseUrl + connectionId, this.oss.activeFlowTab().flowInstance.version)
   }
 }

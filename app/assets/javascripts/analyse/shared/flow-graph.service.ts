@@ -3,14 +3,10 @@
  */
 
 import {Injectable, NgZone} from "@angular/core"
-import {FlowGraph, FlowInstance} from "../flow.model"
+import {EntityType, FlowGraph} from "../flow.model"
 import {UIStateStore} from "../../shared/ui.state.store"
-import {Store} from "@ngrx/store"
-import {SELECT_PROCESSOR, SELECT_PROCESSOR_TO_CONNECT, UPDATE_FLOW_INSTANCE} from "../../store/reducers"
-import {AppState, ObservableState} from "../../store/state"
-import {ConnectionService} from "../../service/connection.service"
-import {ErrorService} from "../../shared/util/error.service"
-import {FlowService} from "../../service/flow.service"
+import {SELECT_ENTITY, SELECT_PROCESSOR_TO_CONNECT} from "../../store/reducers"
+import {ObservableState} from "../../store/state"
 
 declare var vis: any
 
@@ -18,25 +14,14 @@ declare var vis: any
 export class FlowGraphService {
 
   constructor(private uiStateStore: UIStateStore,
-              private connectionService: ConnectionService,
-              private flowService: FlowService,
               private oss: ObservableState,
-              private errorService: ErrorService,
-              private store:Store<AppState>,
               private ngZone: NgZone) {
 
   }
 
-  addFlatGraph(el:HTMLElement, graph: FlowGraph, id: string): any {
+  addFlatGraph(el:HTMLElement, graph: FlowGraph): any {
     let uiss = this.uiStateStore
-    let fs = this.flowService
     let oss = this.oss
-
-    let st = this.store
-    let self = this
-
-    let cs = this.connectionService
-    let es =  this.errorService
 
     let data = {
       nodes: graph.nodes,
@@ -57,6 +42,13 @@ export class FlowGraphService {
         width: 2,
         shadow: true
       },
+      physics: {
+        repulsion: {
+          nodeDistance: 50
+        },
+        maxVelocity: 5
+      },
+
       layout: {
         hierarchical: {
           enabled: true,
@@ -65,6 +57,8 @@ export class FlowGraphService {
         }
       },
       manipulation: {
+        enabled: false,
+        initiallyActive: false,
         addNode: false,
         deleteNode: false,
         editEdge: false,
@@ -72,45 +66,31 @@ export class FlowGraphService {
           if (data.from === data.to)
             return
           else {
-            st.dispatch({type: SELECT_PROCESSOR, payload: {id: data.from}})
-            st.dispatch({type: SELECT_PROCESSOR_TO_CONNECT, payload: {id: data.to}})
+            oss.dispatch({
+              type: SELECT_ENTITY,
+              payload: {
+                id: data.from,
+                type: EntityType.PROCESSOR
+              }
+            })
+            oss.dispatch({type: SELECT_PROCESSOR_TO_CONNECT, payload: {id: data.to}})
             uiss.isRelationshipsSettingsDialogVisible = true
             return
           }
-        },
-        deleteEdge: function (data: any, callback: any) {
-          data.edges.forEach((seid: any) => {
-            let connection = graph.edges.find(e => e.id === seid).connection
-            cs.delete(connection.id, connection.version)
-              .subscribe(
-                (deleteOk: boolean) => {
-                  if(deleteOk)
-                    fs.instance(oss.activeFlowTab().flowInstance.id)
-                      .subscribe(
-                        (flowInstance: FlowInstance) => {
-                          oss.dispatch({
-                            type: UPDATE_FLOW_INSTANCE,
-                            payload: {
-                              flowInstance: flowInstance
-                            }
-                          })
-                        },
-                        (error: any) => {
-                          es.handleError(error)
-                        }
-                      )
-                },
-                (error: any) => {
-                  es.handleError(error)
-                }
-              )
-          })
-          return
         }
       }
     }
     let network = this.ngZone.runOutsideAngular(() => new vis.Network(el, data, options))
 
+    this.oss.connectMode$()
+      .subscribe(
+        (connectMode: boolean) => {
+          if(connectMode)
+            network.addEdgeMode()
+          else
+            network.disableEditMode()
+        }
+      )
 
     network.on("resize", function (params: any) {
       this.fit()
@@ -118,12 +98,36 @@ export class FlowGraphService {
 
     network.on("click", function (params: any) {
       let selectedNodes = params.nodes
+      let selectedEdges = params.edges
 
       if (selectedNodes.length > 0) {
         let pid = selectedNodes[0]
-        st.dispatch({type: SELECT_PROCESSOR, payload: {id: pid}})
-      } else {
-        st.dispatch({type: SELECT_PROCESSOR, payload: {id: ""}})
+        oss.dispatch({
+          type: SELECT_ENTITY,
+          payload: {
+            id: pid,
+            type: EntityType.PROCESSOR
+          }
+        })
+      }
+      else if (selectedEdges.length > 0) {
+        let cid = selectedEdges[0]
+        oss.dispatch({
+          type: SELECT_ENTITY,
+          payload: {
+            id: cid,
+            type: EntityType.CONNECTION
+          }
+        })
+      }
+      else {
+        oss.dispatch({
+          type: SELECT_ENTITY,
+          payload: {
+            id: this.oss.activeFlowTab().flowInstance.id,
+            type: EntityType.FLOW_INSTANCE
+          }
+        })
       }
     }.bind(this))
 

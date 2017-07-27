@@ -4,10 +4,10 @@
 
 import {FlowService} from "../service/flow.service"
 import {ErrorService} from "../shared/util/error.service"
-import {ChangeDetectionStrategy, Component, Input, ViewChild} from "@angular/core"
-import {Provenance, Action} from "../analyse/flow.model"
+import {Component, Input} from "@angular/core"
+import {Action, Provenance} from "../analyse/flow.model"
 import {SelectItem} from "primeng/components/common/api"
-import {ProcessorPanelComponent} from "./processor-panel.component"
+
 import {UIStateStore} from "../shared/ui.state.store"
 
 @Component({
@@ -15,8 +15,6 @@ import {UIStateStore} from "../shared/ui.state.store"
   templateUrl: "partials/mobilise/content.html"
 })
 export class ContentComponent {
-
-  @ViewChild("poverlay") public poverlay: ProcessorPanelComponent
 
   private provenances: Array<Provenance> = null
 
@@ -67,10 +65,6 @@ export class ContentComponent {
 
   hasResults(): boolean {
     return this.provenances != null && this.provenances.length > 0
-  }
-
-  showProcessorOverlay() {
-    this.poverlay.show()
   }
 
   hasActions(): boolean {

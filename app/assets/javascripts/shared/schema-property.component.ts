@@ -40,6 +40,7 @@ export class SchemaPropertyComponent implements OnInit {
     this.parameters = []
     let sfs:[{
       name: string
+      fieldType: string
     }] = JSON.parse(this.schemaField.defaultValue)
     sfs.forEach(sf => this.parameters.push({label: sf.name, value: sf}))
   }

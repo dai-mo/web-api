@@ -2,13 +2,13 @@
  * Created by cmathew on 03.07.17.
  */
 
-import {FlowInstance, FlowTab, Processor} from "../analyse/flow.model"
+import {Entity, EntityType, FlowInstance, FlowTab, Processor} from "../analyse/flow.model"
 import {Action, ActionReducer} from "@ngrx/store"
 import * as SI from "seamless-immutable"
 import {FlowEntityConf} from "../shared/ui.models"
 
 
-export const SELECT_PROCESSOR: string = "SELECT_PROCESSOR"
+export const SELECT_ENTITY: string = "SELECT_ENTITY"
 export const SELECT_PROCESSOR_TO_CONNECT: string = "SELECT_PROCESSOR_TO_CONNECT"
 
 export const ADD_FLOW_TABS: string = "ADD_FLOW_TABS"
@@ -24,6 +24,8 @@ export const UPDATE_CURRENT_PROCESSOR_PROPERTIES: string = "UPDATE_CURRENT_PROCE
 
 export const UPDATE_SELECTED_FLOW_ENTITY_CONF: string = "UPDATE_SELECTED_FLOW_ENTITY_CONF"
 export const CLEAR_FLOW_ENTITY_CONF: string = "CLEAR_FLOW_ENTITY_CONF"
+
+export const SET_CONNECT_MODE: string = "SET_CONNECT_MODE"
 
 
 export const flowTabs: ActionReducer<FlowTab[]> =
@@ -123,11 +125,11 @@ export const processors: ActionReducer<Processor[]> =
     }
   }
 
-export const selectedProcessorId: ActionReducer<string> =
-  (state = "", action: Action) => {
+export const selectedEntity: ActionReducer<Entity> =
+  (state = {id: "", type: EntityType.UNKNOWN}, action: Action) => {
     switch (action.type) {
-      case SELECT_PROCESSOR:
-        return action.payload.id
+      case SELECT_ENTITY:
+        return action.payload
       default:
         return state
     }
@@ -165,12 +167,23 @@ export const selectedFlowEntityConf: ActionReducer<FlowEntityConf> =
     }
   }
 
+export const connectMode: ActionReducer<boolean> =
+  (state = false, action: Action) => {
+    switch (action.type) {
+      case SET_CONNECT_MODE:
+        return action.payload
+      default:
+        return state
+    }
+  }
+
 export const rootReducer = {
   flowTabs,
-  selectedProcessorId,
+  selectedEntity,
   processorToConnectId,
   currentProcessorProperties,
-  selectedFlowEntityConf
+  selectedFlowEntityConf,
+  connectMode
 }
 
 

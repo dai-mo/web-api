@@ -1,7 +1,13 @@
 import {Component, Input, OnInit} from "@angular/core"
 import {
-  DCSError, EntityType, FlowInstantiation, FlowInstance, FlowTab, ProcessorServiceDefinition,
-  CoreProperties, ProcessorDetails
+  CoreProperties,
+  DCSError,
+  EntityType,
+  FlowInstance,
+  FlowInstantiation,
+  FlowTab,
+  ProcessorDetails,
+  ProcessorServiceDefinition
 } from "./flow.model"
 import {FlowService} from "../service/flow.service"
 import {ErrorService} from "../shared/util/error.service"
@@ -9,20 +15,30 @@ import {KeycloakService} from "../shared/keycloak.service"
 import {UIStateStore} from "../shared/ui.state.store"
 import {ContextStore} from "../shared/context.store"
 import {
-  ContextBarItem, ContextMenuItem, FlowEntity, FlowEntityConf, FlowEntityStatus, ProcessorConf, ProcessorInfo,
+  ContextBarItem,
+  ContextMenuItem,
+  FlowEntityConf,
+  ProcessorConf,
+  ProcessorInfo,
   ProcessorPropertiesConf,
   UiId
 } from "../shared/ui.models"
 import {NotificationService} from "../shared/util/notification.service"
 import {AppState, ObservableState} from "../store/state"
 import {
-  ADD_FLOW_TABS, REMOVE_FLOW_TAB, SELECT_FLOW_TAB, SELECT_PROCESSOR, UPDATE_FLOW_INSTANCE,
-  UPDATE_FLOW_INSTANCE_STATE, UPDATE_SELECTED_FLOW_ENTITY_CONF
+  ADD_FLOW_TABS,
+  REMOVE_FLOW_TAB,
+  SELECT_ENTITY,
+  SELECT_FLOW_TAB,
+  SET_CONNECT_MODE,
+  UPDATE_FLOW_INSTANCE,
+  UPDATE_FLOW_INSTANCE_STATE,
+  UPDATE_SELECTED_FLOW_ENTITY_CONF
 } from "../store/reducers"
 import {ProcessorService} from "../service/processor.service"
-import * as SI from "seamless-immutable"
 import {Observable} from "rxjs"
 import {UIUtils} from "../shared/util/ui.utils"
+import {ConnectionService} from "../service/connection.service"
 
 
 @Component({
@@ -39,6 +55,7 @@ export class FlowTabsComponent implements OnInit {
   private stopFlowBarItem: ContextBarItem
   private startFlowBarItem: ContextBarItem
 
+
   flowTabs: Observable<FlowTab[]> = this.oss.appStore().select((state: AppState) => state.flowTabs)
   selectedFlowEntityConf: Observable<FlowEntityConf> = this.oss.appStore().select((state: AppState) => state.selectedFlowEntityConf)
 
@@ -48,6 +65,7 @@ export class FlowTabsComponent implements OnInit {
               private oss: ObservableState,
               private uiStateStore: UIStateStore,
               private processorService: ProcessorService,
+              private connectionService: ConnectionService,
               private contextStore: ContextStore) {
     this.nifiUrl = window.location.protocol + "//" +
       window.location.host +
@@ -335,7 +353,13 @@ export class FlowTabsComponent implements OnInit {
       .subscribe(
         (deleteOk: boolean) => {
           if(deleteOk) {
-            this.oss.dispatch({type: SELECT_PROCESSOR, payload: {id: ""}})
+            this.oss.dispatch({
+              type: SELECT_ENTITY,
+              payload: {
+                id: this.oss.activeFlowTab().flowInstance.id,
+                type: EntityType.FLOW_INSTANCE
+              }
+            })
             this.flowService.instance(this.oss.activeFlowTab().flowInstance.id)
               .subscribe(
                 (flowInstance: FlowInstance) => {
@@ -358,6 +382,40 @@ export class FlowTabsComponent implements OnInit {
       )
   }
 
+  deleteSelectedConnection() {
+    let sc = this.oss.selectedConnection()
+    this.connectionService.delete(sc.id)
+      .subscribe(
+        (deleteOk: boolean) => {
+          if(deleteOk)
+            this.flowService.instance(this.oss.activeFlowTab().flowInstance.id)
+              .subscribe(
+                (flowInstance: FlowInstance) => {
+                  this.oss.dispatch({
+                    type: UPDATE_FLOW_INSTANCE,
+                    payload: {
+                      flowInstance: flowInstance
+                    }
+                  })
+                },
+                (error: any) => {
+                  this.errorService.handleError(error)
+                }
+              )
+        },
+        (error: any) => {
+          this.errorService.handleError(error)
+        }
+      )
+  }
+
+  toggleConnectMode() {
+    this.oss.dispatch({
+      type: SET_CONNECT_MODE,
+      payload: !this.oss.connectMode()
+    })
+  }
+
   ngOnInit() {
     KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
@@ -369,6 +427,15 @@ export class FlowTabsComponent implements OnInit {
             })
 
             this.addFlowTabs(flowTabs)
+
+            if(flowTabs.length > 0)
+              this.oss.dispatch({
+                type: SELECT_ENTITY,
+                payload: {
+                  id: this.oss.activeFlowTab().flowInstance.id,
+                  type: EntityType.FLOW_INSTANCE
+                }
+              })
           },
           (error: any) => this.errorService.handleError(error)
         )
@@ -423,6 +490,15 @@ export class FlowTabsComponent implements OnInit {
       },
       {
         view: UiId.ANALYSE,
+        entityType: EntityType.FLOW_INSTANCE,
+        iconClass: "fa-plug",
+        enabled: true,
+        command: (event) => {
+          this.toggleConnectMode()
+        }
+      },
+      {
+        view: UiId.ANALYSE,
         entityType: EntityType.PROCESSOR,
         iconClass: "fa-trash",
         enabled: true,
@@ -466,6 +542,33 @@ export class FlowTabsComponent implements OnInit {
         hidden: true,
         command: () => {
           this.showProcessorInfoDialog()
+        }
+      },
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.PROCESSOR,
+        iconClass: "fa-plug",
+        enabled: true,
+        command: (event) => {
+          this.toggleConnectMode()
+        }
+      },
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.CONNECTION,
+        iconClass: "fa-trash",
+        enabled: true,
+        command: (event) => {
+          this.deleteSelectedConnection()
+        }
+      },
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.CONNECTION,
+        iconClass: "fa-plug",
+        enabled: true,
+        command: (event) => {
+          this.toggleConnectMode()
         }
       }
     ]

@@ -6,7 +6,7 @@ import {
   Connectable,
   Connection,
   ConnectionConfig,
-  CoreProperties,
+  CoreProperties, EntityType,
   FlowInstance,
   Processor,
   RemoteRelationship
@@ -14,7 +14,7 @@ import {
 import {FlowUtils} from "./util/ui.utils"
 import {ConnectionService} from "../service/connection.service"
 import {ErrorService} from "./util/error.service"
-import {UPDATE_FLOW_INSTANCE} from "../store/reducers"
+import {SELECT_ENTITY, UPDATE_FLOW_INSTANCE} from "../store/reducers"
 import {FlowService} from "../service/flow.service"
 
 /**
@@ -50,6 +50,13 @@ export class RelationshipsComponent {
   }
 
   save() {
+    this.oss.dispatch({
+      type: SELECT_ENTITY,
+      payload: {
+        id: this.oss.activeFlowTab().flowInstance.id,
+        type: EntityType.FLOW_INSTANCE
+      }
+    })
     if(this.selectedRel !== undefined) {
 
 
@@ -109,10 +116,24 @@ export class RelationshipsComponent {
 
   cancel() {
     this.uiStateStore.isRelationshipsSettingsDialogVisible = false
+    this.oss.dispatch({
+      type: SELECT_ENTITY,
+      payload: {
+        id: this.oss.activeFlowTab().flowInstance.id,
+        type: EntityType.FLOW_INSTANCE
+      }
+    })
   }
 
   ok() {
     this.uiStateStore.isRelationshipsInfoDialogVisible = false
+    this.oss.dispatch({
+      type: SELECT_ENTITY,
+      payload: {
+        id: this.oss.activeFlowTab().flowInstance.id,
+        type: EntityType.FLOW_INSTANCE
+      }
+    })
   }
 
   select(event: any) {

@@ -286,6 +286,7 @@ export class UIStateStore {
   public isFlowCreationDialogVisible: boolean = false
   public isRelationshipsInfoDialogVisible: boolean = false
   public isRelationshipsSettingsDialogVisible: boolean = false
+  public isConnectModeOn: boolean = false
 
   setFlowCreationDialogVisible(isFlowCreationDialogVisible: boolean) {
     this.ngZone.run(() => this.isFlowCreationDialogVisible = isFlowCreationDialogVisible)

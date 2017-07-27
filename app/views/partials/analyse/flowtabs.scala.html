@@ -21,7 +21,7 @@
                 [ngClass]="{green: isRunning(tabz), red: isStopped(tabz), black: isNotStarted(tabz)}">
                     {{tabz.name}}
                         <span class="label label-default"
-                        [hidden]="!uiStateStore.isConnectMode">
+                        [hidden]="!(oss.connectMode$() | async)">
                             Connect Mode
                         </span>
                 </div>
