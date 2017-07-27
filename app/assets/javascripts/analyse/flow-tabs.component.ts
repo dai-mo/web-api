@@ -16,7 +16,7 @@ import {
 import {NotificationService} from "../shared/util/notification.service"
 import {AppState, ObservableState} from "../store/state"
 import {
-  ADD_FLOW_TABS, REMOVE_FLOW_TAB, SELECT_FLOW_TAB, SELECT_PROCESSOR, UPDATE_FLOW_INSTANCE,
+  ADD_FLOW_TABS, REMOVE_FLOW_TAB, SELECT_FLOW_TAB, SELECT_PROCESSOR, SET_CONNECT_MODE, UPDATE_FLOW_INSTANCE,
   UPDATE_FLOW_INSTANCE_STATE, UPDATE_SELECTED_FLOW_ENTITY_CONF
 } from "../store/reducers"
 import {ProcessorService} from "../service/processor.service"
@@ -38,6 +38,7 @@ export class FlowTabsComponent implements OnInit {
 
   private stopFlowBarItem: ContextBarItem
   private startFlowBarItem: ContextBarItem
+
 
   flowTabs: Observable<FlowTab[]> = this.oss.appStore().select((state: AppState) => state.flowTabs)
   selectedFlowEntityConf: Observable<FlowEntityConf> = this.oss.appStore().select((state: AppState) => state.selectedFlowEntityConf)
@@ -358,6 +359,13 @@ export class FlowTabsComponent implements OnInit {
       )
   }
 
+  toggleConnectMode() {
+    this.oss.dispatch({
+      type: SET_CONNECT_MODE,
+      payload: !this.oss.connectMode()
+    })
+  }
+
   ngOnInit() {
     KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
@@ -419,6 +427,15 @@ export class FlowTabsComponent implements OnInit {
         enabled: true,
         command: (event) => {
           this.refreshFlow(this.activeTab())
+        }
+      },
+      {
+        view: UiId.ANALYSE,
+        entityType: EntityType.FLOW_INSTANCE,
+        iconClass: "fa-plug",
+        enabled: true,
+        command: (event) => {
+          this.toggleConnectMode()
         }
       },
       {

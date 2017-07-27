@@ -14,7 +14,7 @@ import {
 import {FlowUtils} from "./util/ui.utils"
 import {ConnectionService} from "../service/connection.service"
 import {ErrorService} from "./util/error.service"
-import {UPDATE_FLOW_INSTANCE} from "../store/reducers"
+import {SELECT_PROCESSOR, UPDATE_FLOW_INSTANCE} from "../store/reducers"
 import {FlowService} from "../service/flow.service"
 
 /**
@@ -50,6 +50,7 @@ export class RelationshipsComponent {
   }
 
   save() {
+    this.oss.dispatch({type: SELECT_PROCESSOR, payload: {id: ""}})
     if(this.selectedRel !== undefined) {
 
 
@@ -109,10 +110,12 @@ export class RelationshipsComponent {
 
   cancel() {
     this.uiStateStore.isRelationshipsSettingsDialogVisible = false
+    this.oss.dispatch({type: SELECT_PROCESSOR, payload: {id: ""}})
   }
 
   ok() {
     this.uiStateStore.isRelationshipsInfoDialogVisible = false
+    this.oss.dispatch({type: SELECT_PROCESSOR, payload: {id: ""}})
   }
 
   select(event: any) {

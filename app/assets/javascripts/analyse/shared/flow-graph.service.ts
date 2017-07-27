@@ -57,6 +57,13 @@ export class FlowGraphService {
         width: 2,
         shadow: true
       },
+      physics: {
+        repulsion: {
+          nodeDistance: 50
+        },
+        maxVelocity: 5
+      },
+
       layout: {
         hierarchical: {
           enabled: true,
@@ -65,6 +72,8 @@ export class FlowGraphService {
         }
       },
       manipulation: {
+        enabled: false,
+        initiallyActive: false,
         addNode: false,
         deleteNode: false,
         editEdge: false,
@@ -111,6 +120,15 @@ export class FlowGraphService {
     }
     let network = this.ngZone.runOutsideAngular(() => new vis.Network(el, data, options))
 
+    this.oss.connectMode$()
+      .subscribe(
+        (connectMode: boolean) => {
+          if(connectMode)
+            network.addEdgeMode()
+          else
+            network.disableEditMode()
+        }
+      )
 
     network.on("resize", function (params: any) {
       this.fit()
@@ -119,7 +137,7 @@ export class FlowGraphService {
     network.on("click", function (params: any) {
       let selectedNodes = params.nodes
 
-      if (selectedNodes.length > 0) {
+      if (selectedNodes.length > 0 && !oss.connectMode()) {
         let pid = selectedNodes[0]
         st.dispatch({type: SELECT_PROCESSOR, payload: {id: pid}})
       } else {

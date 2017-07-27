@@ -92,6 +92,13 @@ export class ObservableState {
         }
       })
   }
+
+  connectMode(): boolean {
+    return this.appState().connectMode
+  }
+  connectMode$(): Observable<boolean> {
+    return this.appStore().select((state: AppState) => state.connectMode)
+  }
 }
 
 export interface AppState {
@@ -100,6 +107,7 @@ export interface AppState {
   processorToConnectId: string
   currentProcessorProperties: any
   selectedFlowEntityConf: FlowEntityConf
+  connectMode: boolean
 }
 
 export const initialAppState: AppState = {
@@ -107,6 +115,7 @@ export const initialAppState: AppState = {
   selectedProcessorId: "",
   processorToConnectId: "",
   currentProcessorProperties: undefined,
-  selectedFlowEntityConf: undefined
+  selectedFlowEntityConf: undefined,
+  connectMode: false
 }
 

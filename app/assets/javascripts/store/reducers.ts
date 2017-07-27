@@ -25,6 +25,8 @@ export const UPDATE_CURRENT_PROCESSOR_PROPERTIES: string = "UPDATE_CURRENT_PROCE
 export const UPDATE_SELECTED_FLOW_ENTITY_CONF: string = "UPDATE_SELECTED_FLOW_ENTITY_CONF"
 export const CLEAR_FLOW_ENTITY_CONF: string = "CLEAR_FLOW_ENTITY_CONF"
 
+export const SET_CONNECT_MODE: string = "SET_CONNECT_MODE"
+
 
 export const flowTabs: ActionReducer<FlowTab[]> =
   (state = SI.from([]), action: Action): FlowTab[] => {
@@ -165,12 +167,23 @@ export const selectedFlowEntityConf: ActionReducer<FlowEntityConf> =
     }
   }
 
+export const connectMode: ActionReducer<boolean> =
+  (state = false, action: Action) => {
+    switch (action.type) {
+      case SET_CONNECT_MODE:
+        return action.payload
+      default:
+        return state
+    }
+  }
+
 export const rootReducer = {
   flowTabs,
   selectedProcessorId,
   processorToConnectId,
   currentProcessorProperties,
-  selectedFlowEntityConf
+  selectedFlowEntityConf,
+  connectMode
 }
 
 
