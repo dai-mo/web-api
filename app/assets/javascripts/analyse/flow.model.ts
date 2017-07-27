@@ -3,9 +3,17 @@
  */
 
 import {ValidationErrorResponse} from "../shared/util/error.service"
+
 export enum EntityType {
+  UNKNOWN,
   FLOW_INSTANCE,
-  PROCESSOR
+  PROCESSOR,
+  CONNECTION
+}
+
+export class Entity {
+  id: string
+  type: EntityType
 }
 
 export class ComponentType {
@@ -324,13 +332,6 @@ export class DCSError {
   errorMessage: string
 }
 
-export class ProcessorUIState {
-  selectedProcessorId: string
-
-  constructor(selectedProcessorId: string = null) {
-    this.selectedProcessorId = selectedProcessorId
-  }
-}
 
 export class FlowInstantiation {
   id: string
