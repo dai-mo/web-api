@@ -10,7 +10,8 @@
             <div><p>{{description}}</p></div>
             <p-listbox class="flex-panel"
             [options]="parameters"
-            [(ngModel)]="selectedParameter">
+            [(ngModel)]="selectedParameter"
+            [style]="{'width':'200px', 'border-style':'none'}">
                 <ng-template
                 let-parameter
                 pTemplate="default">
@@ -18,7 +19,7 @@
                     pDraggable="p-schema-params"
                     (onDragStart)="dragStart($event, parameter.value)"
                     (onDragEnd)="dragEnd($event)">
-                        {{parameter.label}}
+                        {{parameter.label}} <i class="text-primary">{{parameter.value.fieldType}}</i>
                     </div>
                 </ng-template>
             </p-listbox>
