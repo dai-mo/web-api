@@ -107,14 +107,15 @@ export class FlowTabsComponent implements OnInit {
       payload: {flowTab: flowTab}
     })
 
-    this.updateContextBarItems(flowTab)
-  }
-
-  selectTab(event: any) {
     this.oss.dispatch({
-      type: SELECT_FLOW_TAB,
-      payload: this.oss.appState().flowTabs[event.index]
+      type: SELECT_ENTITY,
+      payload: {
+        id: this.oss.activeFlowTab().flowInstance.id,
+        type: EntityType.FLOW_INSTANCE
+      }
     })
+
+    this.updateContextBarItems(flowTab)
   }
 
   updateContextBarItems(flowTab: FlowTab) {

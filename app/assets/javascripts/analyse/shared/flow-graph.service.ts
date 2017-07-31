@@ -28,6 +28,7 @@ export class FlowGraphService {
       edges: graph.edges
     }
     let options = {
+      autoResize: false,
       nodes: {
         shadow: true,
         color: {

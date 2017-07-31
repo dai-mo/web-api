@@ -35,7 +35,7 @@ export const flowTabs: ActionReducer<FlowTab[]> =
       case ADD_FLOW_TABS:
         let withFlowTabs = state.concat(SI.from(action.payload.flowTabs))
         let selectedFlowTab = withFlowTabs[withFlowTabs.length - 1]
-        let count = state.length
+        let count = 0
         return withFlowTabs.map((ft: FlowTab) => {
           let title = "#" + (count + 1)
           count = count + 1
@@ -84,8 +84,12 @@ export const flowTabs: ActionReducer<FlowTab[]> =
         let updatedFlowInstance: FlowInstance = flowInstance(activeFlowTab.flowInstance, action)
         let updatedActiveFlowTab: FlowTab =
           activeFlowTab.set("flowInstance", updatedFlowInstance)
-        let newState = SI.from(state).filter(ft => !ft.active).concat(updatedActiveFlowTab)
-        return newState
+        return SI.from(state).map(ft => {
+          if(ft.active)
+            return updatedActiveFlowTab
+          else
+            return ft
+        })
       default:
         return state
     }

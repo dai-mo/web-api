@@ -13,7 +13,7 @@
         [header]="tabz.title"
         [selected]="tabz.active"
         [disabled]="tabz.disabled"
-        (onChange)="selectTab($event)">
+        [hidden]="!tabz.active">
             <div class="flex-panel-parent">
                 <div pTooltip="{{tabz.id}}"
                 tooltipPosition="top"
@@ -25,7 +25,7 @@
                             Connect Mode
                         </span>
                 </div>
-                <div class="flex-panel"  flow-graph [showFlowInstance]="tabz.flowInstance">Content</div>
+                <div class="flex-panel"  flow-graph  [showFlowInstance]="tabz.flowInstance">Content</div>
             </div>
         </p-tabPanel>
     </p-tabView>
