@@ -23,7 +23,7 @@ import {Observable} from "rxjs"
  * is called implying a new SelectItem[] (of flow entities) of up-to-date entites.
  */
 
-export class FlowEntityComponent implements OnInit {
+export class FlowEntityComponent {
 
   entityInfo: FlowEntityConf
   @Input() finaliseLabel: string
@@ -37,9 +37,7 @@ export class FlowEntityComponent implements OnInit {
   selectedFlowEntityConf: Observable<FlowEntityConf> = this.oss.appStore().select((state: AppState) => state.selectedFlowEntityConf)
 
   constructor(private oss: ObservableState,
-              private uiStateStore: UIStateStore) {}
-
-  ngOnInit() {
+              private uiStateStore: UIStateStore) {
     this.entityInfo = this.oss.appState().selectedFlowEntityConf
     this.entities = []
     if(this.entityInfo !== undefined) {
@@ -59,6 +57,7 @@ export class FlowEntityComponent implements OnInit {
     if(this.hasSingleEntity())
       this.select(this.entityInfo.list()[0].id)
   }
+
 
   hasSingleEntity(): boolean {
     return this.entities.length === 1

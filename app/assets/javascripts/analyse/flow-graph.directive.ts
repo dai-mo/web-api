@@ -16,17 +16,13 @@ export class FlowGraphDirective {
   @Input()
   set showFlowInstance(flowInstance: FlowInstance) {
     if (flowInstance) {
-      this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(flowInstance), flowInstance.id)
+      this.flowGraphService.addFlatGraph(this.el, this.flowService.toFlowGraph(flowInstance))
     }
-    // } else {
-    //   this.errorService.handleError("No Flow Instance to display")
-    // }
   }
 
   constructor(el:ElementRef,
               private flowGraphService: FlowGraphService,
-              private flowService: FlowService,
-              private errorService: ErrorService) {
+              private flowService: FlowService) {
     this.el = el.nativeElement
   }
 }
