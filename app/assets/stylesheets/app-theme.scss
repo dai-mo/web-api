@@ -1,0 +1,12 @@
+
+@import './app';
+@import '../theme/theme-blue';
+
+body {
+  .disable-highlight {
+    &:focus {
+      outline: 0 none;
+      background-color: lighten($primaryColor, 0%);
+    }
+  }
+}

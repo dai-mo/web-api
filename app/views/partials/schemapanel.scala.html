@@ -20,11 +20,11 @@
         </ng-template>
         <ng-template let-node [pTemplate]="scp._FIELDS_TO_MAP">
             <fields-to-map [processorField]="node.data"></fields-to-map>
-            <span (click)="removeLink(node)"><i class="fa fa-times" aria-hidden="true"></i></span>
+            <i class="material-icons" (click)="removeLink(node)">close</i>
         </ng-template>
         <ng-template let-node [pTemplate]="scp._FIELD_ACTIONS">
             <field-actions [processorField]="node.data"></field-actions>
-            <span (click)="removeLink(node)"><i class="fa fa-times" aria-hidden="true"></i></span>
+            <i class="material-icons" (click)="removeLink(node)">close</i>
         </ng-template>
     </p-tree>
     <div [hidden]="nodes.length > 0">No schema set for this Processor</div>

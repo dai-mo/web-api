@@ -440,9 +440,12 @@ div.ui-datatable-scrollable-body {
   width: 400px;
 }
 
+.font-awesome.fa, .font-awesome .fa {
+  font-family: 'FontAwesome';
+}
 
 
-
-
-
+.flow-entity-list .ui-listbox-list {
+  width: 400px;
+}
 
