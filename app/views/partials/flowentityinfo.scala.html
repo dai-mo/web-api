@@ -3,13 +3,12 @@
     <form [formGroup]="form">
         <div *ngFor="let field of fields" [ngSwitch]="field.fieldUIType()">
             <div class="ui-g" *ngSwitchCase="fieldUIType.TEXT_NOT_EDITABLE">
-                @*<div class="ui-g-4"><h4><span class="label label-default pull-right">{{field.label}}</span></h4></div>*@
-                <div class="ui-g-4"><i class="text-primary" [attr.for]="field.name">{{field.label}}</i></div>
-                <div class="ui-g-8"><span [id]="field.name">{{field.value}}</span></div>
+            <div class="ui-g-4"><i class="text-primary" [attr.for]="field.name">{{field.label}}</i></div>
+            <div class="ui-g-8"><span [id]="field.name">{{field.value}}</span></div>
             </div>
             <div class="ui-g" *ngSwitchCase="fieldUIType.TEXT_EDITABLE">
-                @*<div class="ui-g-4"><h4><span class="label label-default pull-right">{{field.label}}</span></h4></div>*@
-                <div class="ui-g-4"><label [attr.for]="field.name">{{field.label}}</label></div>
+            <div class="ui-g-4"><label [attr.for]="field.name">{{field.label}}</label></div>
+            <span class="md-inputfield">
                 <div class="ui-g-8">
                     <textarea
                     [id]="field.label"
@@ -20,39 +19,30 @@
                         {{field.value}}
                     </textarea>
                 </div>
+            </span>
             </div>
             <div  class="ui-g" *ngSwitchCase="fieldUIType.BOOLEAN">
-                @*<div class="ui-g-4">*@
-                    @*<h4>*@
-                        @*<span*@
-                        @*[id]="field.label"*@
-                        @*class="label label-default pull-right">*@
-                            @*{{field.label}}*@
-                        @*</span>*@
-                    @*</h4>*@
-                @*</div>*@
-                <div class="ui-g-4"><label [attr.for]="field.name">{{field.label}}</label></div>
-                <div class="ui-g-8">
-                    <p-checkbox
-                    [id]="field.label"
-                    [(ngModel)]="field.value"
-                    binary="true"
-                    [formControlName]="field.name">
+            <div class="ui-g-4"><label [attr.for]="field.name">{{field.label}}</label></div>
+            <div class="ui-g-8">
+                <p-checkbox
+                [id]="field.label"
+                [(ngModel)]="field.value"
+                binary="true"
+                [formControlName]="field.name">
                     </p-checkbox>
-                </div>
+            </div>
             </div>
             <div  class="ui-g" *ngSwitchCase="fieldUIType.VALUE_LIST">
-                @*<div class="ui-g-4"><h4><span class="label label-default pull-right">{{field.label}}</span></h4></div>*@
-                <div class="ui-g-4"><label [attr.for]="field.name">{{field.label}}</label></div>
-                <div class="ui-g-8">
-                    <p-dropdown
-                    [id]="field.label"
-                    [style]="{'width':'250px'}"
-                    [options]="field.selectItems"
-                    [(ngModel)]="field.value"
-                    [formControlName]="field.name">
+            <div class="ui-g-4"><label [attr.for]="field.name">{{field.label}}</label></div>
+            <div class="ui-g-8">
+                <p-dropdown
+                [id]="field.label"
+                [style]="{'width':'250px'}"
+                [options]="field.selectItems"
+                [(ngModel)]="field.value"
+                [formControlName]="field.name">
                     </p-dropdown>
-                </div>
+            </div>
             </div>
         </div>
     </form>

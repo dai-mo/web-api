@@ -538,7 +538,7 @@ export class FlowTabsComponent implements OnInit {
       {
         view: UiId.ANALYSE,
         entityType: EntityType.PROCESSOR,
-        iconClass: "fa-info-circle",
+        iconClass: "fa-info",
         enabled: true,
         hidden: true,
         command: () => {
