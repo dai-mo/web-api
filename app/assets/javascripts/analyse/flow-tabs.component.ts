@@ -350,7 +350,7 @@ export class FlowTabsComponent implements OnInit {
 
   deleteSelectedProcessor() {
     let sp = this.oss.selectedProcessor()
-    this.processorService.destroy(sp.id, sp.version)
+    this.processorService.destroy(sp.id, this.oss.activeFlowTab().flowInstance.id, sp.processorType, sp.version)
       .subscribe(
         (deleteOk: boolean) => {
           if(deleteOk) {

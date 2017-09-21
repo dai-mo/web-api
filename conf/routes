@@ -39,6 +39,7 @@ GET     /api/flow/provenance/list/:pid                  controllers.FlowProvenan
 ##- Processor Api
 ->      /api/flow/processor                             controllers.FlowProcessorApi
 POST    /api/flow/processor/create/:fid                 controllers.FlowProcessorApi.create(fid: String)
+DELETE  /api/flow/processor/:id/:fid/:ptype             controllers.FlowProcessorApi.destroy(id: String, fid: String, ptype: String)
 PUT     /api/flow/processor/start/:pid                  controllers.FlowProcessorApi.start(pid: String)
 PUT     /api/flow/processor/stop/:pid                   controllers.FlowProcessorApi.stop(pid: String)
 GET     /api/flow/processor/schema/:sid                 controllers.FlowProcessorApi.schema(sid: String)

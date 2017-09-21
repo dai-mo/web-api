@@ -39,6 +39,6 @@ export class ConnectionService extends ApiHttpService {
     //         'DELETE' does not allow a body. Passing the
     //         connection payload is required as this is a virtual connection
     //         i.e. one that is not stored on Nifi
-    return super.put(this.extConnectionBaseUrl + connection.id, connection.version, connection)
+    return super.put(this.extConnectionBaseUrl + connection.id,  connection, connection.version)
   }
 }

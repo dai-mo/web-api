@@ -109,5 +109,12 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction,
     ProcessorApi.stop(id, Req.version, Req.clientId).map(_.toResult)
   }
 
+  def destroy(id: String,
+              flowInstanceId: String,
+              processorType: String): EssentialAction =  csrfCheckAction async { implicit request =>
+    ProcessorApi.remove(id, flowInstanceId, processorType, Req.version, Req.clientId)
+      .map(_.toResult)
+  }
+
 
 }
