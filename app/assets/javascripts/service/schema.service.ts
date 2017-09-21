@@ -3,7 +3,7 @@
  */
 
 import {Injectable} from "@angular/core"
-import {Processor} from "../analyse/flow.model"
+import {Processor, RemoteProcessor} from "../analyse/flow.model"
 import {ApiHttpService} from "../shared/api-http.service"
 import {Http} from "@angular/http"
 import {Observable} from "rxjs/Rx"
@@ -105,7 +105,8 @@ export class SchemaService extends ApiHttpService {
   }
 
   baseSchema(processorProperties: any): Observable<AvroSchema> {
-    if(this.isPropertyDefined(processorProperties._WRITE_SCHEMA_ID))
+    if(processorProperties._PROCESSOR_TYPE === RemoteProcessor.IngestionProcessorType &&
+      this.isPropertyDefined(processorProperties._WRITE_SCHEMA_ID))
       return this.schemaFromId(processorProperties._WRITE_SCHEMA_ID)
     else
       return this.readSchema(processorProperties)

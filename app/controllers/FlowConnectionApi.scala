@@ -6,9 +6,9 @@ import controllers.routing.ResourceRouter
 import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
 import global.ResultSerialiserImplicits._
 import org.dcs.api.processor.ConnectionValidation
-import org.dcs.api.service.{Connection, ConnectionConfig}
+import org.dcs.api.service.{Connection, ConnectionConfig, FlowComponent}
 import org.dcs.commons.serde.JsonSerializerImplicits._
-import org.dcs.flow.ConnectionApi
+import org.dcs.flow.{ConnectionApi, FlowApi}
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
 import play.api.mvc.{Action, EssentialAction}
 
@@ -42,6 +42,11 @@ class FlowConnectionApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAct
 
   override def destroy(id: String): EssentialAction = csrfCheckAction async { implicit request =>
     ConnectionApi.remove(id, Req.version, Req.clientId)
+      .map(_.toResult)
+  }
+
+  def destroyExternal(id: String): EssentialAction = csrfCheckAction async { implicit request =>
+    ConnectionApi.remove(Req.body.toObject[Connection], Req.clientId)
       .map(_.toResult)
   }
 }

@@ -2,14 +2,14 @@ import {Component} from "@angular/core"
 import {UIStateStore} from "./ui.state.store"
 import {ObservableState} from "../store/state"
 import {
-  ComponentType,
+  FlowComponent,
   Connectable,
   Connection,
   ConnectionConfig,
   CoreProperties, EntityType,
   FlowInstance,
   Processor,
-  RemoteRelationship
+  RemoteRelationship, RemoteProcessor
 } from "../analyse/flow.model"
 import {FlowUtils} from "./util/ui.utils"
 import {ConnectionService} from "../service/connection.service"
@@ -49,6 +49,15 @@ export class RelationshipsComponent {
     this.rels.forEach(r => this.connections[r.id] = this.label(r))
   }
 
+  private getComponentType(processorType: string): string {
+    switch(processorType) {
+      case RemoteProcessor.ExternalProcessorType:
+        return FlowComponent.ExternalProcessorType
+      default:
+        return FlowComponent.ProcessorType
+    }
+  }
+
   save() {
     this.oss.dispatch({
       type: SELECT_ENTITY,
@@ -57,12 +66,11 @@ export class RelationshipsComponent {
         type: EntityType.FLOW_INSTANCE
       }
     })
+
     if(this.selectedRel !== undefined) {
-
-
       let source: Connectable = {
         id: this.sourceProcessor.id,
-        componentType: ComponentType.PROCESSOR,
+        componentType: this.getComponentType(this.sourceProcessor.processorType),
         flowInstanceId: this.flowInstanceId,
         properties: {
           [CoreProperties._PROCESSOR_TYPE]: this.sourceProcessor.processorType
@@ -72,7 +80,7 @@ export class RelationshipsComponent {
 
       let destination: Connectable = {
         id: this.destinationProcessor.id,
-        componentType: ComponentType.PROCESSOR,
+        componentType: this.getComponentType(this.destinationProcessor.processorType),
         flowInstanceId: this.flowInstanceId,
         properties: {
           [CoreProperties._PROCESSOR_TYPE]: this.destinationProcessor.processorType

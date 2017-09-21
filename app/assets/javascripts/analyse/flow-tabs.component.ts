@@ -385,7 +385,7 @@ export class FlowTabsComponent implements OnInit {
 
   deleteSelectedConnection() {
     let sc = this.oss.selectedConnection()
-    this.connectionService.delete(sc.id)
+    this.connectionService.remove(sc)
       .subscribe(
         (deleteOk: boolean) => {
           if(deleteOk)
