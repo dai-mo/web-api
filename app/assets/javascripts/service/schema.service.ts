@@ -104,9 +104,8 @@ export class SchemaService extends ApiHttpService {
       return false
   }
 
-  baseSchema(processorProperties: any): Observable<AvroSchema> {
-    if(processorProperties._PROCESSOR_TYPE === RemoteProcessor.IngestionProcessorType &&
-      this.isPropertyDefined(processorProperties._WRITE_SCHEMA_ID))
+  baseSchema(processorProperties: any, forOutputSchema: boolean): Observable<AvroSchema> {
+    if(forOutputSchema && this.isPropertyDefined(processorProperties._WRITE_SCHEMA_ID))
       return this.schemaFromId(processorProperties._WRITE_SCHEMA_ID)
     else
       return this.readSchema(processorProperties)

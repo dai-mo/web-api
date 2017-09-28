@@ -186,7 +186,7 @@ export class FlowTabsComponent implements OnInit {
   public deleteTab(flowTab: FlowTab) {
     KeycloakService.withTokenUpdate(function (rpt: string) {
       this.flowService
-        .destroyInstance(flowTab.id, rpt, flowTab.flowInstance.version)
+        .destroyInstance(flowTab.id, FlowInstance.hasExternal(flowTab.flowInstance), rpt, flowTab.flowInstance.version)
         .subscribe(
           (deleteOK: boolean) => {
             if (!deleteOK)

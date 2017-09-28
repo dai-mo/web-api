@@ -58,8 +58,10 @@ export class ProcessorProperties {
   static isExternalProcessorProperty(propertyName: string): boolean {
     return propertyName === ExternalProcessorProperties.ReceiverKey ||
       propertyName === ExternalProcessorProperties.SenderKey ||
-      propertyName === ExternalProcessorProperties.RootOutputConnectionKey ||
-      propertyName === ExternalProcessorProperties.RootInputConnectionKey
+      propertyName === ExternalProcessorProperties.RootOutputConnectionIdKey ||
+      propertyName === ExternalProcessorProperties.RootInputConnectionIdKey ||
+      propertyName === ExternalProcessorProperties.InputPortNameKey ||
+      propertyName === ExternalProcessorProperties.OutputPortNameKey
   }
 
   static isCoreProperty(propertyName: string): boolean {
@@ -81,8 +83,12 @@ export class ExternalProcessorProperties {
   static ReceiverKey = "_EXTERNAL_RECEIVER"
   static SenderKey = "_EXTERNAL_SENDER"
 
-  static RootInputConnectionKey = "_ROOT_INPUT_CONNECTION"
-  static RootOutputConnectionKey = "_ROOT_OUTPUT_CONNECTION"
+
+ static RootInputConnectionIdKey = "_ROOT_INPUT_CONNECTION_ID"
+ static RootOutputConnectionIdKey = "_ROOT_OUTPUT_CONNECTION_ID"
+
+ static InputPortNameKey = "_INPUT_PORT_NAME"
+ static OutputPortNameKey = "_OUTPUT_PORT_NAME"
 }
 
 export class CoreProperties {
@@ -217,6 +223,14 @@ export class FlowInstance {
 
   validationErrors(): ValidationErrorResponse[] {
     return this.processors.map(p => p.validationErrors)
+  }
+
+  static hasExternal(flowInstance: FlowInstance): boolean {
+    if(flowInstance.connections.find(c => c.config.source.componentType === FlowComponent.ExternalProcessorType ||
+        c.config.destination.componentType === FlowComponent.ExternalProcessorType) !== undefined)
+      return true
+
+    return false
   }
 }
 

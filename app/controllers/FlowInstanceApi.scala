@@ -42,7 +42,7 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
       Future.successful(Nil.toResult)
     else
       Future.sequence(ids.map { id =>
-        FlowApi.instance(id)
+        FlowApi.instance(id, Req.clientId)
           .map { flowInstance =>
             flowInstance
           }
@@ -53,19 +53,12 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
     NotImplemented
   }
 
-  override def destroy(id: String): EssentialAction = csrfCheckAction andThen
-    RptAction(Nil) andThen
-    authorisationAction async { implicit request =>
-    FlowApi.remove(id, Req.version, Req.clientId)
-      .map { response =>
-        if(response)
-          authService.deleteProtectedResource(BaseUrl + "/" + id)
-        response.toResult
-      }
+  override def destroy(id: String): EssentialAction = csrfCheckAction { implicit request =>
+    NotImplemented
   }
 
   override def find(id: String): EssentialAction = csrfCheckAction async { implicit request =>
-    FlowApi.instance(id).map(_.toResult)
+    FlowApi.instance(id, Req.clientId).map(_.toResult)
   }
 
   override def create: EssentialAction = csrfCheckAction {
@@ -93,11 +86,22 @@ class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
   }
 
   def start(flowInstanceId: String): EssentialAction = csrfCheckAction async { implicit request =>
-    FlowApi.start(flowInstanceId).map(_.toResult)
+    FlowApi.start(flowInstanceId, Req.clientId).map(_.toResult)
   }
 
   def stop(flowInstanceId: String): EssentialAction = csrfCheckAction async { implicit request =>
-    FlowApi.stop(flowInstanceId).map(_.toResult)
+    FlowApi.stop(flowInstanceId, Req.clientId).map(_.toResult)
+  }
+
+  def destroy(id: String, hasExternal: Boolean): EssentialAction = csrfCheckAction andThen
+    RptAction(Nil) andThen
+    authorisationAction async { implicit request =>
+    FlowApi.remove(id, Req.version, Req.clientId, hasExternal)
+      .map { response =>
+        if(response)
+          authService.deleteProtectedResource(BaseUrl + "/" + id)
+        response.toResult
+      }
   }
 
   private def flowInstanceIds(permissions: List[Permission]): List[String] = {

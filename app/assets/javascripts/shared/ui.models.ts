@@ -575,7 +575,7 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
   finalise(uiStateStore: UIStateStore, data?: any): void {
 
     if(!JSUtils.isUndefinedOrEmpty(data)) {
-      let properties = FlowUtils.addCoreProperties(this.processor, data)
+      let properties = FlowUtils.addExternalCoreProperties(this.processor, data)
       this.processorService
         .updateProperties(FlowUtils.processorServiceClassName(this.processor), this.processor.id, properties)
         .subscribe(
