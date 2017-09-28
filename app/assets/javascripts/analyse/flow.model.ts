@@ -16,8 +16,23 @@ export class Entity {
   type: EntityType
 }
 
-export class ComponentType {
-  static PROCESSOR = "PROCESSOR"
+export class RemoteProcessor {
+  static UnknownProcessorType = "unknown"
+  static IngestionProcessorType = "ingestion"
+  static WorkerProcessorType = "worker"
+  static SinkProcessorType = "sink"
+  static BatchProcessorType = "batch"
+  static ExternalProcessorType = "external"
+}
+
+export class FlowComponent {
+  static ProcessorType = "PROCESSOR"
+  static ExternalProcessorType = "EXTERNAL_PROCESSOR"
+  static RemoteInputPortType = "REMOTE_INPUT_PORT"
+  static RemoteOutputPortType = "REMOTE_OUTPUT_PORT"
+  static InputPortType = "INPUT_PORT"
+  static OutputPortType = "OUTPUT_PORT"
+  static FunnelType = "FUNNEL"
 }
 
 export class FlowTemplate {
@@ -38,6 +53,44 @@ export class SchemaProperties {
   }
 }
 
+export class ProcessorProperties {
+
+  static isExternalProcessorProperty(propertyName: string): boolean {
+    return propertyName === ExternalProcessorProperties.ReceiverKey ||
+      propertyName === ExternalProcessorProperties.SenderKey ||
+      propertyName === ExternalProcessorProperties.RootOutputConnectionIdKey ||
+      propertyName === ExternalProcessorProperties.RootInputConnectionIdKey ||
+      propertyName === ExternalProcessorProperties.InputPortNameKey ||
+      propertyName === ExternalProcessorProperties.OutputPortNameKey
+  }
+
+  static isCoreProperty(propertyName: string): boolean {
+    return propertyName === CoreProperties._PROCESSOR_CLASS ||
+      propertyName === CoreProperties._PROCESSOR_TYPE ||
+      propertyName === CoreProperties._READ_SCHEMA_ID ||
+      propertyName === CoreProperties._READ_SCHEMA ||
+      propertyName === CoreProperties._WRITE_SCHEMA_ID ||
+      propertyName === CoreProperties._WRITE_SCHEMA
+  }
+
+  static isHiddenProperty(propertyName: string): boolean {
+    return ProcessorProperties.isCoreProperty(propertyName) ||
+      ProcessorProperties.isExternalProcessorProperty(propertyName)
+  }
+}
+
+export class ExternalProcessorProperties {
+  static ReceiverKey = "_EXTERNAL_RECEIVER"
+  static SenderKey = "_EXTERNAL_SENDER"
+
+
+ static RootInputConnectionIdKey = "_ROOT_INPUT_CONNECTION_ID"
+ static RootOutputConnectionIdKey = "_ROOT_OUTPUT_CONNECTION_ID"
+
+ static InputPortNameKey = "_INPUT_PORT_NAME"
+ static OutputPortNameKey = "_OUTPUT_PORT_NAME"
+}
+
 export class CoreProperties {
   static _PROCESSOR_CLASS: string = "_PROCESSOR_CLASS"
   static _PROCESSOR_TYPE: string = "_PROCESSOR_TYPE"
@@ -46,14 +99,7 @@ export class CoreProperties {
   static _WRITE_SCHEMA_ID: string = "_WRITE_SCHEMA_ID"
   static _WRITE_SCHEMA: string = "_WRITE_SCHEMA"
 
-  static isCoreProperty(propertyName: string): boolean {
-    return propertyName === this._PROCESSOR_CLASS ||
-      propertyName === this._PROCESSOR_TYPE ||
-      propertyName === this._READ_SCHEMA_ID ||
-      propertyName === this._READ_SCHEMA ||
-      propertyName === this._WRITE_SCHEMA_ID ||
-      propertyName === this._WRITE_SCHEMA
-  }
+
 }
 
 export class PossibleValue {
@@ -98,6 +144,7 @@ export class Connection {
   name: string
   version: string
   config: ConnectionConfig
+  relatedConnections: Connection[]
 }
 
 export class RemoteRelationship {
@@ -177,6 +224,14 @@ export class FlowInstance {
   validationErrors(): ValidationErrorResponse[] {
     return this.processors.map(p => p.validationErrors)
   }
+
+  static hasExternal(flowInstance: FlowInstance): boolean {
+    if(flowInstance.connections.find(c => c.config.source.componentType === FlowComponent.ExternalProcessorType ||
+        c.config.destination.componentType === FlowComponent.ExternalProcessorType) !== undefined)
+      return true
+
+    return false
+  }
 }
 
 export class FlowNode {
@@ -228,11 +283,11 @@ export class FlowNode {
 
 
     switch (ptype) {
-      case "ingestion":
+      case RemoteProcessor.IngestionProcessorType:
         return this.baseUrl + "/assets/images/ingestion_processor.svg"
-      case "worker":
+      case RemoteProcessor.WorkerProcessorType:
         return this.baseUrl + "/assets/images/worker_processor.svg"
-      case "sink":
+      case RemoteProcessor.SinkProcessorType:
         return this.baseUrl + "/assets/images/sink_processor.svg"
       default:
         return this.baseUrl + "/assets/images/worker_processor.svg"
@@ -251,11 +306,18 @@ export class FlowEdge {
               to: string,
               connection: Connection,
               arrows: string = "to") {
-    this.id = connection.id
+    this.id = this.genId(connection)
     this.from = from
     this.to = to
     this.connection = connection
     this.arrows = arrows
+  }
+
+  genId(connection: Connection): string {
+    if(connection.id === "")
+      return connection.config.source.id + "-" + connection.config.destination.id
+    else
+      return connection.id
   }
 }
 

@@ -7,8 +7,6 @@
     [propagateSelectionDown]="true"
     (onNodeSelect)="updateNode($event)"
     (onNodeUnselect)="updateNode($event)">
-        // FIXME: For some reason, the tree toggle is displayed
-        //        for leaf nodes
         <ng-template
         let-node
         pTemplate="default">

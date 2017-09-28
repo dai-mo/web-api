@@ -39,7 +39,7 @@ export class ProcessorService extends ApiHttpService {
     return super.post(this.processorBaseUrl + "create/" + flowInstanceId, psd)
   }
 
-  destroy(processorId: string, version: string): Observable<boolean> {
-    return super.delete(this.processorBaseUrl + processorId, version)
+  destroy(processorId: string, flowInstanceId: string, processorType: string, version: string): Observable<boolean> {
+    return super.delete(this.processorBaseUrl + processorId + "/" + flowInstanceId + "/" + processorType, version)
   }
 }

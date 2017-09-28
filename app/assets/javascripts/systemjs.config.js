@@ -39,7 +39,8 @@
             'traceur' : 'assets/lib/traceur/bin/traceur.js',
             'seamless-immutable' : 'assets/lib/seamless-immutable',
             '@ngrx/core' : 'assets/lib/@ngrx/core',
-            '@ngrx/store' : 'assets/lib/@ngrx/store'
+            '@ngrx/store' : 'assets/lib/@ngrx/store',
+            'lodash' : 'assets/lib/lodash'
         },
         packages: {
             'app': {main: 'main.js', defaultExtension: 'js'},
@@ -56,7 +57,8 @@
             'traceur': { defaultExtension: 'js' },
             'seamless-immutable': {main: 'seamless-immutable.development.js', defaultExtension: 'js' },
             '@ngrx/core': {main: 'index.js', defaultExtension: 'js' },
-            '@ngrx/store': {main: 'index.js', defaultExtension: 'js' }
+            '@ngrx/store': {main: 'index.js', defaultExtension: 'js' },
+            'lodash': {main: 'lodash.js', defaultExtension: 'js'}
 
         }
     });

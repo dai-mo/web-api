@@ -1,4 +1,4 @@
-import {CoreProperties, FlowInstance, FlowTab, Processor} from "../../analyse/flow.model"
+import {CoreProperties, ExternalProcessorProperties, FlowInstance, FlowTab, Processor} from "../../analyse/flow.model"
 import * as SI from "seamless-immutable"
 import {isEmpty} from "rxjs/operator/isEmpty"
 
@@ -35,7 +35,7 @@ export class FlowUtils {
     return undefined
   }
 
-  static addCoreProperties(processor: Processor, properties: any): any {
+  static addExternalCoreProperties(processor: Processor, properties: any): any {
     let withCoreProperties = SI.from(properties)
     return withCoreProperties
       .set(CoreProperties._PROCESSOR_CLASS, processor.properties[CoreProperties._PROCESSOR_CLASS])
@@ -44,6 +44,14 @@ export class FlowUtils {
       .set(CoreProperties._READ_SCHEMA, processor.properties[CoreProperties._READ_SCHEMA])
       .set(CoreProperties._WRITE_SCHEMA_ID, processor.properties[CoreProperties._WRITE_SCHEMA_ID])
       .set(CoreProperties._WRITE_SCHEMA, processor.properties[CoreProperties._WRITE_SCHEMA])
+      .set(ExternalProcessorProperties.RootInputConnectionIdKey,
+        processor.properties[ExternalProcessorProperties.RootInputConnectionIdKey])
+      .set(ExternalProcessorProperties.RootOutputConnectionIdKey,
+        processor.properties[ExternalProcessorProperties.RootOutputConnectionIdKey])
+      .set(ExternalProcessorProperties.InputPortNameKey,
+        processor.properties[ExternalProcessorProperties.InputPortNameKey])
+      .set(ExternalProcessorProperties.OutputPortNameKey,
+        processor.properties[ExternalProcessorProperties.OutputPortNameKey])
   }
 
 }

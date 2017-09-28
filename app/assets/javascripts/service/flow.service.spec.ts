@@ -145,44 +145,44 @@ describe("Flow Service", () => {
               "id": "102509b5-3ae2-41b3-b7a8-15b3203419c4",
               "source": {
                 "id": "623f3887-cc72-412e-82d8-e21ee0d7705f",
-                "type": "PROCESSOR"
+                "type": "ProcessorType"
               },
               "destination": {
                 "id": "9b9620fe-3c40-4263-82eb-f49853a6ef79",
-                "type": "PROCESSOR"
+                "type": "ProcessorType"
               }
             },
             {
               "id": "19c466d3-9af5-4634-8d07-4860e1d26511",
               "source": {
                 "id": "31893b7f-2b44-48d6-b07f-174edde34745",
-                "type": "PROCESSOR"
+                "type": "ProcessorType"
               },
               "destination": {
                 "id": "ee25be65-4479-4528-b5f7-dc24a75eaf22",
-                "type": "PROCESSOR"
+                "type": "ProcessorType"
               }
             },
             {
               "id": "21d17780-5127-4140-8096-82018fd717e4",
               "source": {
                 "id": "9b9620fe-3c40-4263-82eb-f49853a6ef79",
-                "type": "PROCESSOR"
+                "type": "ProcessorType"
               },
               "destination": {
                 "id": "31893b7f-2b44-48d6-b07f-174edde34745",
-                "type": "PROCESSOR"
+                "type": "ProcessorType"
               }
             },
             {
               "id": "da36ece5-9c3d-40c5-95d0-672040db749c",
               "source": {
                 "id": "555bde07-8282-4719-aec6-6a64ce227c60",
-                "type": "PROCESSOR"
+                "type": "ProcessorType"
               },
               "destination": {
                 "id": "623f3887-cc72-412e-82d8-e21ee0d7705f",
-                "type": "PROCESSOR"
+                "type": "ProcessorType"
               }
             }
           ]

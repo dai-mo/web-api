@@ -1,6 +1,6 @@
 import {Observable} from "rxjs/Rx"
 import {Injectable, NgZone} from "@angular/core"
-import {ComponentType, Connection, Entity, EntityType, FlowInstance, FlowTab, Processor} from "../analyse/flow.model"
+import {FlowComponent, Connection, Entity, EntityType, FlowInstance, FlowTab, Processor} from "../analyse/flow.model"
 import {Action, Store} from "@ngrx/store"
 import {ContextBarItem, FlowEntityConf, UiId} from "../shared/ui.models"
 import {ImmutableArray, ImmutableObject} from "seamless-immutable"
@@ -61,7 +61,7 @@ export class ObservableState {
   connectionsForSourceProcessor(processorId: string): Connection[] {
     return this.activeFlowTab()
       .flowInstance.connections.filter(
-        c => c.config.source.componentType === ComponentType.PROCESSOR && c.config.source.id === processorId)
+        c => c.config.source.componentType === FlowComponent.ProcessorType && c.config.source.id === processorId)
   }
 
   selectedConnection(): Connection {
