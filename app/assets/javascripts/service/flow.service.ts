@@ -5,7 +5,11 @@ import "rxjs/add/operator/map"
 import {Observable} from "rxjs/Rx"
 
 
-import {FlowEdge, FlowGraph, FlowInstance, FlowNode, FlowTemplate, Provenance} from "../analyse/flow.model"
+import {
+  FlowComponent,
+  FlowEdge, FlowGraph, FlowInstance, FlowNode, FlowTemplate, Provenance,
+  RemoteProcessor
+} from "../analyse/flow.model"
 import {ErrorService} from "../shared/util/error.service"
 import {ApiHttpService} from "../shared/api-http.service"
 
@@ -87,10 +91,18 @@ export class FlowService extends ApiHttpService {
     let nodes: FlowNode[] = flowInstance.processors.map(p =>
       new FlowNode(p.id, p.type, p.processorType, p.validationErrors)
     )
-    flowInstance.connections.forEach(c => {
+    flowInstance.connections
+      .filter(c => {
+        return FlowComponent.isProcessor(c.config.destination.componentType) &&
+        FlowComponent.isProcessor(c.config.source.componentType)
+      })
+      .forEach(c => {
       let sourceNodes: FlowNode[] = nodes.filter(p =>  p.uuid === c.config.source.id)
       let targetNodes: FlowNode[] = nodes.filter(p =>  p.uuid === c.config.destination.id)
-      if(sourceNodes !== null && sourceNodes.length === 1 && targetNodes !== null && targetNodes.length === 1)
+      if(sourceNodes !== null &&
+        sourceNodes.length === 1 &&
+        targetNodes !== null &&
+        targetNodes.length === 1)
         links.push(new FlowEdge(sourceNodes[0].id, targetNodes[0].id, c))
       else
         this.errorService.handleError("Flow Instance with id " + flowInstance.id + " is not valid")
