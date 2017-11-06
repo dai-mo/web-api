@@ -5,6 +5,7 @@ import {Msg, MsgGroup, UiId, ViewsVisible} from "./ui.models"
 import {ContextStore} from "./context.store"
 import {ObservableState} from "../store/state"
 
+// FIXME: All elements of this class should be moved to ObservableState
 @Injectable()
 export class UIStateStore {
 
@@ -280,13 +281,12 @@ export class UIStateStore {
 // ---- Dialog Flags Start ----
   public isTemplateInfoDialogVisible: boolean = false
   public isProcessorSchemaDialogVisible: boolean = false
-  public isProcessorPropertiesDialogVisible: boolean = false
+
   public isProcessorConfDialogVisible: boolean = false
   public isProcessorInfoDialogVisible: boolean = false
   public isFlowCreationDialogVisible: boolean = false
   public isRelationshipsInfoDialogVisible: boolean = false
   public isRelationshipsSettingsDialogVisible: boolean = false
-  public isConnectModeOn: boolean = false
 
   setFlowCreationDialogVisible(isFlowCreationDialogVisible: boolean) {
     this.ngZone.run(() => this.isFlowCreationDialogVisible = isFlowCreationDialogVisible)

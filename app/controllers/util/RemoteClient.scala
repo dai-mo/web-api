@@ -45,25 +45,14 @@ class Remote @Inject() (lifecycle: ApplicationLifecycle) extends RemoteClient {
   }
 
   override def serviceDetails(processorServiceClassName: String, stateful: Boolean): ProcessorDetails = {
-    service(processorServiceClassName, stateful).details()
+    broker.serviceDetails(processorServiceClassName, stateful)
   }
 
   override def service(processorServiceClassName: String, stateful: Boolean): RemoteProcessorService = {
-    if (stateful)
-      broker.loadService[StatefulRemoteProcessorService](processorServiceClassName)
-    else
-      broker.loadService[RemoteProcessorService](processorServiceClassName)
+    broker.service(processorServiceClassName, stateful)
   }
 
   override def service(processorServiceClassName: String): RemoteProcessorService = {
-    val psds: List[ProcessorServiceDefinition] =
-      broker.filterServiceByProperty(CxfEndpointUtils.ClassNameKey, processorServiceClassName)
-
-    if(psds.isEmpty)
-      throw new HttpException(ErrorConstants.DCS301.http(400))
-    else {
-      val psd = psds.head
-      service(psd.processorServiceClassName, psd.stateful)
-    }
+    broker.service(processorServiceClassName)
   }
 }

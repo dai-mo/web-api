@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core"
 import {ApiHttpService} from "../shared/api-http.service"
 import {Observable} from "rxjs"
-import {Processor, ProcessorDetails, ProcessorServiceDefinition} from "../analyse/flow.model"
+import {Processor, ProcessorDetails, ProcessorServiceDefinition, PropertyDefinition} from "../analyse/flow.model"
 /**
  * Created by cmathew on 05.07.17.
  */
@@ -11,12 +11,20 @@ export class ProcessorService extends ApiHttpService {
 
   private readonly processorBaseUrl = "/api/flow/processor/"
 
-  processorPropertiesUrl(processorServiceClassName: string, processorId: string): string {
+  processorUpdatePropertiesUrl(processorServiceClassName: string, processorId: string): string {
     return  this.processorBaseUrl + processorServiceClassName + "/" + processorId + "/properties"
   }
 
+  processorPropertiesUrl(processorServiceClassName: string): string {
+    return  this.processorBaseUrl + processorServiceClassName + "/properties"
+  }
+
   updateProperties(processorServiceClassName: string, processorId: string, properties: any): Observable<Processor> {
-    return super.put(this.processorPropertiesUrl(processorServiceClassName, processorId), properties)
+    return super.put(this.processorUpdatePropertiesUrl(processorServiceClassName, processorId), properties)
+  }
+
+  properties(processorServiceClassName: string): Observable<PropertyDefinition[]> {
+    return super.get(this.processorPropertiesUrl(processorServiceClassName))
   }
 
   details(processorServiceClassName: string, stateful?: boolean): Observable<ProcessorDetails> {

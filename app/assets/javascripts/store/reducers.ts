@@ -5,7 +5,7 @@
 import {Entity, EntityType, FlowInstance, FlowTab, Processor} from "../analyse/flow.model"
 import {Action, ActionReducer} from "@ngrx/store"
 import * as SI from "seamless-immutable"
-import {FlowEntityConf} from "../shared/ui.models"
+import {FlowEntityConf, Visibility} from "../shared/ui.models"
 
 
 export const SELECT_ENTITY: string = "SELECT_ENTITY"
@@ -26,6 +26,8 @@ export const UPDATE_SELECTED_FLOW_ENTITY_CONF: string = "UPDATE_SELECTED_FLOW_EN
 export const CLEAR_FLOW_ENTITY_CONF: string = "CLEAR_FLOW_ENTITY_CONF"
 
 export const SET_CONNECT_MODE: string = "SET_CONNECT_MODE"
+
+export const UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY: string = "UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY"
 
 
 export const flowTabs: ActionReducer<FlowTab[]> =
@@ -159,6 +161,18 @@ export const currentProcessorProperties: ActionReducer<any> =
     }
   }
 
+export const visibility: ActionReducer<Visibility> =
+  (state = new Visibility(), action: Action) => {
+    let newState = SI.from(state)
+    switch (action.type) {
+      case UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY:
+        return newState.merge({isProcessorPropertiesDialogVisible: action.payload})
+
+      default:
+        return state
+    }
+  }
+
 export const selectedFlowEntityConf: ActionReducer<FlowEntityConf> =
   (state = undefined, action: Action) => {
     switch (action.type) {
@@ -187,7 +201,8 @@ export const rootReducer = {
   processorToConnectId,
   currentProcessorProperties,
   selectedFlowEntityConf,
-  connectMode
+  connectMode,
+  visibility
 }
 
 

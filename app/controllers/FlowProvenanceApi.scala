@@ -55,7 +55,7 @@ class FlowProvenanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAct
         val cp = CoreProperties(pi.properties)
         cp.readSchemaId.foreach(AvroSchemaStore.add)
         cp.writeSchemaId.foreach(AvroSchemaStore.add)
-        RemoteProcessor.resolveWriteSchema(cp, None)
+        cp.resolveWriteSchema()
       }).
       map(schema => {
         val response = flowDataService.provenanceByComponentId(pid, DefaultMaxResults).asScala

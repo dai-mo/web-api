@@ -21,7 +21,8 @@ import scala.concurrent.Future
 class FlowInstanceApi @Inject()(csrfCheckAction: CSRFCheckAction,
                                 csrfTokenAction: CSRFTokenAction,
                                 authorisationAction: AuthorisationAction,
-                                authService: AuthorisationService)
+                                authService: AuthorisationService,
+                                remote: RemoteClient)
   extends ResourceRouter[String] {
 
   val DefaultFlowParentId = "root"
