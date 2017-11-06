@@ -5,11 +5,11 @@ import {
   EntityType,
   FlowInstance,
   FlowTemplate,
-  MetaData,
+  MetaData, PossibleValue,
   Processor,
   ProcessorDetails, ProcessorProperties,
   ProcessorServiceDefinition,
-  PropertyDefinition,
+  PropertyDefinition, PropertyLevel,
   RemoteRelationship,
   SchemaProperties
 } from "../analyse/flow.model"
@@ -19,7 +19,7 @@ import {ErrorService} from "./util/error.service"
 import {ObservableState} from "../store/state"
 import {
   ADD_FLOW_TABS,
-  UPDATE_FLOW_INSTANCE,
+  UPDATE_FLOW_INSTANCE, UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY,
   UPDATE_SELECTED_FLOW_ENTITY_CONF,
   UPDATE_SELECTED_PROCESSOR
 } from "../store/reducers"
@@ -27,10 +27,16 @@ import {FlowService} from "../service/flow.service"
 import {KeycloakService} from "./keycloak.service"
 import {FlowUtils, JSUtils, UIUtils} from "./util/ui.utils"
 import {Observable} from "rxjs"
+import {NotificationService} from "./util/notification.service"
 
 /**
  * Created by cmathew on 04.05.17.
  */
+
+export class Visibility {
+  isProcessorPropertiesDialogVisible: boolean = false
+}
+
 export interface Msg extends Message {}
 
 export class MsgGroup {
@@ -87,25 +93,26 @@ export class Field {
   label: string
   description: string
   defaultValue: string
-  possibleValues: string[]
+  possibleValues: PossibleValue[]
   type: FieldType
-  level: number
   value: string
   isEditable: boolean
   selectItems: SelectItem[]
   isRequired: boolean
   collector: () => any
   active: boolean = false
+  level: PropertyLevel = PropertyLevel.ClosedProperty
 
   constructor(name: string,
               label: string,
               description: string = "",
               defaultValue: string = "",
-              possibleValues: string[] = [],
+              possibleValues: PossibleValue[] = [],
               type: FieldType = FieldType.STRING,
               value: string = "",
               isEditable: boolean = false,
-              isRequired: boolean = false) {
+              isRequired: boolean = false,
+              level: PropertyLevel = PropertyLevel.ClosedProperty) {
     this.name = name
     this.label = label
     this.description = description
@@ -115,6 +122,20 @@ export class Field {
     this.value = value
     this.isEditable = isEditable
     this.isRequired = isRequired
+    this.level = level
+    this.resolveValue()
+  }
+
+  resolveValue() {
+    if(this.possibleValues.length > 0) {
+      if(this.possibleValues.find(pv => pv.value === this.value) === undefined)
+        this.value = this.defaultValue
+      if(this.value !== "")
+        this.possibleValues = this.possibleValues.filter(pv => pv.value !== "")
+      this.selectItems = this.possibleValues.map((pv: PossibleValue) => {
+        return { label:pv.displayName, value:pv.value}
+      })
+    }
   }
 
   valueToString(value: string | number | boolean): string {
@@ -150,6 +171,7 @@ export class Field {
       default  : return FieldType.UNKNOWN
     }
   }
+
   fieldUIType(): FieldUIType {
     if(this.isSchemaField())
       return FieldUIType.SCHEMA_FIELD
@@ -168,26 +190,29 @@ export class Field {
 
   isSchemaField(): boolean {
     // FIXME: Change hack check to use field display 'level'
-    return SchemaProperties.isSchemaProperty(this.label)
+    // return SchemaProperties.isSchemaProperty(this.label)
+    return ProcessorProperties.isSchemaProperty(this.level)
   }
 
   isHiddenPropertyField(): boolean {
     // FIXME: Change hack check to use field display 'level'
-    return ProcessorProperties.isHiddenProperty(this.label)
+    return ProcessorProperties.isHiddenProperty(this.level)
   }
 
   static fromPDef(pd: PropertyDefinition, value: string, isEditable: boolean): Field {
-    let pvs: string[] = []
-    if(pd.possibleValues !== undefined)
-      pvs = pd.possibleValues.map(pv => pv.value)
+    // let pvs: string[] = []
+    // if(pd.possibleValues !== undefined)
+    //   pvs = pd.possibleValues.map(pv => pv.displayName)
     return new Field(pd.name,
       pd.displayName,
       pd.description,
       pd.defaultValue,
-      pvs,
+      pd.possibleValues,
       Field.fieldType(pd.type),
       value,
-      isEditable
+      isEditable,
+      pd.required,
+      pd.level
     )
   }
 
@@ -540,7 +565,8 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
   constructor(processor: Processor,
               private oss: ObservableState,
               private processorService: ProcessorService,
-              private errorService: ErrorService) {
+              private errorService: ErrorService,
+              private notificationService: NotificationService) {
     super(oss)
     this.processor = processor
     this.selectedFlowEntityId = processor.id
@@ -548,28 +574,53 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
     this.propertiesFieldGroup= new FieldGroup("properties")
     this.propertySpecificFields = []
 
-    processor.propertyDefinitions.forEach(pd => {
-      let pvs: string[] = []
-      if(pd.possibleValues !== undefined)
-        pvs = pd.possibleValues.map(pv => pv.value)
+    this.processorService.properties(FlowUtils.processorServiceClassName(this.processor))
+      .subscribe(
+        (propertyDefinitions: PropertyDefinition[]) => {
+          propertyDefinitions.forEach(pd => {
+            // let pvs: string[] = []
+            // if (pd.possibleValues !== undefined)
+            //   pvs = pd.possibleValues.map(pv => pv.value)
 
-      let field: Field = Field.fromPDef(pd, this.properties[pd.name], true)
+            let field: Field = Field.fromPDef(pd, this.properties[pd.name], true)
 
-      if(!field.isHiddenPropertyField()) {
-        if (field.isSchemaField())
-          this.propertySpecificFields.push(field)
-        else
-          this.propertiesFieldGroup.add(field)
-      }
-    })
+            if (!field.isHiddenPropertyField()) {
+              if (field.isSchemaField())
+                this.propertySpecificFields.push(field)
+              else
+                this.propertiesFieldGroup.add(field)
+            }
+          })
 
-    if(this.propertiesFieldGroup.fields.length > 0 || this.propertySpecificFields.length > 0) {
-      this.flowEntities.push(new FlowEntity(processor.id, processor.processorType, ""))
-      if(this.propertiesFieldGroup.fields.length > 0)
-        this.flowEntityFieldGroupsMap.set(processor.id, [this.propertiesFieldGroup])
-      if(this.propertySpecificFields.length > 0)
-        this.flowEntitySpecificFieldsMap.set(processor.id, this.propertySpecificFields)
-    }
+          if(this.propertiesFieldGroup.fields.length > 0 || this.propertySpecificFields.length > 0) {
+            this.flowEntities.push(new FlowEntity(processor.id, processor.processorType, ""))
+            if(this.propertiesFieldGroup.fields.length > 0)
+              this.flowEntityFieldGroupsMap.set(processor.id, [this.propertiesFieldGroup])
+            if(this.propertySpecificFields.length > 0)
+              this.flowEntitySpecificFieldsMap.set(processor.id, this.propertySpecificFields)
+          }
+
+          if(!this.hasEntities()) {
+            this.oss.dispatch({
+              type: UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY,
+              payload: false
+            })
+            this.notificationService
+              .warn({
+                title: "Processor Properties",
+                description: "No configurable properties for chosen processor"
+              })
+          } else {
+            this.oss.dispatch({
+              type: UPDATE_SELECTED_FLOW_ENTITY_CONF,
+              payload: {flowEntityConf:  this}
+            })
+            this.oss.dispatch({
+              type: UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY,
+              payload: true
+            })
+          }
+        })
   }
 
   finalise(uiStateStore: UIStateStore, data?: any): void {
@@ -584,7 +635,11 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
               this.errorService.handleValidationErrors([processor.validationErrors])
             else {
               this.oss.dispatch({type: UPDATE_SELECTED_PROCESSOR, payload: {processor: processor}})
-              uiStateStore.isProcessorPropertiesDialogVisible = false
+
+              this.oss.dispatch({
+                type: UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY,
+                payload: false
+              })
               uiStateStore.setProcessorPropertiesToUpdate(undefined)
             }
           },
@@ -596,7 +651,10 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
   }
 
   cancel(uiStateStore: UIStateStore): void {
-    uiStateStore.isProcessorPropertiesDialogVisible = false
+    this.oss.dispatch({
+      type: UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY,
+      payload: false
+    })
   }
 }
 

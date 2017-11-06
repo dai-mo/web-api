@@ -1,6 +1,7 @@
 import {Component, Input, OnInit} from "@angular/core"
 import {Field, FieldGroup, FieldUIType} from "./ui.models"
 import {FormControl, FormGroup, Validators} from "@angular/forms"
+import {PossibleValue} from "../analyse/flow.model"
 /**
  * Created by cmathew on 08.05.17.
  */
@@ -31,7 +32,7 @@ export class FlowEntityInfoComponent implements OnInit {
   toFormGroup(fields: Field[]): FormGroup {
     let group: any = {}
 
-    fields.forEach(field => {
+    fields.forEach((field: Field) => {
       if(field.isEditable)
         group[field.name] =
           field.isRequired

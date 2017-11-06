@@ -2,7 +2,7 @@ import {Observable} from "rxjs/Rx"
 import {Injectable, NgZone} from "@angular/core"
 import {FlowComponent, Connection, Entity, EntityType, FlowInstance, FlowTab, Processor} from "../analyse/flow.model"
 import {Action, Store} from "@ngrx/store"
-import {ContextBarItem, FlowEntityConf, UiId} from "../shared/ui.models"
+import {ContextBarItem, FlowEntityConf, UiId, Visibility} from "../shared/ui.models"
 import {ImmutableArray, ImmutableObject} from "seamless-immutable"
 import * as SI from "seamless-immutable"
 
@@ -98,8 +98,13 @@ export class ObservableState {
   connectMode(): boolean {
     return this.appState().connectMode
   }
+
   connectMode$(): Observable<boolean> {
     return this.appStore().select((state: AppState) => state.connectMode)
+  }
+
+  visibility(): Visibility {
+    return this.appState().visibility
   }
 }
 
@@ -110,6 +115,7 @@ export interface AppState {
   currentProcessorProperties: any
   selectedFlowEntityConf: FlowEntityConf
   connectMode: boolean
+  visibility: Visibility
 }
 
 export const initialAppState: AppState = {
@@ -118,6 +124,7 @@ export const initialAppState: AppState = {
   processorToConnectId: "",
   currentProcessorProperties: undefined,
   selectedFlowEntityConf: undefined,
-  connectMode: false
+  connectMode: false,
+  visibility: new Visibility()
 }
 

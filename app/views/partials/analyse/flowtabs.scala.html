@@ -37,8 +37,8 @@ header="Processor Properties"
 width="900"
 [resizable]="false"
 [closable]="false"
-[(visible)]="uiStateStore.isProcessorPropertiesDialogVisible"
-*ngIf="uiStateStore.isProcessorPropertiesDialogVisible">
+[(visible)]="oss.visibility().isProcessorPropertiesDialogVisible"
+*ngIf="oss.visibility().isProcessorPropertiesDialogVisible">
     <flow-entity finaliseLabel="Update">
     </flow-entity>
 </p-dialog>

@@ -281,25 +281,24 @@ export class FlowTabsComponent implements OnInit {
       ppc =  new ProcessorPropertiesConf(sp,
         this.oss,
         this.processorService,
-        this.errorService)
+        this.errorService,
+        this.notificationService)
     }
 
-    if(ppc !== undefined && !ppc.hasEntities()) {
-      this.uiStateStore.isProcessorPropertiesDialogVisible = false
-      this.notificationService
-        .warn({
-          title: "Processor Properties",
-          description: "No configurable properties for chosen processor"
-        })
-    } else {
-      this.oss.dispatch({
-        type: UPDATE_SELECTED_FLOW_ENTITY_CONF,
-        payload: {flowEntityConf:  ppc}
-      })
-      this.uiStateStore.isProcessorPropertiesDialogVisible = true
-    }
-
-
+    // if(ppc !== undefined && !ppc.hasEntities()) {
+    //   this.uiStateStore.isProcessorPropertiesDialogVisible = false
+    //   this.notificationService
+    //     .warn({
+    //       title: "Processor Properties",
+    //       description: "No configurable properties for chosen processor"
+    //     })
+    // } else {
+    //   this.oss.dispatch({
+    //     type: UPDATE_SELECTED_FLOW_ENTITY_CONF,
+    //     payload: {flowEntityConf:  ppc}
+    //   })
+    //   this.uiStateStore.isProcessorPropertiesDialogVisible = true
+    // }
   }
 
   showProcessorConfDialog() {

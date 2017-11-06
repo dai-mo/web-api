@@ -54,36 +54,34 @@ export class FlowTemplate {
 export class SchemaProperties {
   static _FIELDS_TO_MAP = "_FIELDS_TO_MAP"
   static _FIELD_ACTIONS = "_FIELDS_ACTIONS"
+}
 
-  static isSchemaProperty(propertyName: string): boolean {
-    return propertyName === this._FIELDS_TO_MAP ||
-      propertyName === this._FIELD_ACTIONS
-  }
+export enum PropertyLevel {
+  ClosedProperty = 0,
+  ProcessorCoreProperty = 1,
+  ProcessorSchemaProperty = 2,
+  ExternalProcessorProperty = 3,
+  OpenProperty = 100
 }
 
 export class ProcessorProperties {
 
-  static isExternalProcessorProperty(propertyName: string): boolean {
-    return propertyName === ExternalProcessorProperties.ReceiverKey ||
-      propertyName === ExternalProcessorProperties.SenderKey ||
-      propertyName === ExternalProcessorProperties.RootOutputConnectionIdKey ||
-      propertyName === ExternalProcessorProperties.RootInputConnectionIdKey ||
-      propertyName === ExternalProcessorProperties.InputPortNameKey ||
-      propertyName === ExternalProcessorProperties.OutputPortNameKey
+  static isExternalProcessorProperty(level: PropertyLevel): boolean {
+    return level === PropertyLevel.ExternalProcessorProperty
   }
 
-  static isCoreProperty(propertyName: string): boolean {
-    return propertyName === CoreProperties._PROCESSOR_CLASS ||
-      propertyName === CoreProperties._PROCESSOR_TYPE ||
-      propertyName === CoreProperties._READ_SCHEMA_ID ||
-      propertyName === CoreProperties._READ_SCHEMA ||
-      propertyName === CoreProperties._WRITE_SCHEMA_ID ||
-      propertyName === CoreProperties._WRITE_SCHEMA
+  static isCoreProperty(level: PropertyLevel): boolean {
+    return level === PropertyLevel.ProcessorCoreProperty
   }
 
-  static isHiddenProperty(propertyName: string): boolean {
-    return ProcessorProperties.isCoreProperty(propertyName) ||
-      ProcessorProperties.isExternalProcessorProperty(propertyName)
+  static isHiddenProperty(level: PropertyLevel): boolean {
+    return level === PropertyLevel.ClosedProperty ||
+      level === PropertyLevel.ProcessorCoreProperty ||
+      level === PropertyLevel.ExternalProcessorProperty
+  }
+
+  static isSchemaProperty(level: PropertyLevel): boolean {
+    return level === PropertyLevel.ProcessorSchemaProperty
   }
 }
 
@@ -127,7 +125,7 @@ export class PropertyDefinition {
   sensitive: boolean
   dynamic: boolean
   type: string
-  level: number
+  level: PropertyLevel
 }
 
 export class Connectable {
