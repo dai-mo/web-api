@@ -6,7 +6,7 @@
             <split-area [visible]="(uiStateStore.viewsVisible | async).visualise">
                 <ws-view [name]="uiId.VISUALISE" ></ws-view>
             </split-area>
-            <split-area [visible]="(uiStateStore.viewsVisible | async).mobilise">
+            <split-area class="wsview" [visible]="(uiStateStore.viewsVisible | async).mobilise">
                 <ws-view [name]="uiId.MOBILISE" ></ws-view>
             </split-area>
         </split>

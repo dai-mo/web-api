@@ -4,6 +4,7 @@
 import {Component} from "@angular/core"
 import {ContentComponent} from "./content.component"
 import {UIStateStore} from "../shared/ui.state.store"
+import {ObservableState} from "../store/state"
 
 @Component({
     selector: "mobilise",
@@ -11,7 +12,8 @@ import {UIStateStore} from "../shared/ui.state.store"
 })
 export class MobiliseComponent {
 
-  constructor(private uiStateStore: UIStateStore) {
+  constructor(private uiStateStore: UIStateStore,
+              private oss: ObservableState) {
   }
 
 }

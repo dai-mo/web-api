@@ -48,9 +48,9 @@ class FlowProvenanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAct
 
   def list(processorId: String): EssentialAction = csrfCheckAction async  { implicit request =>
     val flowDataService = ZkRemoteService.loadService[IFlowDataService]
-    val typeId = processorId.split(':')
-    val pid = typeId(1)
-    ProcessorApi.instance(pid).
+    //val typeId = processorId.split(':')
+    //val pid = typeId(1)
+    ProcessorApi.instance(processorId).
       map(pi => {
         val cp = CoreProperties(pi.properties)
         cp.readSchemaId.foreach(AvroSchemaStore.add)
@@ -58,7 +58,7 @@ class FlowProvenanceApi @Inject()(csrfCheckAction: CSRFCheckAction, csrfTokenAct
         cp.resolveWriteSchema()
       }).
       map(schema => {
-        val response = flowDataService.provenanceByComponentId(pid, DefaultMaxResults).asScala
+        val response = flowDataService.provenanceByComponentId(processorId, DefaultMaxResults).asScala
         response.
           filter(prov => prov.relationship != RelationshipType.Failure.id).
           map(prov => {
