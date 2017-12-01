@@ -172,6 +172,13 @@ export class FlowTabsComponent implements OnInit {
         .subscribe(
           (flowInstance: FlowInstance) => {
             this.addFlowInstance(flowInstance)
+            this.oss.dispatch({
+              type: SELECT_ENTITY,
+              payload: {
+                id: flowInstance.id,
+                type: EntityType.FLOW_INSTANCE
+              }
+            })
           },
           (error: any) => {
             this.errorService.handleError(error)

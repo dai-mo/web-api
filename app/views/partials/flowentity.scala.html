@@ -8,13 +8,7 @@
         (onChange)="select($event.value.id)"
         filter="filter"
         class="flow-entity-list"
-        [style]="{'width':'250px','height':'400px','max-height':'400px'}">
-            <ng-template let-entity pTemplate="item">
-                <div>
-                    <span>{{entity.label}}</span>
-                    @*<i *ngIf="entity.value.status === flowEntityStatus.WARNING" class="fa fa-exclamation-circle pull-right"></i>*@
-                </div>
-            </ng-template>
+        [listStyle]="{'max-height': '400px'}">
         </p-listbox>
     </div>
     <div [ngClass]="{'flex-panel-70': !hasSingleEntity(), 'flex-panel': hasSingleEntity()}">
