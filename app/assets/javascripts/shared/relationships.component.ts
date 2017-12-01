@@ -135,13 +135,6 @@ export class RelationshipsComponent {
 
   ok() {
     this.uiStateStore.isRelationshipsInfoDialogVisible = false
-    this.oss.dispatch({
-      type: SELECT_ENTITY,
-      payload: {
-        id: this.oss.activeFlowTab().flowInstance.id,
-        type: EntityType.FLOW_INSTANCE
-      }
-    })
   }
 
   select(event: any) {
