@@ -5,6 +5,7 @@ import {Action, Store} from "@ngrx/store"
 import {ContextBarItem, FlowEntityConf, UiId, Visibility} from "../shared/ui.models"
 import {ImmutableArray, ImmutableObject} from "seamless-immutable"
 import * as SI from "seamless-immutable"
+import {isNullOrUndefined} from "util"
 
 /**
  * Created by cmathew on 01.07.17.
@@ -52,9 +53,24 @@ export class ObservableState {
 
   selectedProcessor$(): Observable<Processor> {
     return this.activeFlowTab$()
-      .map(ft =>
-        ft.flowInstance.processors
-          .find(p => p.id === this.appState().selectedEntity.id)
+      .map(ft => {
+          if (ft === undefined)
+            return undefined
+          else
+            return ft.flowInstance.processors
+              .find(p => p.id === this.appState().selectedEntity.id)
+        }
+      )
+  }
+
+  selectedProcessorId$(): Observable<string> {
+    return this.selectedProcessor$()
+      .map(sp => {
+          if (sp === undefined)
+            return undefined
+          else
+            return sp.id
+        }
       )
   }
 

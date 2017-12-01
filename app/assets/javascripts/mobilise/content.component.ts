@@ -41,7 +41,7 @@ export class ContentComponent {
   @Input()
   set showProvenance(processorId: string) {
     this.actions = []
-    if(processorId != null)
+    if(processorId !== undefined)
       this.flowService
         .provenance(processorId)
         .subscribe(

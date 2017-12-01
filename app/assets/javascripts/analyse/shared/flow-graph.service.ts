@@ -28,6 +28,10 @@ export class FlowGraphService {
       edges: graph.edges
     }
     let options = {
+      // FIXME: Normally the autoResize value should be set to true,
+      //        but if this is done then we get a weird rendering effect
+      //        on Firefox where the graph moves automatically and extends
+      //        out of the analyse view
       autoResize: false,
       nodes: {
         shadow: true,

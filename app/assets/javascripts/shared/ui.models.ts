@@ -18,7 +18,7 @@ import {ProcessorService} from "../service/processor.service"
 import {ErrorService} from "./util/error.service"
 import {ObservableState} from "../store/state"
 import {
-  ADD_FLOW_TABS,
+  ADD_FLOW_TABS, SELECT_ENTITY,
   UPDATE_FLOW_INSTANCE, UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY,
   UPDATE_SELECTED_FLOW_ENTITY_CONF,
   UPDATE_SELECTED_PROCESSOR
@@ -641,6 +641,13 @@ export class ProcessorPropertiesConf extends FlowEntityConf {
                 payload: false
               })
               uiStateStore.setProcessorPropertiesToUpdate(undefined)
+              this.oss.dispatch({
+                type: SELECT_ENTITY,
+                payload: {
+                  id: this.oss.activeFlowTab().flowInstance.id,
+                  type: EntityType.FLOW_INSTANCE
+                }
+              })
             }
           },
           (error: any) => {

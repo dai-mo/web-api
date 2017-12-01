@@ -97,47 +97,57 @@ describe("Flow Service", () => {
             {
               "id": "31893b7f-2b44-48d6-b07f-174edde34745",
               "type": "some.type",
+              "version": "1",
               "status": "STOPPED",
               "processorType": "type",
               "properties": {},
               "propertyDefinitions": [],
-              "validationErrors": []
+              "relationships": [],
+              "validationErrors": undefined
             },
             {
               "id": "623f3887-cc72-412e-82d8-e21ee0d7705f",
               "type": "some.type",
+              "version": "1",
               "status": "STOPPED",
               "processorType": "type",
               "properties": {},
               "propertyDefinitions": [],
-              "validationErrors": []
+              "relationships": [],
+              "validationErrors": undefined
             },
             {
               "id": "555bde07-8282-4719-aec6-6a64ce227c60",
               "type": "some.type",
+              "version": "1",
               "status": "STOPPED",
               "processorType": "type",
               "properties": {},
               "propertyDefinitions": [],
-              "validationErrors": []
+              "relationships": [],
+              "validationErrors": undefined
             },
             {
               "id": "9b9620fe-3c40-4263-82eb-f49853a6ef79",
               "type": "some.type",
+              "version": "1",
               "status": "STOPPED",
               "processorType": "type",
               "properties": {},
               "propertyDefinitions": [],
-              "validationErrors": []
+              "relationships": [],
+              "validationErrors": undefined
             },
             {
               "id": "ee25be65-4479-4528-b5f7-dc24a75eaf22",
               "type": "some.type",
+              "version": "1",
               "status": "STOPPED",
               "processorType": "type",
               "properties": {},
               "propertyDefinitions": [],
-              "validationErrors": []
+              "relationships": [],
+              "validationErrors": undefined
             }
           ],
           "connections": [
@@ -146,6 +156,7 @@ describe("Flow Service", () => {
               "source": {
                 "id": "623f3887-cc72-412e-82d8-e21ee0d7705f",
                 "type": "ProcessorType"
+
               },
               "destination": {
                 "id": "9b9620fe-3c40-4263-82eb-f49853a6ef79",

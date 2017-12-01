@@ -5,7 +5,8 @@ import {Msg, MsgGroup, UiId, ViewsVisible} from "./ui.models"
 import {ContextStore} from "./context.store"
 import {ObservableState} from "../store/state"
 
-// FIXME: All elements of this class should be moved to ObservableState
+// FIXME: All elements of this class related to application state should be moved to ObservableState
+//        Only state related to the UI should remain here.
 @Injectable()
 export class UIStateStore {
 
@@ -52,14 +53,17 @@ export class UIStateStore {
       case UiId.ANALYSE:
         vv.mobilise = false
         vv.visualise = false
+        vv.analyse = true
         break
       case UiId.MOBILISE:
         vv.analyse = false
         vv.visualise = false
+        vv.mobilise = true
         break
       case UiId.VISUALISE:
         vv.analyse = false
         vv.mobilise = false
+        vv.visualise = true
         break
     }
     this.setViewsVisible(vv)
