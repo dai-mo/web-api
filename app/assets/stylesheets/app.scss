@@ -448,20 +448,6 @@ div.ui-datatable-scrollable-body {
   width: 400px;
 }
 
-// workaround for https://github.com/primefaces/primeng/issues/487 -- start
-.ui-datatable-scrollable-header-box{
-  margin-right: 15px!important;
-}
-
-.ui-datatable-scrollable-body {
-  overflow-y: scroll !important;
-}
-
-.ui-datatable-scrollable-header {
-  width: 100%;
-}
-// workaround for https://github.com/primefaces/primeng/issues/487 -- end
-
 .data-cell {
   width: 250px;
 }
