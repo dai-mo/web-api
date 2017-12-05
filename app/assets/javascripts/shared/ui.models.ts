@@ -128,10 +128,15 @@ export class Field {
 
   resolveValue() {
     if(this.possibleValues.length > 0) {
-      if(this.possibleValues.find(pv => pv.value === this.value) === undefined)
-        this.value = this.defaultValue
-      if(this.value !== "")
-        this.possibleValues = this.possibleValues.filter(pv => pv.value !== "")
+      // FIXME: Setting the fields value to empty in case of a list of possible
+      //        values essentially encodes the fact that users will always have to
+      //        choose from the list. This runs counter to the Nifi model where
+      //        a processor property definition with a list of possbile values
+      //        should have a default value and that too a default value that
+      //        belongs to the list of possible values. We should ideally be able to
+      //        accomodate both situations.
+      this.value = ""
+      this.possibleValues = this.possibleValues.filter(pv => pv.value !== "")
       this.selectItems = this.possibleValues.map((pv: PossibleValue) => {
         return { label:pv.displayName, value:pv.value}
       })
@@ -555,115 +560,6 @@ export class ProcessorInfo extends FlowEntityConf {
 
 }
 
-export class ProcessorPropertiesConf extends FlowEntityConf {
-
-  private processor: Processor
-  private properties: any
-  private propertiesFieldGroup: FieldGroup
-  private propertySpecificFields: Field[]
-
-  constructor(processor: Processor,
-              private oss: ObservableState,
-              private processorService: ProcessorService,
-              private errorService: ErrorService,
-              private notificationService: NotificationService) {
-    super(oss)
-    this.processor = processor
-    this.selectedFlowEntityId = processor.id
-    this.properties = processor.properties
-    this.propertiesFieldGroup= new FieldGroup("properties")
-    this.propertySpecificFields = []
-
-    this.processorService.properties(FlowUtils.processorServiceClassName(this.processor))
-      .subscribe(
-        (propertyDefinitions: PropertyDefinition[]) => {
-          propertyDefinitions.forEach(pd => {
-            // let pvs: string[] = []
-            // if (pd.possibleValues !== undefined)
-            //   pvs = pd.possibleValues.map(pv => pv.value)
-
-            let field: Field = Field.fromPDef(pd, this.properties[pd.name], true)
-
-            if (!field.isHiddenPropertyField()) {
-              if (field.isSchemaField())
-                this.propertySpecificFields.push(field)
-              else
-                this.propertiesFieldGroup.add(field)
-            }
-          })
-
-          if(this.propertiesFieldGroup.fields.length > 0 || this.propertySpecificFields.length > 0) {
-            this.flowEntities.push(new FlowEntity(processor.id, processor.processorType, ""))
-            if(this.propertiesFieldGroup.fields.length > 0)
-              this.flowEntityFieldGroupsMap.set(processor.id, [this.propertiesFieldGroup])
-            if(this.propertySpecificFields.length > 0)
-              this.flowEntitySpecificFieldsMap.set(processor.id, this.propertySpecificFields)
-          }
-
-          if(!this.hasEntities()) {
-            this.oss.dispatch({
-              type: UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY,
-              payload: false
-            })
-            this.notificationService
-              .warn({
-                title: "Processor Properties",
-                description: "No configurable properties for chosen processor"
-              })
-          } else {
-            this.oss.dispatch({
-              type: UPDATE_SELECTED_FLOW_ENTITY_CONF,
-              payload: {flowEntityConf:  this}
-            })
-            this.oss.dispatch({
-              type: UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY,
-              payload: true
-            })
-          }
-        })
-  }
-
-  finalise(uiStateStore: UIStateStore, data?: any): void {
-
-    if(!JSUtils.isUndefinedOrEmpty(data)) {
-      let properties = FlowUtils.addExternalCoreProperties(this.processor, data)
-      this.processorService
-        .updateProperties(FlowUtils.processorServiceClassName(this.processor), this.processor.id, properties)
-        .subscribe(
-          (processor: Processor) => {
-            if (processor.validationErrors !== undefined)
-              this.errorService.handleValidationErrors([processor.validationErrors])
-            else {
-              this.oss.dispatch({type: UPDATE_SELECTED_PROCESSOR, payload: {processor: processor}})
-
-              this.oss.dispatch({
-                type: UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY,
-                payload: false
-              })
-              uiStateStore.setProcessorPropertiesToUpdate(undefined)
-              this.oss.dispatch({
-                type: SELECT_ENTITY,
-                payload: {
-                  id: this.oss.activeFlowTab().flowInstance.id,
-                  type: EntityType.FLOW_INSTANCE
-                }
-              })
-            }
-          },
-          (error: any) => {
-            this.errorService.handleError(error)
-          }
-        )
-    }
-  }
-
-  cancel(uiStateStore: UIStateStore): void {
-    this.oss.dispatch({
-      type: UPDATE_PROCESSOR_PROPERTIES_DIALOG_VISIBILITY,
-      payload: false
-    })
-  }
-}
 
 
 export class ViewsVisible {

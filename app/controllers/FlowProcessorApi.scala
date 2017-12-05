@@ -84,7 +84,7 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction,
     else
       schemaJson
 
-  def updateProperties(processorServiceClassName: String, processorId: String): EssentialAction = csrfCheckAction async { implicit request =>
+  def updateProperties(processorServiceClassName: String, processorId: String, flowInstanceId: String): EssentialAction = csrfCheckAction async { implicit request =>
 
     val initialProperties = Req.body.toMapOf[String]
     val propertyDefinitions = remote.service(processorServiceClassName).properties().asScala.toList
@@ -102,6 +102,7 @@ class FlowProcessorApi @Inject()(csrfCheckAction: CSRFCheckAction,
         ProcessorApi.updateSchemaProperty(processorId,
           CoreProperties.ReadSchemaKey,
           readSchema.get,
+          flowInstanceId,
           Req.clientId)
           .map(_ => ps)
       } else

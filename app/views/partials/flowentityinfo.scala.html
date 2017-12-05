@@ -35,13 +35,13 @@
             <div  class="ui-g" *ngSwitchCase="fieldUIType.VALUE_LIST">
             <div class="ui-g-4"><label [attr.for]="field.name">{{field.label}}</label></div>
             <div class="ui-g-8">
-                <p-dropdown
+                <p-listbox
                 [id]="field.label"
                 [style]="{'width':'250px'}"
                 [options]="field.selectItems"
                 [(ngModel)]="field.value"
                 [formControlName]="field.name">
-                    </p-dropdown>
+                </p-listbox>
             </div>
             </div>
         </div>

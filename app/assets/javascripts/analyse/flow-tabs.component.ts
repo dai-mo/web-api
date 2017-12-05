@@ -20,7 +20,6 @@ import {
   FlowEntityConf,
   ProcessorConf,
   ProcessorInfo,
-  ProcessorPropertiesConf,
   UiId
 } from "../shared/ui.models"
 import {NotificationService} from "../shared/util/notification.service"
@@ -39,6 +38,7 @@ import {ProcessorService} from "../service/processor.service"
 import {Observable} from "rxjs"
 import {UIUtils} from "../shared/util/ui.utils"
 import {ConnectionService} from "../service/connection.service"
+import {ProcessorPropertiesConf} from "../shared/processor-properties.conf"
 
 
 @Component({
@@ -121,6 +121,11 @@ export class FlowTabsComponent implements OnInit {
   updateContextBarItems(flowTab: FlowTab) {
     this.stopFlowBarItem.enabled = this.isRunning(flowTab)
     this.startFlowBarItem.enabled = !this.isRunning(flowTab)
+  }
+
+  updateStopStartBarItems(isRunning: boolean) {
+    this.stopFlowBarItem.enabled = isRunning
+    this.startFlowBarItem.enabled = !isRunning
   }
 
   public toggleTabLabel(flowTab: FlowTab) {
@@ -229,7 +234,7 @@ export class FlowTabsComponent implements OnInit {
                   state: FlowInstance.stateRunning
                 }
               })
-              this.updateContextBarItems(flowTab)
+              this.updateStopStartBarItems(true)
             } else
               alert("Flow Instance failed to start")
           },
@@ -271,7 +276,7 @@ export class FlowTabsComponent implements OnInit {
                   state: FlowInstance.stateStopped
                 }
               })
-              this.updateContextBarItems(flowTab)
+              this.updateStopStartBarItems(false)
             } else
               alert("Flow Instance failed to stop")
           },
@@ -288,6 +293,7 @@ export class FlowTabsComponent implements OnInit {
       ppc =  new ProcessorPropertiesConf(sp,
         this.oss,
         this.processorService,
+        this.flowService,
         this.errorService,
         this.notificationService)
     }

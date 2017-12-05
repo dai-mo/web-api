@@ -232,8 +232,12 @@ export class FlowInstance {
   }
 
   static hasExternal(flowInstance: FlowInstance): boolean {
-    if(flowInstance.connections.find(c => c.config.source.componentType === FlowComponent.ExternalProcessorType ||
-        c.config.destination.componentType === FlowComponent.ExternalProcessorType) !== undefined)
+    if(flowInstance.connections.find(c => {
+        return c.config.source.componentType === FlowComponent.ExternalProcessorType ||
+        c.config.destination.componentType === FlowComponent.ExternalProcessorType ||
+          c.config.source.componentType === FlowComponent.InputPortIngestionType ||
+          c.config.destination.componentType === FlowComponent.InputPortIngestionType
+    }) !== undefined)
       return true
 
     return false
