@@ -47,7 +47,7 @@ GET     /api/flow/processor/schema/:sid                 controllers.FlowProcesso
 GET     /api/flow/processor/details/:pscn               controllers.FlowProcessorApi.details(pscn: String)
 GET     /api/flow/processor/details/:pscn/:iss          controllers.FlowProcessorApi.detailsForDef(pscn: String, iss: Boolean)
 GET     /api/flow/processor/:pscn/properties            controllers.FlowProcessorApi.properties(pscn: String)
-PUT     /api/flow/processor/:pscn/:pid/properties       controllers.FlowProcessorApi.updateProperties(pscn: String, pid: String)
+PUT     /api/flow/processor/:pscn/:pid/:fid/properties  controllers.FlowProcessorApi.updateProperties(pscn: String, pid: String, fid: String)
 PUT     /api/flow/processor/schema/:fid/:pid            controllers.FlowProcessorApi.updateSchema(fid:String, pid: String)
 GET     /api/flow/processor/list/:property/:regex       controllers.FlowProcessorApi.list(property: String, regex: String)
 ##- Connection Api
