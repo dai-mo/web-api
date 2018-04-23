@@ -1,8 +1,0 @@
-{
-  "realm": "alambeek",
-  "auth-server-url": "http://keycloak:8080/auth",
-  "ssl-required": "external",
-  "resource": "alambeek-webapp",
-  "enable-cors": true,
-  "public-client": true
-}

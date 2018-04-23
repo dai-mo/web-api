@@ -27,39 +27,8 @@ class HomeController @Inject()(webJarAssets: WebJarAssets,
     * will be called when the application receives a `GET` request with
     * a path of `/`.
     */
-  def index() = csrfTokenAction { implicit request =>
-    val result = Ok(views.html.index(webJarAssets))
-
-    if(request.cookies.get(Req.AuthTokenKey) == None)
-      result.withCookies(Cookie(Req.AuthTokenKey,UUID.randomUUID.toString))
-    else
-      result
-  }
-
-  def modulePartials(module:String, partial: String) = Action {
-    (module, partial) match  {
-      case ("", "wsview.html") => Ok(views.html.partials.wsview())
-      case ("", "layout.html") => Ok(views.html.partials.layout())
-      case ("", "modal.html") => Ok(views.html.partials.modal())
-      case ("", "flowentity.html") => Ok(views.html.partials.flowentity())
-      case ("", "flowentityinfo.html") => Ok(views.html.partials.flowentityinfo())
-      case ("", "processorschema.html") => Ok(views.html.partials.processorschema())
-      case ("", "schemapanel.html") => Ok(views.html.partials.schemapanel())
-      case ("", "schemapropertypanel.html") => Ok(views.html.partials.schemapropertypanel())
-      case ("", "relationshipspanel.html") => Ok(views.html.partials.relationshipspanel())
-
-      case ("analyse", "view.html") => Ok(views.html.partials.analyse.view())
-      case ("analyse", "flowtabs.html") => Ok(views.html.partials.analyse.flowtabs())
-
-      case ("mobilise", "view.html") => Ok(views.html.partials.mobilise.view())
-      case ("mobilise", "content.html") => Ok(views.html.partials.mobilise.content())
-
-      case ("visualise", "view.html") => Ok(views.html.partials.visualise.view())
-      case ("visualise", "vistabs.html") => Ok(views.html.partials.visualise.vistabs())
-      case ("visualise", "map.html") => Ok(views.html.partials.visualise.map())
-      case ("visualise", "chart.html") => Ok(views.html.partials.visualise.chart())
-      case _ => NotFound
-    }
+  def index = Action {
+    Ok(views.html.index("Your new application is ready."))
   }
 
   def health = Action { implicit request =>
