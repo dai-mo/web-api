@@ -30,7 +30,6 @@ class ApplicationSpec extends WebBaseSpec with OneAppPerTest {
       val home = route(app, FakeRequest(GET, "/")).get
 
       status(home) mustBe OK
-      contentAsString(home) must include ("javascripts/systemjs.config.js")
     }
   }
 

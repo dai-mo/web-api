@@ -8,7 +8,6 @@ import controllers.util.{CSRFCheckAction, CSRFTokenAction, Req}
 import org.dcs.web.BuildInfo
 import play.api.mvc._
 import play.api.routing.Router
-import views.html.partials.modal
 import global.ResultSerialiserImplicits._
 
 /**
