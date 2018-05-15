@@ -53,23 +53,23 @@ libraryDependencies ++= Seq(
 )
 
 
-//publish <<= (publish) dependsOn  dist
-//
-//publishLocal <<= (publishLocal) dependsOn dist
-//
-//publishM2 <<= (publishM2) dependsOn dist
-//
-//val publishDist = TaskKey[File]("publishDist", "Publish dist zip file")
-//
-//artifact in publishDist ~= { (art: Artifact) => art.copy(`type` = "zip", extension = "zip") }
-//
-//val publishDistSettings = Seq[Setting[_]] (
-//  publishDist <<= (target in Universal, normalizedName, version) map { (targetDir, id, version) =>
-//    val packageName = "%s-%s" format(id, version)
-//    targetDir / (packageName + ".zip")
-//  }) ++ Seq(addArtifact(artifact in publishDist, publishDist).settings: _*)
-//
-//Seq(publishDistSettings: _*)
+publish <<= (publish) dependsOn  dist
+
+publishLocal <<= (publishLocal) dependsOn dist
+
+publishM2 <<= (publishM2) dependsOn dist
+
+val publishDist = TaskKey[File]("publishDist", "Publish dist zip file")
+
+artifact in publishDist ~= { (art: Artifact) => art.copy(`type` = "zip", extension = "zip") }
+
+val publishDistSettings = Seq[Setting[_]] (
+  publishDist <<= (target in Universal, normalizedName, version) map { (targetDir, id, version) =>
+    val packageName = "%s-%s" format(id, version)
+    targetDir / (packageName + ".zip")
+  }) ++ Seq(addArtifact(artifact in publishDist, publishDist).settings: _*)
+
+Seq(publishDistSettings: _*)
 
 
 scalacOptions in ThisBuild ++= Seq(
