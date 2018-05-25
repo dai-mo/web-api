@@ -12,14 +12,14 @@ pipeline:
     image: bigtruedata/sbt:0.13.15-2.11.8
     commands:
       - mkdir -p ~/.sbt/0.13
-      - cp global.sbt ~/.sbt/0.13
+      - cp .global.sbt ~/.sbt/0.13/global.sbt
       - sbt -Dsbt.ivy.home=./.ivy2 clean test dist
     secrets: [ artifactory_host, artifactory_url, artifactory_username, artifactory_password ]
   web-api-publish:
     image: bigtruedata/sbt:0.13.15-2.11.8
     commands:
       - mkdir -p ~/.sbt/0.13
-      - cp global.sbt ~/.sbt/0.13
+      - cp .global.sbt ~/.sbt/0.13/global.sbt
       - sbt -Dsbt.ivy.home=./.ivy2 publish
     secrets: [ artifactory_host, artifactory_url, artifactory_username, artifactory_password ]
     when:
