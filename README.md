@@ -1,16 +1,16 @@
+# Alambeek Web Api Project
 
+# License
+Copyright (c) 2017-2018 brewlabs SAS
 
-Javascript Dependency Management
-================================
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-Dependency management of javascript libraries is currently managed by ```npm```
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-To add a new javascript dependency
-    * add the dependency to 'package.json'
-    * run the command ```npm install``` (this will install the dependency in the 'node_modules directory')
-    * run the command ```sbt resolveNpm``` (this will copy the dependency to the relevant play assets directory)
-
-To add new typings for a non-modularised javascript library,
- * Add the dt reference for the relevant project in the 'typings.json' file
- * run 'npm run typings install' (this will add the typings file in the corresponding directory under 'typings/globals' and add a reference to the 'globals/index.d.ts' file)
 
