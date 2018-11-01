@@ -4,6 +4,8 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.9")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-license-report" % "1.2.0")
 
+addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.0.0")
+
 // Web plugins
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-uglify" % "1.0.3")
